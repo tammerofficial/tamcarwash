@@ -39,7 +39,7 @@ return [
 
     // Session guards only. Do not list guards that use the sanctum driver
     // (e.g. platform, tenant) or Sanctum will recurse when resolving users.
-    'guard' => ['web'],
+    'guard' => ['web', 'tenant'],
 
     /*
     |--------------------------------------------------------------------------

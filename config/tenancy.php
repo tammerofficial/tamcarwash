@@ -2,6 +2,12 @@
 
 return [
 
+    'database' => [
+        'landlord_driver' => env('LANDLORD_DB_DRIVER', 'mysql'),
+        'tenant_driver' => env('TENANT_DB_DRIVER', env('LANDLORD_DB_DRIVER', 'mysql')),
+        'tenant_sqlite_directory' => env('TENANT_SQLITE_DIRECTORY') ?: database_path('tenants'),
+    ],
+
     'landlord_connection' => env('LANDLORD_DB_CONNECTION', 'landlord'),
 
     'tenant_connection' => env('TENANT_DB_CONNECTION', 'tenant'),

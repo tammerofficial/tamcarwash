@@ -5,7 +5,9 @@ namespace App\Modules\Shared\Http\Controllers;
 use App\Modules\Shared\Http\Resources\TenantUserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Models\TenantUser;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class TenantAuthController extends ApiController
@@ -18,16 +20,19 @@ class TenantAuthController extends ApiController
             'remember' => ['nullable', 'boolean'],
         ]);
 
-        if (! Auth::guard('tenant')->attempt(
-            $request->only('email', 'password'),
-            $request->boolean('remember')
-        )) {
+        $user = TenantUser::query()->where('email', $credentials['email'])->first();
+
+        if (! $user || ! Hash::check($credentials['password'], $user->getAuthPassword())) {
             throw ValidationException::withMessages([
                 'email' => ['بيانات الدخول غير صحيحة.'],
             ]);
         }
 
-        $request->session()->regenerate();
+        Auth::guard('tenant')->login($user, $request->boolean('remember'));
+
+        if ($request->hasSession()) {
+            $request->session()->regenerate();
+        }
 
         return $this->success([
             'user' => TenantUserResource::make(Auth::guard('tenant')->user()),

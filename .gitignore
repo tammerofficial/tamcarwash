@@ -27,3 +27,6 @@ Homestead.yaml
 Thumbs.db
 rr
 .rr.yaml
+/database/landlord.sqlite
+/database/tenants/*.sqlite
+/database/tamcarwash_landlord

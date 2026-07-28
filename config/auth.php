@@ -51,7 +51,7 @@ return [
         ],
 
         'tenant' => [
-            'driver' => 'sanctum',
+            'driver' => 'session',
             'provider' => 'tenant_users',
         ],
     ],

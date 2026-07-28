@@ -68,25 +68,56 @@ class TenantConnectionManager
     protected function configureConnection(TenantDatabase $database): void
     {
         $connectionName = config('tenancy.tenant_connection', 'tenant');
+        $driver = config('tenancy.database.tenant_driver', 'mysql');
 
-        Config::set("database.connections.{$connectionName}", array_merge(
-            config("database.connections.{$connectionName}", []),
-            array_filter([
-                'driver' => 'mysql',
-                'host' => $database->host ?: config('database.connections.tenant.host'),
-                'port' => $database->port ?: config('database.connections.tenant.port'),
-                'database' => $database->database_name,
-                'username' => $database->username ?: config('database.connections.tenant.username'),
-                'password' => $database->password ?: config('database.connections.tenant.password'),
-                'charset' => config('database.connections.tenant.charset', 'utf8mb4'),
-                'collation' => config('database.connections.tenant.collation', 'utf8mb4_unicode_ci'),
+        if ($driver === 'sqlite') {
+            $path = $this->resolveSqliteDatabasePath($database->database_name);
+
+            Config::set("database.connections.{$connectionName}", [
+                'driver' => 'sqlite',
+                'database' => $path,
                 'prefix' => '',
-                'prefix_indexes' => true,
-                'strict' => true,
-            ])
-        ));
+                'foreign_key_constraints' => config('database.connections.sqlite.foreign_key_constraints', true),
+                'busy_timeout' => null,
+                'journal_mode' => null,
+                'synchronous' => null,
+                'transaction_mode' => 'DEFERRED',
+            ]);
+        } else {
+            Config::set("database.connections.{$connectionName}", array_merge(
+                config("database.connections.{$connectionName}", []),
+                array_filter([
+                    'driver' => 'mysql',
+                    'host' => $database->host ?: config('database.connections.tenant.host'),
+                    'port' => $database->port ?: config('database.connections.tenant.port'),
+                    'database' => $database->database_name,
+                    'username' => $database->username ?: config('database.connections.tenant.username'),
+                    'password' => $database->password ?: config('database.connections.tenant.password'),
+                    'charset' => config('database.connections.tenant.charset', 'utf8mb4'),
+                    'collation' => config('database.connections.tenant.collation', 'utf8mb4_unicode_ci'),
+                    'prefix' => '',
+                    'prefix_indexes' => true,
+                    'strict' => true,
+                ])
+            ));
+        }
 
         Config::set('database.default', $connectionName);
+    }
+
+    protected function resolveSqliteDatabasePath(string $databaseName): string
+    {
+        if ($databaseName !== '' && str_starts_with($databaseName, DIRECTORY_SEPARATOR)) {
+            return $databaseName;
+        }
+
+        if ($databaseName !== '' && (str_contains($databaseName, '.sqlite') || str_contains($databaseName, '/'))) {
+            return database_path($databaseName);
+        }
+
+        $directory = config('tenancy.database.tenant_sqlite_directory') ?: database_path('tenants');
+
+        return rtrim($directory, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$databaseName;
     }
 
     protected function purgeAndReconnect(): void
@@ -105,6 +136,7 @@ class TenantConnectionManager
             $this->cacheKey("slug:{$slug}"),
             config('tenancy.cache.ttl'),
             fn () => Tenant::query()
+                ->with('database')
                 ->where('slug', $slug)
                 ->whereIn('status', ['active', 'provisioning'])
                 ->firstOrFail()

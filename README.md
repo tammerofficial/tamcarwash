@@ -2,7 +2,7 @@
 
 Production-ready SaaS platform for fixed-location car wash businesses in Oman.
 
-**Stack:** Laravel 13 · PHP 8.3+ · React 19 + TypeScript · Tailwind CSS · shadcn/ui · Sanctum · Spatie packages · Redis · Octane/RoadRunner · MySQL 8.4
+**Stack:** Laravel 13 · PHP 8.3+ · React 19 + TypeScript · Tailwind CSS · shadcn/ui · Sanctum · Spatie packages · Octane/RoadRunner · **Local: SQLite 3** · **Production: MySQL 8.4 + Redis**
 
 ---
 
@@ -54,9 +54,10 @@ resources/js/                  # React 19 SPA (Arabic-first RTL)
 
 ### 1. Prerequisites
 
-- PHP 8.3+, Composer 2
+- PHP 8.3+ with `pdo_sqlite`, Composer 2
 - Node.js 20+, npm
-- Docker & Docker Compose (recommended for MySQL + Redis)
+- **Local dev:** SQLite 3 only (no Docker required)
+- **Production:** MySQL 8.4 + Redis (Docker Compose optional locally)
 
 ### 2. Clone & install
 
@@ -68,30 +69,38 @@ npm install
 npm run build
 ```
 
-### 3. Start infrastructure
+### 3. Configure local database (SQLite)
+
+In your local `.env` (never commit it), set SQLite drivers and absolute paths — see the commented block in `.env.example`:
 
 ```bash
-docker compose up -d
-```
+LANDLORD_DB_DRIVER=sqlite
+LANDLORD_DB_CONNECTION=landlord
+LANDLORD_DB_DATABASE=/absolute/path/to/tamcarwash/database/landlord.sqlite
 
-This starts **MySQL 8.4** and **Redis 7**. Default credentials are in `.env.example`.
-### Local dev without Docker
+TENANT_DB_DRIVER=sqlite
+TENANT_SQLITE_DIRECTORY=/absolute/path/to/tamcarwash/database/tenants
 
-If Docker is not running (or you do not need Redis locally), use file-based cache and sessions so the SPA loads without `Connection refused` on port 6379:
-
-```bash
-# In .env (do not commit .env)
 SESSION_DRIVER=file
 QUEUE_CONNECTION=sync
 CACHE_STORE=file
 TENANT_CACHE_STORE=file
 
+touch database/landlord.sqlite
+mkdir -p database/tenants
+
 php artisan config:clear
 ```
 
-With Docker, keep the defaults in `.env.example` (`redis` drivers) and run `docker compose up -d`.
+Tenant provisioning creates `database/tenants/{slug}.sqlite` per tenant (not committed).
 
+### 3b. Production infrastructure (MySQL + Redis)
 
+```bash
+docker compose up -d
+```
+
+Use `LANDLORD_DB_DRIVER=mysql` and `TENANT_DB_DRIVER=mysql` with the MySQL block in `.env.example`.
 
 ### 4. Run landlord migrations
 
@@ -254,14 +263,15 @@ Configure Redis for cache, sessions, and queues in production. Set `QUEUE_CONNEC
 
 See `.env.example` for full reference. Key settings:
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `DB_CONNECTION` | `landlord` | Default DB connection |
-| `LANDLORD_DB_DATABASE` | `tamcarwash_landlord` | Platform database |
-| `TENANT_DB_PREFIX` | `tamcarwash_tenant_` | Tenant DB name prefix |
-| `TENANCY_PLATFORM_DOMAIN` | `tamcarwash.test` | Base domain for subdomains |
-| `REDIS_CLIENT` | `predis` | Redis client |
-| `QUEUE_CONNECTION` | `redis` | Queue driver |
+| Variable | Local (SQLite) | Production (MySQL) |
+|----------|----------------|---------------------|
+| `LANDLORD_DB_DRIVER` | `sqlite` | `mysql` |
+| `LANDLORD_DB_DATABASE` | path to `database/landlord.sqlite` | `tamcarwash_landlord` |
+| `TENANT_DB_DRIVER` | `sqlite` | `mysql` |
+| `TENANT_SQLITE_DIRECTORY` | `database/tenants/` | — |
+| `TENANT_DB_PREFIX` | — | `tamcarwash_tenant_` |
+| `TENANCY_PLATFORM_DOMAIN` | `tamcarwash.test` | same |
+| `CACHE_STORE` / `SESSION_DRIVER` | `file` | `redis` |
 
 ---
 

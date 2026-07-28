@@ -127,6 +127,21 @@ class TenantProvisioningService
     {
         $databaseName = $this->databaseNameFor($tenant);
 
+        if ($this->tenantUsesSqlite()) {
+            $path = $this->sqlitePathFor($tenant);
+            $directory = dirname($path);
+
+            if (! is_dir($directory)) {
+                mkdir($directory, 0755, true);
+            }
+
+            if (! file_exists($path)) {
+                touch($path);
+            }
+
+            return "SQLite database [{$path}] ready";
+        }
+
         $exists = DB::connection('landlord')->select(
             'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?',
             [$databaseName]
@@ -145,18 +160,28 @@ class TenantProvisioningService
     {
         $databaseName = $this->databaseNameFor($tenant);
 
+        $attributes = [
+            'database_name' => $databaseName,
+            'connection_name' => config('tenancy.tenant_connection', 'tenant'),
+            'status' => 'provisioned',
+            'provisioned_at' => now(),
+        ];
+
+        if ($this->tenantUsesSqlite()) {
+            $attributes['host'] = null;
+            $attributes['port'] = null;
+            $attributes['username'] = null;
+            $attributes['password'] = null;
+        } else {
+            $attributes['host'] = config('database.connections.tenant.host');
+            $attributes['port'] = (int) config('database.connections.tenant.port');
+            $attributes['username'] = config('database.connections.tenant.username');
+            $attributes['password'] = config('database.connections.tenant.password');
+        }
+
         TenantDatabase::query()->updateOrCreate(
             ['tenant_id' => $tenant->id],
-            [
-                'database_name' => $databaseName,
-                'host' => config('database.connections.tenant.host'),
-                'port' => (int) config('database.connections.tenant.port'),
-                'username' => config('database.connections.tenant.username'),
-                'password' => config('database.connections.tenant.password'),
-                'connection_name' => config('tenancy.tenant_connection', 'tenant'),
-                'status' => 'provisioned',
-                'provisioned_at' => now(),
-            ]
+            $attributes
         );
 
         return "Database record registered for [{$databaseName}]";
@@ -256,8 +281,25 @@ class TenantProvisioningService
 
     protected function databaseNameFor(Tenant $tenant): string
     {
+        if ($this->tenantUsesSqlite()) {
+            return 'tenants/'.$tenant->slug.'.sqlite';
+        }
+
         $prefix = config('tenancy.tenant_database_prefix', 'tamcarwash_tenant_');
 
         return $prefix.Str::slug($tenant->slug, '_');
     }
+
+    protected function tenantUsesSqlite(): bool
+    {
+        return config('tenancy.database.tenant_driver', 'mysql') === 'sqlite';
+    }
+
+    protected function sqlitePathFor(Tenant $tenant): string
+    {
+        $directory = config('tenancy.database.tenant_sqlite_directory') ?: database_path('tenants');
+
+        return rtrim($directory, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$tenant->slug.'.sqlite';
+    }
+
 }
