@@ -121,6 +121,30 @@ php artisan app:seed-production --tenants
 php artisan app:seed-production --tenant=demo
 ```
 
+For the **demo** tenant, this also runs `DemoTenantUsersSeeder`, which creates idempotent quick-login users (owner, manager, cashier, worker) with password `password`.
+
+### Quick login (demo tenant, local dev)
+
+On the tenant login page (`http://demo.tamcarwash.test:8000`), **Quick Login** buttons appear in local/dev mode (`import.meta.env.DEV` or `allowQuickLogin` in `app.blade.php`).
+
+| Role | Email | Password |
+|------|-------|----------|
+| Owner | `owner@demo.test` | `password` |
+| Manager | `manager@demo.test` | `password` |
+| Cashier | `cashier@demo.test` | `password` |
+| Worker | `worker@demo.test` | `password` |
+
+These accounts are seeded by `DemoTenantUsersSeeder` when:
+
+- Provisioning the demo tenant (`tenants:create --slug=demo ...`)
+- Re-running tenant seed: `php artisan app:seed-production --tenant=demo`
+
+If quick login fails after provisioning, rerun:
+
+```bash
+php artisan app:seed-production --tenant=demo
+```
+
 ### 7. Development servers
 
 ```bash

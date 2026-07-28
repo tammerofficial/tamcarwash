@@ -14,6 +14,9 @@ class TenantsCreateCommand extends Command
                             {name : Tenant display name}
                             {--slug= : Tenant slug (auto-generated if omitted)}
                             {--email= : Tenant contact email}
+                            {--owner-email= : Owner login email}
+                            {--owner-password= : Owner login password (auto-generated if omitted)}
+                            {--owner-name= : Owner display name}
                             {--plan= : Plan slug}
                             {--skip-seed : Skip tenant seeding step}
                             {--force : Re-run completed provisioning steps}';
@@ -55,6 +58,9 @@ class TenantsCreateCommand extends Command
         $results = $provisioningService->provision($tenant, [
             'skip_seed' => $this->option('skip-seed'),
             'force' => $this->option('force'),
+            'owner_email' => $this->option('owner-email'),
+            'owner_password' => $this->option('owner-password'),
+            'owner_name' => $this->option('owner-name'),
         ]);
 
         foreach ($results as $step => $result) {

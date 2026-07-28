@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import { CreditCard, Crown, UserCog, Wrench } from 'lucide-react';
 
-/** Demo tenant users — matches `tenants:create --owner-email=owner@demo.test --owner-password=password` */
+/** Demo tenant users — seeded by DemoTenantUsersSeeder (see README quick login) */
 export const DEMO_PASSWORD = 'password';
 
 export interface DemoRoleCredential {

@@ -20,12 +20,13 @@ class DemoTenantSeeder extends IdempotentSeeder
         }
 
         $this->call(TenantProductionSeeder::class);
+        $this->call(DemoTenantUsersSeeder::class);
 
         $this->logResult(static::class, [
             'created' => 0,
             'updated' => 0,
             'skipped' => 0,
-            'note' => 'Demo tenant baseline seeded via TenantProductionSeeder',
+            'note' => 'Demo tenant baseline + quick-login users seeded',
         ]);
     }
 }

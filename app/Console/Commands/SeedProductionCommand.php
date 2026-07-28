@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Landlord\Tenant;
 use App\Services\Tenancy\TenantConnectionManager;
+use Database\Seeders\DemoTenantUsersSeeder;
 use Database\Seeders\LandlordProductionSeeder;
 use Database\Seeders\TenantProductionSeeder;
 use Illuminate\Console\Command;
@@ -97,6 +98,15 @@ class SeedProductionCommand extends Command
                     '--force' => true,
                     '--database' => config('tenancy.tenant_connection', 'tenant'),
                 ]);
+
+                if ($tenant->slug === 'demo') {
+                    $this->callSilent('db:seed', [
+                        '--class' => DemoTenantUsersSeeder::class,
+                        '--force' => true,
+                        '--database' => config('tenancy.tenant_connection', 'tenant'),
+                    ]);
+                }
+
                 Log::info('[app:seed-production] tenant seeded', ['tenant_id' => $tenant->id, 'slug' => $tenant->slug]);
                 $this->info("Tenant {$tenant->slug} seed finished.");
             } catch (\Throwable $e) {

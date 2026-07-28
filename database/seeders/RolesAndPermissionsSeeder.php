@@ -23,10 +23,12 @@ class RolesAndPermissionsSeeder extends IdempotentSeeder
         $created = 0;
         $updated = 0;
 
+        $guard = 'tenant';
+
         foreach ($permissions as $permission) {
             $model = Permission::query()->firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'web',
+                'guard_name' => $guard,
             ]);
             $model->wasRecentlyCreated ? $created++ : $updated++;
         }
@@ -35,7 +37,7 @@ class RolesAndPermissionsSeeder extends IdempotentSeeder
         foreach ($roleMap as $roleName => $rolePermissions) {
             $role = Role::query()->firstOrCreate([
                 'name' => $roleName,
-                'guard_name' => 'web',
+                'guard_name' => $guard,
             ]);
 
             if ($rolePermissions === ['*']) {

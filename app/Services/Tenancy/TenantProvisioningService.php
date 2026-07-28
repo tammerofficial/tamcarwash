@@ -6,9 +6,14 @@ use App\Models\Landlord\Tenant;
 use App\Models\Landlord\TenantDatabase;
 use App\Models\Landlord\TenantDomain;
 use App\Models\Landlord\TenantProvisioningLog;
+use App\Models\TenantUser;
+use Database\Seeders\DemoTenantUsersSeeder;
+use Database\Seeders\TenantProductionSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 use Throwable;
 
 class TenantProvisioningService
@@ -172,22 +177,45 @@ class TenantProvisioningService
             return 'Seeding skipped by option';
         }
 
-        $seederClass = $options['seeder'] ?? null;
-
-        if (! $seederClass) {
-            return 'No seeder configured — deferred to Agent 4';
-        }
+        $seederClass = $options['seeder'] ?? TenantProductionSeeder::class;
 
         $this->connectionManager->connect($tenant);
 
         Artisan::call('db:seed', [
             '--class' => $seederClass,
             '--force' => true,
+            '--database' => config('tenancy.tenant_connection', 'tenant'),
         ]);
+
+        $ownerEmail = $options['owner_email'] ?? $tenant->email ?? "owner@{$tenant->slug}.test";
+        $ownerPassword = $options['owner_password'] ?? Str::random(16);
+        $ownerName = $options['owner_name'] ?? $tenant->name.' — المالك';
+
+        $owner = TenantUser::query()->updateOrCreate(
+            ['email' => $ownerEmail],
+            [
+                'name' => $ownerName,
+                'password' => Hash::make($ownerPassword),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        $ownerRole = Role::query()->where('name', 'owner')->where('guard_name', 'tenant')->first();
+        if ($ownerRole && ! $owner->hasRole('owner')) {
+            $owner->assignRole($ownerRole);
+        }
+
+        if ($tenant->slug === 'demo') {
+            Artisan::call('db:seed', [
+                '--class' => DemoTenantUsersSeeder::class,
+                '--force' => true,
+                '--database' => config('tenancy.tenant_connection', 'tenant'),
+            ]);
+        }
 
         $this->connectionManager->useLandlord();
 
-        return "Seeder [{$seederClass}] executed";
+        return "Seeder [{$seederClass}] executed; owner [{$ownerEmail}] ready";
     }
 
     protected function stepConfigureDomains(Tenant $tenant): string
