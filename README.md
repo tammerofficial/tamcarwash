@@ -102,6 +102,20 @@ docker compose up -d
 
 Use `LANDLORD_DB_DRIVER=mysql` and `TENANT_DB_DRIVER=mysql` with the MySQL block in `.env.example`.
 
+**Local Docker + host MySQL:** If port 3306 is already in use, set `MYSQL_PORT=3307` and match `DB_PORT`, `LANDLORD_DB_PORT`, and `TENANT_DB_PORT` in `.env`. Shared credentials: user `tamcarwash`, password `secret`, landlord database `tamcarwash_landlord`.
+
+After provisioning, refresh tenant cache if login fails after switching drivers: `php artisan tenants:refresh-cache`.
+
+Quick login check:
+
+```bash
+curl -s -X POST http://127.0.0.1:8010/api/v1/auth/login \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H 'X-Tenant-Slug: demo' \
+  -d '{"email":"owner@demo.test","password":"password"}'
+```
+
 ### 4. Run landlord migrations
 
 ```bash
