@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { t } from '@/lib/i18n';
 import { ApiClientError } from '@/lib/api';
+import { DEMO_ROLE_CREDENTIALS, isQuickLoginEnabled } from '@/lib/demoCredentials';
 import { useState } from 'react';
 
 const loginSchema = z.object({
@@ -26,6 +27,8 @@ export function LoginPage() {
     const { login, isLandlord } = useAuth();
     const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
+    const [quickLoginRole, setQuickLoginRole] = useState<string | null>(null);
+    const showQuickLogin = isQuickLoginEnabled() && !isLandlord;
 
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
@@ -36,7 +39,7 @@ export function LoginPage() {
         },
     });
 
-    const onSubmit = async (values: LoginFormValues) => {
+    const submitLogin = async (values: LoginFormValues) => {
         setError(null);
         try {
             await login(values);
@@ -46,79 +49,137 @@ export function LoginPage() {
         }
     };
 
+    const onSubmit = async (values: LoginFormValues) => {
+        await submitLogin(values);
+    };
+
+    const handleQuickLogin = async (email: string, password: string, role: string) => {
+        setQuickLoginRole(role);
+        setError(null);
+        form.setValue('email', email);
+        form.setValue('password', password);
+
+        try {
+            await submitLogin({ email, password, remember: false });
+        } finally {
+            setQuickLoginRole(null);
+        }
+    };
+
+    const isSubmitting = form.formState.isSubmitting || quickLoginRole !== null;
+
     return (
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/30 p-4">
-            <Card className="w-full max-w-md">
-                <CardHeader className="text-center">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-                        <Car className="h-7 w-7" />
-                    </div>
-                    <CardTitle>{t('auth.loginTitle')}</CardTitle>
-                    <CardDescription>
-                        {isLandlord ? t('auth.landlordLogin') : t('auth.tenantLogin')}
-                        {appConfig.tenant?.name ? ` — ${appConfig.tenant.name}` : ''}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('auth.email')}</FormLabel>
-                                        <FormControl>
-                                            <Input type="email" autoComplete="email" dir="ltr" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+            <div className="w-full max-w-md space-y-4">
+                <Card>
+                    <CardHeader className="text-center">
+                        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+                            <Car className="h-7 w-7" />
+                        </div>
+                        <CardTitle>{t('auth.loginTitle')}</CardTitle>
+                        <CardDescription>
+                            {isLandlord ? t('auth.landlordLogin') : t('auth.tenantLogin')}
+                            {appConfig.tenant?.name ? ` — ${appConfig.tenant.name}` : ''}
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('auth.email')}</FormLabel>
+                                            <FormControl>
+                                                <Input type="email" autoComplete="email" dir="ltr" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <FormField
-                                control={form.control}
-                                name="password"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('auth.password')}</FormLabel>
-                                        <FormControl>
-                                            <Input type="password" autoComplete="current-password" dir="ltr" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                                <FormField
+                                    control={form.control}
+                                    name="password"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('auth.password')}</FormLabel>
+                                            <FormControl>
+                                                <Input type="password" autoComplete="current-password" dir="ltr" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <FormField
-                                control={form.control}
-                                name="remember"
-                                render={({ field }) => (
-                                    <FormItem className="flex items-center gap-2 space-y-0">
-                                        <FormControl>
-                                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                                        </FormControl>
-                                        <FormLabel className="!mt-0 font-normal">{t('auth.remember')}</FormLabel>
-                                    </FormItem>
-                                )}
-                            />
+                                <FormField
+                                    control={form.control}
+                                    name="remember"
+                                    render={({ field }) => (
+                                        <FormItem className="flex items-center gap-2 space-y-0">
+                                            <FormControl>
+                                                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                                            </FormControl>
+                                            <FormLabel className="!mt-0 font-normal">{t('auth.remember')}</FormLabel>
+                                        </FormItem>
+                                    )}
+                                />
 
-                            {error && <p className="text-sm text-destructive">{error}</p>}
+                                {error && <p className="text-sm text-destructive">{error}</p>}
 
-                            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                                {form.formState.isSubmitting ? (
-                                    <>
-                                        <Loader2 className="animate-spin" />
-                                        {t('auth.loggingIn')}
-                                    </>
-                                ) : (
-                                    t('auth.submit')
-                                )}
-                            </Button>
-                        </form>
-                    </Form>
-                </CardContent>
-            </Card>
+                                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                                    {isSubmitting && !quickLoginRole ? (
+                                        <>
+                                            <Loader2 className="animate-spin" />
+                                            {t('auth.loggingIn')}
+                                        </>
+                                    ) : (
+                                        t('auth.submit')
+                                    )}
+                                </Button>
+                            </form>
+                        </Form>
+                    </CardContent>
+                </Card>
+
+                {showQuickLogin && (
+                    <Card className="border-dashed border-muted-foreground/25 bg-muted/30">
+                        <CardHeader className="pb-3">
+                            <CardTitle className="text-sm font-medium text-muted-foreground">
+                                {t('auth.quickLogin.title')}
+                            </CardTitle>
+                            <CardDescription className="text-xs">{t('auth.quickLogin.hint')}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-2 gap-2">
+                                {DEMO_ROLE_CREDENTIALS.map(({ role, email, password, labelKey, icon: Icon }) => {
+                                    const isLoading = quickLoginRole === role;
+
+                                    return (
+                                        <Button
+                                            key={role}
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-auto justify-start gap-2 py-2.5"
+                                            disabled={isSubmitting}
+                                            onClick={() => handleQuickLogin(email, password, role)}
+                                        >
+                                            {isLoading ? (
+                                                <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
+                                            ) : (
+                                                <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                            )}
+                                            <span>{t(labelKey)}</span>
+                                        </Button>
+                                    );
+                                })}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+            </div>
         </div>
     );
 }

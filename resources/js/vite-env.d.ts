@@ -12,6 +12,7 @@ export interface TammerAppConfig {
         name: string;
         slug: string;
     } | null;
+    allowQuickLogin?: boolean;
 }
 
 declare global {

@@ -29,6 +29,14 @@ export const ar = {
         remember: 'تذكرني',
         submit: 'دخول',
         loggingIn: 'جاري الدخول...',
+        quickLogin: {
+            title: 'دخول سريع (تطوير)',
+            hint: 'حسابات تجريبية — بدون إدخال يدوي',
+            owner: 'مالك',
+            manager: 'مدير',
+            cashier: 'كاشير',
+            worker: 'عامل',
+        },
     },
     common: {
         search: 'بحث...',

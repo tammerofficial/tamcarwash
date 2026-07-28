@@ -10,6 +10,7 @@ function readTammerConfig() {
             csrfToken: document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '',
             isLandlord: false,
             tenant: null,
+            allowQuickLogin: false,
         }
     );
 }

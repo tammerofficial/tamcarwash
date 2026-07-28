@@ -26,6 +26,7 @@
                 csrfToken: @json(csrf_token()),
                 isLandlord: @json($isLandlord),
                 tenant: @json($tenant ?? null),
+                allowQuickLogin: @json(app()->environment('local')),
             };
         </script>
 
