@@ -243,6 +243,53 @@ Seed with: `php artisan app:seed-production` (runs `PlatformUserSeeder`).
 
 ---
 
+## Laravel Forge deployment
+
+Tammer Wash uses **landlord** and **per-tenant** migration paths. Running bare `php artisan migrate` on the default connection targets the wrong database and can fail (for example `permissions` already exists on legacy `tamcarwash` from old root Spatie migrations).
+
+**Forge environment (required)**
+
+- `DB_CONNECTION=landlord` (not `mysql` alone)
+- `LANDLORD_DB_DATABASE=tamcarwash_landlord`
+- `TENANT_DB_DRIVER=mysql` and `TENANT_DB_PREFIX=tamcarwash_tenant_`
+
+**Deployment script** — copy from [`deploy/forge-deploy.sh`](deploy/forge-deploy.sh) or use:
+
+```bash
+cd $FORGE_SITE_PATH
+
+$FORGE_COMPOSER install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+npm ci && npm run build
+
+php artisan config:clear
+php artisan route:cache
+php artisan view:cache
+
+# Platform schema only — do NOT run: php artisan migrate
+php artisan migrate --database=landlord --path=database/migrations/landlord --force
+
+php artisan app:seed-production --force
+
+# New tenant migrations for all provisioned tenants
+php artisan tenants:migrate
+
+php artisan optimize
+```
+
+**Migration layout**
+
+| Path | Purpose |
+|------|---------|
+| `database/migrations/` | Empty (`.gitkeep` only) — no root migrations |
+| `database/migrations/landlord/` | Platform control plane |
+| `database/migrations/tenant/` | Business schema (Spatie permissions live here only) |
+
+**If a previous deploy failed on `2026_07_28_015504_create_permission_tables`**
+
+That migration was removed from the repo root in favor of `database/migrations/tenant/2026_07_28_120000_create_permission_tables.php`. After updating the deploy script, redeploy. If the legacy `tamcarwash` database still has orphan `permissions` tables from an old default-connection migrate, point the app at `tamcarwash_landlord` via env vars above; tenant permissions are created per tenant during provisioning / `tenants:migrate`.
+
+---
+
 ## Laravel Forge scheduled jobs
 
 Add these in Forge → Scheduled Jobs (user: `forge`):
