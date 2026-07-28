@@ -7,6 +7,7 @@ export interface TammerAppConfig {
     sanctumUrl: string;
     csrfToken: string;
     isLandlord: boolean;
+    platformDomain?: string;
     tenant?: {
         id: string;
         name: string;

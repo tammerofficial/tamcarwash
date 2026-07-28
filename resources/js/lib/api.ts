@@ -1,5 +1,7 @@
 import type { ApiError } from '@/types/api';
 
+export const SESSION_TENANT_SLUG_KEY = 'tammer_tenant_slug';
+
 function readTammerConfig() {
     return (
         window.__TAMMER__ ?? {
@@ -9,11 +11,30 @@ function readTammerConfig() {
             sanctumUrl: '/sanctum/csrf-cookie',
             csrfToken: document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '',
             isLandlord: false,
+            platformDomain: 'tamcarwash.com',
             tenant: null,
             defaultTenantSlug: null,
             allowQuickLogin: false,
         }
     );
+}
+
+export function getActiveTenantSlug(): string | null {
+    const stored = sessionStorage.getItem(SESSION_TENANT_SLUG_KEY);
+    if (stored) {
+        return stored;
+    }
+
+    const config = readTammerConfig();
+    if (config.tenant?.slug) {
+        return config.tenant.slug;
+    }
+
+    return config.defaultTenantSlug ?? null;
+}
+
+export function setActiveTenantSlug(slug: string): void {
+    sessionStorage.setItem(SESSION_TENANT_SLUG_KEY, slug);
 }
 
 export const appConfig = readTammerConfig();
@@ -37,6 +58,9 @@ export const endpoints = {
         login: 'auth/login',
         logout: 'auth/logout',
         user: 'auth/user',
+    },
+    landlord: {
+        register: 'tenants/register',
     },
     dashboard: {
         stats: 'dashboard/stats',
@@ -67,19 +91,25 @@ class ApiClient {
         return config.isLandlord ? config.landlordApiBaseUrl : config.apiBaseUrl;
     }
 
+    private getLandlordBaseUrl(): string {
+        return readTammerConfig().landlordApiBaseUrl;
+    }
+
     private get csrfToken(): string {
         return readTammerConfig().csrfToken;
     }
 
-    private headers(extra: HeadersInit = {}): HeadersInit {
+    private headers(extra: HeadersInit = {}, tenantSlugOverride?: string | null): HeadersInit {
         const config = readTammerConfig();
         const tenantHeaders: Record<string, string> = {};
 
         if (!config.isLandlord) {
+            const tenantSlug = tenantSlugOverride ?? getActiveTenantSlug();
+
             if (config.tenant?.id) {
                 tenantHeaders['X-Tenant-Id'] = config.tenant.id;
-            } else if (config.defaultTenantSlug) {
-                tenantHeaders['X-Tenant-Slug'] = config.defaultTenantSlug;
+            } else if (tenantSlug) {
+                tenantHeaders['X-Tenant-Slug'] = tenantSlug;
             }
         }
 
@@ -135,10 +165,11 @@ class ApiClient {
     async get<T>(
         endpoint: string,
         params?: Record<string, string | number | boolean | undefined>,
+        options?: { tenantSlug?: string | null },
     ): Promise<T> {
         const response = await fetch(this.buildUrl(endpoint, params), {
             method: 'GET',
-            headers: this.headers(),
+            headers: this.headers({}, options?.tenantSlug),
             credentials: 'same-origin',
         });
 
@@ -153,10 +184,23 @@ class ApiClient {
         endpoint: string,
         body?: unknown,
         params?: Record<string, string | number | boolean | undefined>,
+        options?: { tenantSlug?: string | null; baseUrl?: 'tenant' | 'landlord' },
     ): Promise<T> {
-        const response = await fetch(this.buildUrl(endpoint, params), {
+        const base = options?.baseUrl === 'landlord' ? this.getLandlordBaseUrl() : this.baseUrl;
+        const normalized = endpoint.replace(/^\//, '');
+        const url = new URL(`${base}/${normalized}`, window.location.origin);
+
+        if (params) {
+            Object.entries(params).forEach(([key, value]) => {
+                if (value !== undefined && value !== '') {
+                    url.searchParams.set(key, String(value));
+                }
+            });
+        }
+
+        const response = await fetch(url.toString(), {
             method: 'POST',
-            headers: this.headers(),
+            headers: this.headers({}, options?.tenantSlug),
             credentials: 'same-origin',
             body: body !== undefined ? JSON.stringify(body) : undefined,
         });

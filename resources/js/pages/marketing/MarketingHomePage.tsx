@@ -105,7 +105,7 @@ export function MarketingHomePage() {
                             <Link to="/login">{t('marketing.nav.login')}</Link>
                         </Button>
                         <Button size="sm" asChild>
-                            <Link to="/login">{t('marketing.nav.getStarted')}</Link>
+                            <Link to="/register">{t('marketing.nav.getStarted')}</Link>
                         </Button>
                     </div>
                 </div>
@@ -142,7 +142,7 @@ export function MarketingHomePage() {
 
                             <div className="flex flex-col gap-3 sm:flex-row">
                                 <Button size="lg" className="shadow-lg shadow-primary/20" asChild>
-                                    <Link to="/login">{t('marketing.hero.ctaPrimary')}</Link>
+                                    <Link to="/register">{t('marketing.hero.ctaPrimary')}</Link>
                                 </Button>
                                 <Button size="lg" variant="outline" onClick={() => scrollTo('features')}>
                                     {t('marketing.hero.ctaSecondary')}
@@ -346,7 +346,9 @@ export function MarketingHomePage() {
                                     </CardContent>
                                     <CardFooter>
                                         <Button className="w-full" variant={isPro ? 'default' : 'outline'} asChild>
-                                            <Link to="/login">{t(`marketing.pricing.${plan}.cta`)}</Link>
+                                            <Link to={plan === 'enterprise' ? '/login' : '/register'}>
+                                                {t(`marketing.pricing.${plan}.cta`)}
+                                            </Link>
                                         </Button>
                                     </CardFooter>
                                 </Card>
@@ -431,7 +433,7 @@ export function MarketingHomePage() {
                             className="mt-8 shadow-lg"
                             asChild
                         >
-                            <Link to="/login">{t('marketing.cta.button')}</Link>
+                            <Link to="/register">{t('marketing.cta.button')}</Link>
                         </Button>
                     </div>
                 </section>

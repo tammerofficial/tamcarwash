@@ -57,6 +57,7 @@
                 tenant: @json($tenant),
                 defaultTenantSlug: @json(! $isLandlord && app()->environment('local') ? $defaultTenantSlug : null),
                 allowQuickLogin: @json(app()->environment('local')),
+                platformDomain: @json(config('tenancy.platform_domain')),
             };
         </script>
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Landlord\TenantRegistrationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +17,9 @@ Route::get('/health', fn () => response()->json([
     'status' => 'ok',
     'context' => 'landlord',
 ]));
+
+Route::post('/tenants/register', [TenantRegistrationController::class, 'register'])
+    ->middleware('throttle:5,1');
 
 Route::prefix('auth')->group(function () {
     // PlatformUser login/register endpoints — Agent 2/3 will implement controllers

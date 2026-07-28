@@ -158,6 +158,40 @@ export interface LoginResponse {
     token?: string;
 }
 
+export interface RegisterTenantPayload {
+    business_name: string;
+    slug?: string;
+    owner_name: string;
+    owner_email: string;
+    owner_password: string;
+    password_confirmation: string;
+    phone?: string;
+    plan_slug?: string;
+}
+
+export interface RegisterTenantResponse {
+    tenant: {
+        id: string;
+        slug: string;
+        name: string;
+        plan: {
+            slug: string;
+            name: string;
+        };
+        domain: string;
+    };
+    owner: {
+        email: string;
+        name: string;
+    };
+    login: {
+        tenant_slug: string;
+        endpoint: string;
+        header: string;
+        instructions: string;
+    };
+}
+
 export interface TenantSettings {
     business_name: string;
     vat_enabled: boolean;

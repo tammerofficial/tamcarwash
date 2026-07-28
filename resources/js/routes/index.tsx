@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
 import { GuestRoute, MarketingRoute, ProtectedRoute } from '@/routes/guards';
 import { LoginPage } from '@/pages/auth/LoginPage';
+import { RegisterTenantPage } from '@/pages/auth/RegisterTenantPage';
 import { MarketingHomePage } from '@/pages/marketing/MarketingHomePage';
 import { DashboardPage } from '@/pages/dashboard/DashboardPage';
 import { BranchesPage } from '@/pages/branches/BranchesPage';
@@ -27,6 +28,7 @@ export function AppRoutes() {
 
                 <Route element={<GuestRoute />}>
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterTenantPage />} />
                 </Route>
 
                 <Route element={<ProtectedRoute />}>
