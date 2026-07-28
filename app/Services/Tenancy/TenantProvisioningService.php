@@ -7,6 +7,8 @@ use App\Models\Landlord\TenantDatabase;
 use App\Models\Landlord\TenantDomain;
 use App\Models\Landlord\TenantProvisioningLog;
 use App\Models\TenantUser;
+use App\Modules\Branches\Enums\BranchStatus;
+use App\Modules\Branches\Models\Branch;
 use Database\Seeders\DemoTenantUsersSeeder;
 use Database\Seeders\TenantProductionSeeder;
 use Illuminate\Support\Facades\Artisan;
@@ -228,6 +230,17 @@ class TenantProvisioningService
         if ($ownerRole && ! $owner->hasRole('owner')) {
             $owner->assignRole($ownerRole);
         }
+
+        Branch::query()->firstOrCreate(
+            ['code' => 'main'],
+            [
+                'name' => $tenant->name,
+                'city' => 'مسقط',
+                'status' => BranchStatus::Active,
+                'is_active' => true,
+                'capacity_per_hour' => 10,
+            ]
+        );
 
         if ($tenant->slug === 'demo') {
             Artisan::call('db:seed', [

@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
 import { Car, Loader2 } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
-import { appConfig } from '@/lib/api';
+import { appConfig, getActiveTenantSlug } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -16,6 +16,7 @@ import { DEMO_ROLE_CREDENTIALS, isQuickLoginEnabled } from '@/lib/demoCredential
 import { useState } from 'react';
 
 const loginSchema = z.object({
+    tenant_slug: z.string().optional(),
     email: z.string().email('البريد الإلكتروني غير صالح'),
     password: z.string().min(6, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'),
     remember: z.boolean(),
@@ -30,9 +31,13 @@ export function LoginPage() {
     const [quickLoginRole, setQuickLoginRole] = useState<string | null>(null);
     const showQuickLogin = isQuickLoginEnabled() && !isLandlord;
 
+    const needsTenantSlug = !isLandlord && !appConfig.tenant?.slug;
+    const storedTenantSlug = getActiveTenantSlug();
+
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
+            tenant_slug: storedTenantSlug ?? '',
             email: '',
             password: '',
             remember: false,
@@ -42,7 +47,13 @@ export function LoginPage() {
     const submitLogin = async (values: LoginFormValues) => {
         setError(null);
         try {
-            await login(values);
+            const tenantSlug = values.tenant_slug?.trim() || storedTenantSlug || undefined;
+            await login({
+                email: values.email,
+                password: values.password,
+                remember: values.remember,
+                tenantSlug,
+            });
             navigate('/dashboard');
         } catch (err: unknown) {
             setError(err instanceof ApiClientError ? err.message : 'فشل تسجيل الدخول');
@@ -85,6 +96,31 @@ export function LoginPage() {
                     <CardContent>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                {needsTenantSlug && (
+                                    <FormField
+                                        control={form.control}
+                                        name="tenant_slug"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>{t('auth.tenantSlug')}</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        dir="ltr"
+                                                        placeholder="my-wash"
+                                                        autoComplete="organization"
+                                                        {...field}
+                                                        onChange={(event) => {
+                                                            field.onChange(event.target.value.toLowerCase());
+                                                        }}
+                                                    />
+                                                </FormControl>
+                                                <p className="text-xs text-muted-foreground">{t('auth.tenantSlugHint')}</p>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                )}
+
                                 <FormField
                                     control={form.control}
                                     name="email"

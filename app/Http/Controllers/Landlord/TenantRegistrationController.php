@@ -7,6 +7,7 @@ use App\Models\Landlord\Plan;
 use App\Models\Landlord\Tenant;
 use App\Models\Landlord\TenantProvisioningLog;
 use App\Modules\Shared\Http\Controllers\ApiController;
+use App\Services\Landlord\SubscriptionProvisioningService;
 use App\Services\Tenancy\TenantConnectionManager;
 use App\Services\Tenancy\TenantProvisioningService;
 use Illuminate\Http\JsonResponse;
@@ -19,6 +20,7 @@ class TenantRegistrationController extends ApiController
     public function __construct(
         protected TenantProvisioningService $provisioningService,
         protected TenantConnectionManager $connectionManager,
+        protected SubscriptionProvisioningService $subscriptionService,
     ) {}
 
     public function register(RegisterTenantRequest $request): JsonResponse
@@ -50,6 +52,8 @@ class TenantRegistrationController extends ApiController
                 'owner_password' => $validated['owner_password'],
                 'owner_name' => $validated['owner_name'],
             ]);
+
+            $this->subscriptionService->createForTenant($tenant, $plan);
 
             $tenant->refresh();
 

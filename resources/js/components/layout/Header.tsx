@@ -1,4 +1,5 @@
 import { LogOut, Menu, User } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/providers/AuthProvider';
 import { BranchSelector } from '@/components/layout/BranchSelector';
 import { Button } from '@/components/ui/button';
@@ -12,14 +13,27 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { t } from '@/lib/i18n';
-import { appConfig } from '@/lib/api';
+import { api, appConfig, endpoints } from '@/lib/api';
+import type { ApiResponse, TenantSettings } from '@/types/api';
 
 interface HeaderProps {
     onMenuClick?: () => void;
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
-    const { user, logout, isLandlord } = useAuth();
+    const { user, logout, isLandlord, isAuthenticated } = useAuth();
+
+    const { data: settings } = useQuery({
+        queryKey: ['settings'],
+        queryFn: async () => {
+            const response = await api.get<ApiResponse<TenantSettings>>(endpoints.settings);
+            return response.data;
+        },
+        enabled: isAuthenticated && !isLandlord,
+        retry: false,
+    });
+
+    const businessName = settings?.business_name ?? appConfig.tenant?.name ?? 'مغسلة تجريبية';
 
     return (
         <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:px-6">
@@ -30,7 +44,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             <div className="flex flex-1 items-center justify-between gap-4">
                 <div className="hidden sm:block">
                     <p className="text-sm text-muted-foreground">
-                        {isLandlord ? t('auth.landlordLogin') : appConfig.tenant?.name ?? 'مغسلة تجريبية'}
+                        {isLandlord ? t('auth.landlordLogin') : businessName}
                     </p>
                 </div>
 

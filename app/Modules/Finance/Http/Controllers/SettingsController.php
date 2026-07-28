@@ -4,12 +4,17 @@ namespace App\Modules\Finance\Http\Controllers;
 
 use App\Modules\Finance\Models\TaxSetting;
 use App\Modules\Shared\Http\Controllers\ApiController;
+use App\Services\Landlord\TenantPlanService;
 use App\Services\Tenancy\TenantContext;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class SettingsController extends ApiController
 {
+    public function __construct(
+        protected TenantPlanService $tenantPlanService,
+    ) {}
+
     public function show(): JsonResponse
     {
         return $this->success($this->formatSettings());
@@ -57,11 +62,13 @@ class SettingsController extends ApiController
 
         return [
             'business_name' => $tenant?->name ?? config('app.name'),
+            'tenant_slug' => $tenant?->slug,
             'vat_enabled' => (bool) $settings->vat_enabled,
             'vat_rate' => (float) $settings->vat_rate,
             'vat_inclusive' => (bool) $settings->prices_tax_inclusive,
             'currency' => config('tammer.vat.currency', 'OMR'),
             'timezone' => config('app.timezone', 'Asia/Muscat'),
+            'plan' => $this->tenantPlanService->getPlanMeta($tenant),
         ];
     }
 }

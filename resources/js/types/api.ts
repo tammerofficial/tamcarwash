@@ -121,6 +121,25 @@ export interface Invoice {
     issued_at?: string;
 }
 
+export interface PlanMeta {
+    plan_name: string;
+    plan_slug: string;
+    subscription_status: 'active' | 'trial' | 'none' | string;
+    subscription_starts_at?: string | null;
+    subscription_ends_at?: string | null;
+    days_remaining?: number | null;
+    features: string[];
+    limits: {
+        max_branches: number | null;
+        max_users: number | null;
+        max_vehicles_per_day: number | null;
+    };
+    usage: {
+        branches: number;
+    };
+    can_add_branch: boolean;
+}
+
 export interface DashboardStats {
     today_orders: number;
     today_revenue: number;
@@ -129,6 +148,7 @@ export interface DashboardStats {
     revenue_trend: Array<{ date: string; revenue: number }>;
     orders_by_status: Array<{ status: string; count: number }>;
     top_services: Array<{ name: string; count: number; revenue: number }>;
+    plan?: PlanMeta | null;
 }
 
 export interface TaxReportSummary {
@@ -151,6 +171,7 @@ export interface LoginPayload {
     email: string;
     password: string;
     remember?: boolean;
+    tenantSlug?: string;
 }
 
 export interface LoginResponse {
@@ -194,9 +215,11 @@ export interface RegisterTenantResponse {
 
 export interface TenantSettings {
     business_name: string;
+    tenant_slug?: string;
     vat_enabled: boolean;
     vat_rate: number;
     vat_inclusive: boolean;
     currency: string;
     timezone: string;
+    plan?: PlanMeta | null;
 }

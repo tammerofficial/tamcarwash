@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { CalendarDays, ClipboardList, DollarSign, Users } from 'lucide-react';
+import { CalendarDays, ClipboardList, Crown, DollarSign, Sparkles, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import {
     Bar,
     BarChart,
@@ -15,11 +16,50 @@ import { api, endpoints } from '@/lib/api';
 import { useBranchQueryParams } from '@/providers/BranchProvider';
 import { PageHeader } from '@/components/common/PageHeader';
 import { StatsCard } from '@/components/common/StatsCard';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { t } from '@/lib/i18n';
 import type { ApiResponse, DashboardStats } from '@/types/api';
 import { formatCurrency } from '@/lib/utils';
+
+const PLAN_DISPLAY_NAMES: Record<string, string> = {
+    starter: 'Starter',
+    professional: 'Pro',
+    enterprise: 'Enterprise',
+};
+
+function formatPlanLabel(slug?: string, name?: string): string {
+    if (slug && PLAN_DISPLAY_NAMES[slug]) {
+        return PLAN_DISPLAY_NAMES[slug];
+    }
+
+    return name ?? '—';
+}
+
+function formatSubscriptionStatus(status?: string): string {
+    switch (status) {
+        case 'trial':
+            return t('dashboard.subscriptionStatusTrial');
+        case 'active':
+            return t('dashboard.subscriptionStatusActive');
+        default:
+            return t('dashboard.subscriptionStatusInactive');
+    }
+}
+
+function formatDate(iso?: string | null): string {
+    if (!iso) {
+        return '—';
+    }
+
+    return new Date(iso).toLocaleDateString('ar-OM', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+}
 
 export function DashboardPage() {
     const branchParams = useBranchQueryParams();
@@ -41,16 +81,89 @@ export function DashboardPage() {
         revenue_trend: [],
         orders_by_status: [],
         top_services: [],
+        plan: null,
     };
+
+    const plan = stats.plan;
+    const isStarter = plan?.plan_slug === 'starter';
+    const maxBranches = plan?.limits.max_branches;
+    const branchUsage = plan?.usage.branches ?? 0;
 
     return (
         <div className="space-y-6">
-            <PageHeader title={t('dashboard.title')} description={t('app.tagline')} />
+            <PageHeader
+                title={t('dashboard.title')}
+                description={t('app.tagline')}
+                actions={
+                    plan ? (
+                        <Badge variant="secondary" className="gap-1 px-3 py-1 text-sm">
+                            <Sparkles className="size-3.5" />
+                            {formatPlanLabel(plan.plan_slug, plan.plan_name)}
+                        </Badge>
+                    ) : undefined
+                }
+            />
 
             {isError && (
                 <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
                     تعذّر تحميل بيانات لوحة التحكم — سيتم عرض البيانات عند توفر الـ API.
                 </div>
+            )}
+
+            {plan && (
+                <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+                    <CardHeader className="pb-3">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                            <CardTitle className="text-lg">{t('dashboard.subscriptionTitle')}</CardTitle>
+                            <Badge variant={plan.subscription_status === 'trial' ? 'outline' : 'default'}>
+                                {formatSubscriptionStatus(plan.subscription_status)}
+                            </Badge>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid gap-4 sm:grid-cols-3">
+                            <div>
+                                <p className="text-sm text-muted-foreground">{t('dashboard.currentPlan')}</p>
+                                <p className="text-lg font-semibold">{formatPlanLabel(plan.plan_slug, plan.plan_name)}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">{t('dashboard.subscriptionEnds')}</p>
+                                <p className="text-lg font-semibold">{formatDate(plan.subscription_ends_at)}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">{t('dashboard.daysRemaining')}</p>
+                                <p className="text-lg font-semibold">
+                                    {plan.days_remaining ?? 0} {t('dashboard.days')}
+                                </p>
+                            </div>
+                        </div>
+
+                        {maxBranches !== null && (
+                            <p className="mt-4 text-sm text-muted-foreground">
+                                {t('dashboard.branchLimit')}: {branchUsage} / {maxBranches}
+                            </p>
+                        )}
+
+                        {isStarter && (
+                            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-dashed border-primary/30 bg-background/80 p-4">
+                                <div className="flex items-start gap-2">
+                                    <Crown className="mt-0.5 size-4 text-primary" />
+                                    <div>
+                                        <p className="font-medium">{t('dashboard.upgradeTitle')}</p>
+                                        <p className="text-sm text-muted-foreground">{t('dashboard.upgradeHint')}</p>
+                                    </div>
+                                </div>
+                                <Button size="sm" variant="default" asChild>
+                                    <Link to="/settings">{t('dashboard.upgradeCta')}</Link>
+                                </Button>
+                            </div>
+                        )}
+
+                        {!plan.can_add_branch && (
+                            <p className="mt-3 text-sm text-amber-700">{t('dashboard.branchLimitReached')}</p>
+                        )}
+                    </CardContent>
+                </Card>
             )}
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

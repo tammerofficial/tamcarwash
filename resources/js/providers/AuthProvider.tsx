@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { api, ApiClientError, appConfig, endpoints } from '@/lib/api';
+import { api, ApiClientError, appConfig, endpoints, setActiveTenantSlug } from '@/lib/api';
 import type { ApiResponse, LoginPayload, LoginResponse, User } from '@/types/api';
 
 interface AuthContextValue {
@@ -38,11 +38,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const login = useCallback(async (payload: LoginPayload) => {
         await api.ensureCsrfCookie();
 
-        const response = await api.post<ApiResponse<LoginResponse>>(endpoints.auth.login, {
-            email: payload.email,
-            password: payload.password,
-            remember: payload.remember === true,
-        });
+        if (payload.tenantSlug) {
+            setActiveTenantSlug(payload.tenantSlug);
+        }
+
+        const response = await api.post<ApiResponse<LoginResponse>>(
+            endpoints.auth.login,
+            {
+                email: payload.email,
+                password: payload.password,
+                remember: payload.remember === true,
+            },
+            undefined,
+            payload.tenantSlug ? { tenantSlug: payload.tenantSlug } : undefined,
+        );
         setUser(response.data.user);
     }, []);
 

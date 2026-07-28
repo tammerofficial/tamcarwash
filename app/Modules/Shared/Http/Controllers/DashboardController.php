@@ -8,12 +8,17 @@ use App\Modules\Finance\Models\Invoice;
 use App\Modules\Orders\Models\Order;
 use App\Modules\Queue\Enums\QueueEntryStatus;
 use App\Modules\Queue\Models\QueueEntry;
+use App\Services\Landlord\TenantPlanService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends ApiController
 {
+    public function __construct(
+        protected TenantPlanService $tenantPlanService,
+    ) {}
+
     public function stats(Request $request): JsonResponse
     {
         $branchId = $request->integer('branch_id') ?: null;
@@ -62,6 +67,13 @@ class DashboardController extends ApiController
             ->values()
             ->all();
 
+        $planMeta = $this->tenantPlanService->getPlanMeta();
+
+        // Post-registration simulation (curl):
+        // 1. POST /api/landlord/v1/tenants/register { slug: test-wash-sim, plan_slug: starter, ... }
+        // 2. POST /api/v1/auth/login with X-Tenant-Slug: test-wash-sim
+        // 3. GET /api/v1/dashboard/stats — expect plan.plan_slug, subscription_ends_at, days_remaining
+
         return $this->success([
             'today_orders' => $ordersQuery->count(),
             'today_revenue' => (float) $invoicesQuery->sum('total'),
@@ -70,6 +82,7 @@ class DashboardController extends ApiController
             'revenue_trend' => $revenueTrend,
             'orders_by_status' => $ordersByStatus,
             'top_services' => [],
+            'plan' => $planMeta,
         ]);
     }
 }
