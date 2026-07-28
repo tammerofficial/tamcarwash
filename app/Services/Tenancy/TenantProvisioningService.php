@@ -271,6 +271,21 @@ class TenantProvisioningService
             ]
         );
 
+        if (config('tenancy.subdirectory_enabled', false)) {
+            $pathDomain = "/{$tenant->slug}";
+
+            TenantDomain::query()->updateOrCreate(
+                ['tenant_id' => $tenant->id, 'domain' => $pathDomain],
+                [
+                    'type' => 'subdirectory',
+                    'is_primary' => false,
+                    'is_verified' => true,
+                    'verified_at' => now(),
+                    'ssl_status' => 'n/a',
+                ]
+            );
+        }
+
         return "Primary domain configured: {$subdomain}";
     }
 

@@ -4,6 +4,7 @@ use App\Http\Middleware\Tenancy\EnsureLandlordContext;
 use App\Http\Middleware\Tenancy\EnsureTenantContext;
 use App\Http\Middleware\Tenancy\IdentifyTenantByCustomDomain;
 use App\Http\Middleware\Tenancy\IdentifyTenantByHeader;
+use App\Http\Middleware\Tenancy\IdentifyTenantBySubdirectory;
 use App\Http\Middleware\Tenancy\IdentifyTenantBySubdomain;
 use App\Http\Middleware\Tenancy\SetAdminTenantContext;
 use Illuminate\Foundation\Application;
@@ -26,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'api',
                 IdentifyTenantBySubdomain::class,
                 IdentifyTenantByCustomDomain::class,
+                IdentifyTenantBySubdirectory::class,
                 IdentifyTenantByHeader::class,
                 'tenant.context',
             ])
@@ -41,6 +43,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant.context' => EnsureTenantContext::class,
             'tenant.subdomain' => IdentifyTenantBySubdomain::class,
             'tenant.domain' => IdentifyTenantByCustomDomain::class,
+            'tenant.subdirectory' => IdentifyTenantBySubdirectory::class,
             'tenant.header' => IdentifyTenantByHeader::class,
             'tenant.admin' => SetAdminTenantContext::class,
         ]);
@@ -48,6 +51,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prependToGroup('api', [
             IdentifyTenantBySubdomain::class,
             IdentifyTenantByCustomDomain::class,
+            IdentifyTenantBySubdirectory::class,
             IdentifyTenantByHeader::class,
         ]);
     })

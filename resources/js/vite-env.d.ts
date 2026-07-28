@@ -8,6 +8,9 @@ export interface TammerAppConfig {
     csrfToken: string;
     isLandlord: boolean;
     platformDomain?: string;
+    subdirectoryEnabled?: boolean;
+    reservedPaths?: string[];
+    subdirectorySlug?: string | null;
     tenant?: {
         id: string;
         name: string;

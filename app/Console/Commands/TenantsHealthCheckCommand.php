@@ -11,7 +11,8 @@ class TenantsHealthCheckCommand extends Command
 {
     protected $signature = 'tenants:health-check
                             {--tenant= : Specific tenant slug or ID}
-                            {--json : Output as JSON}';
+                            {--json : Output as JSON}
+                            {--heartbeat-url= : Optional Forge/monitoring heartbeat URL}';
 
     protected $description = 'Check health of tenant database connections';
 
@@ -52,9 +53,30 @@ class TenantsHealthCheckCommand extends Command
             ])->toArray();
 
             $this->table($headers, $rows);
+
+            $healthyCount = collect($results)->where('healthy', true)->count();
+            $this->info("Health check complete: {$healthyCount}/".count($results).' healthy');
         }
 
+        $this->sendHeartbeat($allHealthy);
+
         return $allHealthy ? self::SUCCESS : self::FAILURE;
+    }
+
+    protected function sendHeartbeat(bool $healthy): void
+    {
+        $url = $this->option('heartbeat-url') ?: env('FORGE_HEARTBEAT_URL');
+
+        if (blank($url)) {
+            return;
+        }
+
+        try {
+            \Illuminate\Support\Facades\Http::timeout(10)->get($url);
+            $this->info('Heartbeat sent.');
+        } catch (\Throwable $e) {
+            $this->warn("Heartbeat failed: {$e->getMessage()}");
+        }
     }
 
     protected function checkTenant(Tenant $tenant, TenantConnectionManager $connectionManager): array

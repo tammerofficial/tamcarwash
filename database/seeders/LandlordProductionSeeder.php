@@ -68,6 +68,8 @@ class LandlordProductionSeeder extends IdempotentSeeder
             $model->wasRecentlyCreated ? $created++ : $updated++;
         }
 
+        $this->callSilent(PlatformUserSeeder::class);
+
         $this->logResult(static::class, compact('created', 'updated') + ['skipped' => 0]);
     }
 }

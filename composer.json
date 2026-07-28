@@ -3,19 +3,22 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.3",
         "barryvdh/laravel-dompdf": "*",
-        "endroid/qr-code": "*",
+        "endroid/qr-code": "^6.0 <6.1",
         "laravel/framework": "^13.8",
         "laravel/octane": "*",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
         "maatwebsite/excel": "*",
         "predis/predis": "*",
-        "spatie/laravel-activitylog": "*",
+        "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-medialibrary": "*",
         "spatie/laravel-permission": "*",
         "spatie/laravel-query-builder": "*",
@@ -93,6 +96,9 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
+        },
+        "platform": {
+            "php": "8.3.30"
         }
     },
     "minimum-stability": "stable",

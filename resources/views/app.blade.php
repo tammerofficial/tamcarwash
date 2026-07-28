@@ -14,11 +14,16 @@
             use App\Models\Landlord\Tenant;
 
             $host = request()->getHost();
-            $isLandlord = str_starts_with($host, 'admin.')
+            $path = trim(request()->path(), '/');
+            $firstSegment = str($path)->before('/')->toString();
+            $reservedPaths = config('tenancy.reserved_paths', []);
+            $isLandlord = str_starts_with($path, 'landlord')
+                || str_starts_with($host, 'admin.')
                 || str_starts_with($host, 'platform.')
                 || str_starts_with($host, 'landlord.');
             $defaultTenantSlug = config('tenancy.local_default_tenant_slug', 'demo');
             $tenant = null;
+            $subdirectorySlug = null;
 
             if (! $isLandlord) {
                 $platformDomain = config('tenancy.platform_domain');
@@ -28,11 +33,24 @@
                     if (str_ends_with($host, ".{$platformDomain}")) {
                         $subdomain = str_replace(".{$platformDomain}", '', $host);
 
-                        if (filled($subdomain) && ! in_array($subdomain, ['www', 'api', 'admin'], true)) {
+                        if (filled($subdomain) && ! in_array($subdomain, ['www', 'api', 'admin', 'landlord', 'platform'], true)) {
                             $tenant = Tenant::query()
                                 ->where('slug', $subdomain)
                                 ->first(['id', 'name', 'slug']);
                         }
+                    }
+
+                    if (
+                        ! $tenant
+                        && config('tenancy.subdirectory_enabled', false)
+                        && in_array($host, $centralDomains, true)
+                        && filled($firstSegment)
+                        && ! in_array(strtolower($firstSegment), $reservedPaths, true)
+                    ) {
+                        $subdirectorySlug = strtolower($firstSegment);
+                        $tenant = Tenant::query()
+                            ->where('slug', $subdirectorySlug)
+                            ->first(['id', 'name', 'slug']);
                     }
 
                     if (! $tenant && app()->environment('local') && in_array($host, $centralDomains, true)) {
@@ -55,6 +73,9 @@
                 csrfToken: @json(csrf_token()),
                 isLandlord: @json($isLandlord),
                 tenant: @json($tenant),
+                subdirectoryEnabled: @json(config('tenancy.subdirectory_enabled', false)),
+                reservedPaths: @json(config('tenancy.reserved_paths', [])),
+                subdirectorySlug: @json($subdirectorySlug),
                 defaultTenantSlug: @json(! $isLandlord && app()->environment('local') ? $defaultTenantSlug : null),
                 allowQuickLogin: @json(app()->environment('local')),
                 platformDomain: @json(config('tenancy.platform_domain')),

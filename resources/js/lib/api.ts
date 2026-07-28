@@ -1,4 +1,5 @@
 import type { ApiError } from '@/types/api';
+import { isLandlordContext, resolveTenantSlug } from '@/lib/tenancy';
 
 export const SESSION_TENANT_SLUG_KEY = 'tammer_tenant_slug';
 
@@ -20,6 +21,11 @@ function readTammerConfig() {
 }
 
 export function getActiveTenantSlug(): string | null {
+    const fromRouting = resolveTenantSlug();
+    if (fromRouting) {
+        return fromRouting;
+    }
+
     const stored = sessionStorage.getItem(SESSION_TENANT_SLUG_KEY);
     if (stored) {
         return stored;
@@ -61,6 +67,14 @@ export const endpoints = {
     },
     landlord: {
         register: 'tenants/register',
+        login: 'auth/login',
+        logout: 'auth/logout',
+        user: 'auth/user',
+        dashboardStats: 'dashboard/stats',
+        tenants: 'tenants',
+        subscriptions: 'subscriptions',
+        plans: 'plans',
+        settings: 'settings',
     },
     dashboard: {
         stats: 'dashboard/stats',
@@ -88,7 +102,7 @@ export const endpoints = {
 class ApiClient {
     private get baseUrl(): string {
         const config = readTammerConfig();
-        return config.isLandlord ? config.landlordApiBaseUrl : config.apiBaseUrl;
+        return isLandlordContext() ? config.landlordApiBaseUrl : config.apiBaseUrl;
     }
 
     private getLandlordBaseUrl(): string {
@@ -103,7 +117,7 @@ class ApiClient {
         const config = readTammerConfig();
         const tenantHeaders: Record<string, string> = {};
 
-        if (!config.isLandlord) {
+        if (!isLandlordContext()) {
             const sessionSlug = getActiveTenantSlug();
             const resolvedSlug = tenantSlugOverride ?? sessionSlug;
 
