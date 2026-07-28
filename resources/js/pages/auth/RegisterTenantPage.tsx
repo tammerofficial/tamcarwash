@@ -120,19 +120,30 @@ export function RegisterTenantPage() {
             const tenantSlug = response.data.tenant.slug;
             setActiveTenantSlug(tenantSlug);
 
-            await api.post(
-                endpoints.auth.login,
-                {
-                    email: values.owner_email,
-                    password: values.owner_password,
-                    remember: true,
-                },
-                undefined,
-                { tenantSlug },
-            );
+            try {
+                await api.post(
+                    endpoints.auth.login,
+                    {
+                        email: values.owner_email,
+                        password: values.owner_password,
+                        remember: true,
+                    },
+                    undefined,
+                    { tenantSlug },
+                );
 
-            await refreshUser();
-            navigate('/dashboard');
+                await refreshUser();
+                navigate('/dashboard');
+            } catch (loginErr: unknown) {
+                if (loginErr instanceof ApiClientError) {
+                    setError(
+                        `تم إنشاء المغسلة "${response.data.tenant.name}" بنجاح، لكن تعذّر تسجيل الدخول تلقائياً. يرجى تسجيل الدخول يدوياً باستخدام الرابط: ${tenantSlug}`,
+                    );
+                    return;
+                }
+
+                setError('تم إنشاء المغسلة، لكن تعذّر تسجيل الدخول تلقائياً. يرجى المحاولة من صفحة تسجيل الدخول.');
+            }
         } catch (err: unknown) {
             if (err instanceof ApiClientError) {
                 setError(err.message);

@@ -104,12 +104,16 @@ class ApiClient {
         const tenantHeaders: Record<string, string> = {};
 
         if (!config.isLandlord) {
-            const tenantSlug = tenantSlugOverride ?? getActiveTenantSlug();
+            const sessionSlug = getActiveTenantSlug();
+            const resolvedSlug = tenantSlugOverride ?? sessionSlug;
 
-            if (config.tenant?.id) {
+            // Explicit slug (register/login flow or sessionStorage) wins over the
+            // embedded demo tenant on central domains — otherwise post-registration
+            // login hits the wrong tenant DB and shows invalid credentials.
+            if (resolvedSlug) {
+                tenantHeaders['X-Tenant-Slug'] = resolvedSlug;
+            } else if (config.tenant?.id) {
                 tenantHeaders['X-Tenant-Id'] = config.tenant.id;
-            } else if (tenantSlug) {
-                tenantHeaders['X-Tenant-Slug'] = tenantSlug;
             }
         }
 

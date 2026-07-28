@@ -11,7 +11,6 @@ use Database\Seeders\DemoTenantUsersSeeder;
 use Database\Seeders\TenantProductionSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Throwable;
@@ -220,7 +219,7 @@ class TenantProvisioningService
             ['email' => $ownerEmail],
             [
                 'name' => $ownerName,
-                'password' => Hash::make($ownerPassword),
+                'password' => $ownerPassword,
                 'email_verified_at' => now(),
             ]
         );
