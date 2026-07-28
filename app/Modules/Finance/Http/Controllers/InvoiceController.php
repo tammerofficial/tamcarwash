@@ -23,13 +23,13 @@ class InvoiceController extends ApiController
     public function index(Request $request): JsonResponse
     {
         $invoices = QueryBuilder::for(Invoice::class)
-            ->allowedFilters([
+            ->allowedFilters(
                 AllowedFilter::exact('branch_id'),
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('payment_status'),
                 AllowedFilter::exact('customer_id'),
-            ])
-            ->allowedSorts(['issue_date', 'created_at', 'total'])
+            )
+            ->allowedSorts('issue_date', 'created_at', 'total')
             ->with(['items', 'payments.paymentMethod'])
             ->paginate($request->integer('per_page', 20));
 

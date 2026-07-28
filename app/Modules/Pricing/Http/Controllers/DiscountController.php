@@ -26,7 +26,7 @@ class DiscountController extends ApiController
         $this->authorize('viewAny', Discount::class);
 
         $discounts = QueryBuilder::for(Discount::class)
-            ->allowedFilters([AllowedFilter::exact('is_active'), AllowedFilter::exact('type')])
+            ->allowedFilters(AllowedFilter::exact('is_active'), AllowedFilter::exact('type'))
             ->allowedIncludes(['coupons'])
             ->paginate($request->integer('per_page', 20));
 

@@ -2,7 +2,7 @@
 
 namespace App\Modules\Customers\Policies;
 
-use App\Models\User;
+use App\Models\TenantUser;
 use App\Modules\Customers\Models\Customer;
 use App\Modules\Shared\Policies\HasModulePermission;
 
@@ -10,32 +10,32 @@ class CustomerPolicy
 {
     use HasModulePermission;
 
-    public function viewAny(User $user): bool
+    public function viewAny(TenantUser $user): bool
     {
         return $this->hasPermission($user, 'customers.view');
     }
 
-    public function view(User $user, Customer $customer): bool
+    public function view(TenantUser $user, Customer $customer): bool
     {
         return $this->hasPermission($user, 'customers.view');
     }
 
-    public function create(User $user): bool
+    public function create(TenantUser $user): bool
     {
         return $this->hasPermission($user, 'customers.create');
     }
 
-    public function update(User $user, Customer $customer): bool
+    public function update(TenantUser $user, Customer $customer): bool
     {
         return $this->hasPermission($user, 'customers.update');
     }
 
-    public function delete(User $user, Customer $customer): bool
+    public function delete(TenantUser $user, Customer $customer): bool
     {
         return $this->hasPermission($user, 'customers.delete');
     }
 
-    public function manageLoyalty(User $user, Customer $customer): bool
+    public function manageLoyalty(TenantUser $user, Customer $customer): bool
     {
         return $this->hasPermission($user, 'customers.loyalty');
     }

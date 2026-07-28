@@ -27,11 +27,11 @@ class CompanyController extends ApiController
         $this->authorize('manageCompanies', Vehicle::class);
 
         $companies = QueryBuilder::for(Company::class)
-            ->allowedFilters([
+            ->allowedFilters(
                 AllowedFilter::exact('is_active'),
                 AllowedFilter::partial('name'),
-            ])
-            ->allowedSorts(['name', 'created_at'])
+            )
+            ->allowedSorts('name', 'created_at')
             ->withCount(['vehicles', 'customers'])
             ->paginate($request->integer('per_page', 20));
 

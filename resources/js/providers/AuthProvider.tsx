@@ -32,7 +32,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     useEffect(() => {
-        refreshUser().finally(() => setIsLoading(false));
+        let cancelled = false;
+
+        (async () => {
+            try {
+                await api.ensureCsrfCookie();
+                if (!cancelled) {
+                    await refreshUser();
+                }
+            } finally {
+                if (!cancelled) {
+                    setIsLoading(false);
+                }
+            }
+        })();
+
+        return () => {
+            cancelled = true;
+        };
     }, [refreshUser]);
 
     const login = useCallback(async (payload: LoginPayload) => {

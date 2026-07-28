@@ -26,11 +26,11 @@ class PeakHourPricingController extends ApiController
         $this->authorize('viewAny', PeakHourPricing::class);
 
         $items = QueryBuilder::for(PeakHourPricing::class)
-            ->allowedFilters([
+            ->allowedFilters(
                 AllowedFilter::exact('branch_id'),
                 AllowedFilter::exact('day_of_week'),
                 AllowedFilter::exact('is_active'),
-            ])
+            )
             ->paginate($request->integer('per_page', 20));
 
         return $this->paginatedResourceResponse($items, PeakHourPricingResource::class);

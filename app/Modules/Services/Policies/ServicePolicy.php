@@ -2,7 +2,7 @@
 
 namespace App\Modules\Services\Policies;
 
-use App\Models\User;
+use App\Models\TenantUser;
 use App\Modules\Services\Models\Service;
 use App\Modules\Services\Models\ServiceCategory;
 use App\Modules\Shared\Policies\HasModulePermission;
@@ -11,37 +11,37 @@ class ServicePolicy
 {
     use HasModulePermission;
 
-    public function viewAny(User $user): bool
+    public function viewAny(TenantUser $user): bool
     {
         return $this->hasPermission($user, 'services.view');
     }
 
-    public function view(User $user, Service $service): bool
+    public function view(TenantUser $user, Service $service): bool
     {
         return $this->hasPermission($user, 'services.view');
     }
 
-    public function create(User $user): bool
+    public function create(TenantUser $user): bool
     {
         return $this->hasPermission($user, 'services.create');
     }
 
-    public function update(User $user, Service $service): bool
+    public function update(TenantUser $user, Service $service): bool
     {
         return $this->hasPermission($user, 'services.update');
     }
 
-    public function delete(User $user, Service $service): bool
+    public function delete(TenantUser $user, Service $service): bool
     {
         return $this->hasPermission($user, 'services.delete');
     }
 
-    public function manageCategories(User $user): bool
+    public function manageCategories(TenantUser $user): bool
     {
         return $this->hasPermission($user, 'services.categories');
     }
 
-    public function viewCategory(User $user, ServiceCategory $category): bool
+    public function viewCategory(TenantUser $user, ServiceCategory $category): bool
     {
         return $this->hasPermission($user, 'services.view');
     }

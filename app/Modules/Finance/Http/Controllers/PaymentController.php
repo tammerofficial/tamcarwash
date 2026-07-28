@@ -18,12 +18,12 @@ class PaymentController extends ApiController
     public function index(Request $request): JsonResponse
     {
         $payments = QueryBuilder::for(Payment::class)
-            ->allowedFilters([
+            ->allowedFilters(
                 AllowedFilter::exact('branch_id'),
                 AllowedFilter::exact('invoice_id'),
                 AllowedFilter::exact('status'),
-            ])
-            ->allowedSorts(['paid_at', 'amount'])
+            )
+            ->allowedSorts('paid_at', 'amount')
             ->with('paymentMethod')
             ->paginate($request->integer('per_page', 20));
 

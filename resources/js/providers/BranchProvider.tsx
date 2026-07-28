@@ -15,7 +15,7 @@ const BranchContext = createContext<BranchContextValue | undefined>(undefined);
 const STORAGE_KEY = 'tammer_selected_branch';
 
 export function BranchProvider({ children }: { children: ReactNode }) {
-    const { isAuthenticated, isLandlord } = useAuth();
+    const { isAuthenticated, isLandlord, isLoading: authLoading } = useAuth();
     const [selectedBranchId, setSelectedBranchIdState] = useState<number | null>(() => {
         const stored = localStorage.getItem(STORAGE_KEY);
         return stored ? Number(stored) : null;
@@ -27,7 +27,7 @@ export function BranchProvider({ children }: { children: ReactNode }) {
             const response = await api.get<PaginatedResponse<Branch>>(endpoints.branches, { per_page: 50 });
             return response.data;
         },
-        enabled: isAuthenticated && !isLandlord,
+        enabled: isAuthenticated && !isLandlord && !authLoading,
         retry: false,
     });
 

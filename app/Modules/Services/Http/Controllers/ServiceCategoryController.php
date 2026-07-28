@@ -27,8 +27,8 @@ class ServiceCategoryController extends ApiController
         $this->authorize('manageCategories', Service::class);
 
         $categories = QueryBuilder::for(ServiceCategory::class)
-            ->allowedFilters([AllowedFilter::exact('is_active'), AllowedFilter::partial('name')])
-            ->allowedSorts(['sort_order', 'name'])
+            ->allowedFilters(AllowedFilter::exact('is_active'), AllowedFilter::partial('name'))
+            ->allowedSorts('sort_order', 'name')
             ->allowedIncludes(['services'])
             ->paginate($request->integer('per_page', 50));
 

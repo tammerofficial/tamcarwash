@@ -15,12 +15,12 @@ class ExpenseController extends ApiController
     public function index(Request $request): JsonResponse
     {
         $expenses = QueryBuilder::for(Expense::class)
-            ->allowedFilters([
+            ->allowedFilters(
                 AllowedFilter::exact('branch_id'),
                 AllowedFilter::exact('category'),
                 AllowedFilter::exact('status'),
-            ])
-            ->allowedSorts(['expense_date', 'amount'])
+            )
+            ->allowedSorts('expense_date', 'amount')
             ->paginate($request->integer('per_page', 20));
 
         return $this->success([

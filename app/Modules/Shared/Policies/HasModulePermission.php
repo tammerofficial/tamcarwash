@@ -2,11 +2,11 @@
 
 namespace App\Modules\Shared\Policies;
 
-use App\Models\User;
+use App\Models\TenantUser;
 
 trait HasModulePermission
 {
-    protected function hasPermission(User $user, string $permission): bool
+    protected function hasPermission(TenantUser $user, string $permission): bool
     {
         if (method_exists($user, 'can') && $user->can($permission)) {
             return true;

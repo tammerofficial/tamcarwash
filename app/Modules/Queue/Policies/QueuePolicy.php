@@ -2,47 +2,47 @@
 
 namespace App\Modules\Queue\Policies;
 
-use App\Models\User;
+use App\Models\TenantUser;
 use App\Modules\Queue\Models\QueueEntry;
 
 class QueuePolicy
 {
-    public function viewAny(User $user): bool
+    public function viewAny(TenantUser $user): bool
     {
         return $this->hasPermission($user, 'queue.view');
     }
 
-    public function view(User $user, QueueEntry $entry): bool
+    public function view(TenantUser $user, QueueEntry $entry): bool
     {
         return $this->hasPermission($user, 'queue.view');
     }
 
-    public function create(User $user): bool
+    public function create(TenantUser $user): bool
     {
         return $this->hasPermission($user, 'queue.create');
     }
 
-    public function update(User $user, QueueEntry $entry): bool
+    public function update(TenantUser $user, QueueEntry $entry): bool
     {
         return $this->hasPermission($user, 'queue.update');
     }
 
-    public function callNext(User $user): bool
+    public function callNext(TenantUser $user): bool
     {
         return $this->hasPermission($user, 'queue.call');
     }
 
-    public function viewScreen(User $user): bool
+    public function viewScreen(TenantUser $user): bool
     {
         return $this->hasPermission($user, 'queue.screen');
     }
 
-    public function viewAnalytics(User $user): bool
+    public function viewAnalytics(TenantUser $user): bool
     {
         return $this->hasPermission($user, 'queue.analytics');
     }
 
-    protected function hasPermission(User $user, string $permission): bool
+    protected function hasPermission(TenantUser $user, string $permission): bool
     {
         if (method_exists($user, 'can') && $user->can($permission)) {
             return true;
