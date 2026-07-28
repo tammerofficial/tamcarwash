@@ -232,7 +232,9 @@ The same jobs are registered in `routes/console.php` via Laravel's scheduler (re
 | `tenants:seed` | Run tenant seeders |
 | `tenants:refresh-cache` | Rebuild tenant resolution cache |
 | `tenants:run-scheduled` | Run scheduled tasks per tenant |
+| `tenants:process-scheduled` | Retry provisioning, expire trials, mark overdue subscriptions |
 | `tenants:health-check` | Verify tenant DB connectivity |
+| `landlord:report-subscriptions` | Platform subscription summary for monitoring |
 | `app:seed-production` | Idempotent landlord + optional tenant seeders |
 
 All seeders use `updateOrCreate` / `firstOrCreate` — safe to rerun, never truncates.
@@ -273,9 +275,15 @@ SPA routes are served via catch-all in `routes/web.php` → `resources/views/app
 - `GET /dashboard/stats` — real aggregations (orders, revenue, queue, bookings)
 - CRUD: branches, customers, vehicles, services, pricing, bookings, queue, orders, invoices
 
-**Landlord API** — `/api/landlord/v1/*`
+**Landlord API** — `/api/landlord/v1/*` (requires `auth:platform`)
 
-- Platform health, tenant management (scaffolded)
+- `POST /auth/login` · `GET /auth/user` · `POST /auth/logout`
+- `GET /dashboard/stats` — tenants, trials, MRR, plan breakdown
+- `GET /tenants` · `GET /tenants/{id}` · `PATCH /tenants/{id}` (suspend/activate)
+- `GET /plans` · `GET /subscriptions` · `GET|PUT /settings`
+- `POST /tenants/register` — public tenant signup
+
+**Landlord UI (React):** `/landlord/login`, `/landlord/dashboard`, `/landlord/tenants`, `/landlord/subscriptions`, `/landlord/plans`, `/landlord/settings`
 
 Auth: Laravel Sanctum (`auth:tenant` / `auth:platform` guards).
 
@@ -318,7 +326,10 @@ See `.env.example` for full reference. Key settings:
 | `TENANT_DB_DRIVER` | `sqlite` | `mysql` |
 | `TENANT_SQLITE_DIRECTORY` | `database/tenants/` | — |
 | `TENANT_DB_PREFIX` | — | `tamcarwash_tenant_` |
-| `TENANCY_PLATFORM_DOMAIN` | `tamcarwash.test` | same |
+| `TENANCY_PLATFORM_DOMAIN` / `PLATFORM_DOMAIN` | `tamcarwash.test` | production domain |
+| `TENANCY_SUBDIRECTORY_ENABLED` | `true` | enable `/{slug}/*` tenant URLs |
+| `TENANCY_CENTRAL_DOMAINS` | includes platform host | hosts without subdomain tenant |
+| `FORGE_HEARTBEAT_URL` | optional | Forge/monitoring ping after scheduled jobs |
 | `CACHE_STORE` / `SESSION_DRIVER` | `file` | `redis` |
 
 ---

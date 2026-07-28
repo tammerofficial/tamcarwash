@@ -1,3 +1,5 @@
+import type { TammerAppConfig } from '@/vite-env';
+
 const DEFAULT_RESERVED_PATHS = [
     'api',
     'login',
@@ -10,8 +12,17 @@ const DEFAULT_RESERVED_PATHS = [
     'dashboard',
 ];
 
-function readConfig() {
-    return window.__TAMMER__ ?? {};
+function readConfig(): TammerAppConfig {
+    return (
+        window.__TAMMER__ ?? {
+            appName: 'Tammer Wash',
+            apiBaseUrl: '/api/v1',
+            landlordApiBaseUrl: '/api/landlord/v1',
+            sanctumUrl: '/sanctum/csrf-cookie',
+            csrfToken: '',
+            isLandlord: false,
+        }
+    );
 }
 
 export function getReservedPaths(): string[] {

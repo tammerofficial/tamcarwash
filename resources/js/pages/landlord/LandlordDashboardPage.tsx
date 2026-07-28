@@ -55,8 +55,9 @@ export function LandlordDashboardPage() {
                 <StatsCard title="تجريبي" value={stats?.tenants_trial ?? 0} icon={CreditCard} />
                 <StatsCard
                     title="MRR"
-                    value={`${stats?.mrr ?? 0} ${stats?.currency ?? 'OMR'}`}
+                    value={stats?.mrr ?? 0}
                     icon={DollarSign}
+                    format="currency"
                 />
             </div>
 

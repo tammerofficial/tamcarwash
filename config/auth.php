@@ -46,7 +46,7 @@ return [
         ],
 
         'platform' => [
-            'driver' => 'sanctum',
+            'driver' => 'session',
             'provider' => 'platform_users',
         ],
 
