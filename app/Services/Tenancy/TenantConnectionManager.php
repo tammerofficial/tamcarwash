@@ -132,32 +132,63 @@ class TenantConnectionManager
 
     protected function resolveTenantBySlug(string $slug): Tenant
     {
-        return Cache::remember(
-            $this->cacheKey("slug:{$slug}"),
-            config('tenancy.cache.ttl'),
-            fn () => Tenant::query()
-                ->with('database')
-                ->where('slug', $slug)
-                ->whereIn('status', ['active', 'provisioning'])
-                ->firstOrFail()
-        );
+        $cacheKey = $this->cacheKey("slug:{$slug}");
+        $tenantId = Cache::get($cacheKey);
+
+        if (is_string($tenantId) && filled($tenantId)) {
+            $tenant = $this->findTenantById($tenantId);
+
+            if ($tenant && $tenant->slug === $slug) {
+                return $tenant;
+            }
+
+            Cache::forget($cacheKey);
+        }
+
+        $tenant = Tenant::query()
+            ->with('database')
+            ->where('slug', $slug)
+            ->whereIn('status', ['active', 'provisioning'])
+            ->firstOrFail();
+
+        Cache::put($cacheKey, $tenant->id, config('tenancy.cache.ttl'));
+
+        return $tenant;
     }
 
     protected function resolveTenantByDomain(string $domain): Tenant
     {
-        return Cache::remember(
-            $this->cacheKey("domain:{$domain}"),
-            config('tenancy.cache.ttl'),
-            function () use ($domain) {
-                $tenantDomain = TenantDomain::query()
-                    ->where('domain', $domain)
-                    ->where('is_verified', true)
-                    ->with('tenant.database')
-                    ->firstOrFail();
+        $cacheKey = $this->cacheKey("domain:{$domain}");
+        $tenantId = Cache::get($cacheKey);
 
-                return $tenantDomain->tenant;
+        if (is_string($tenantId) && filled($tenantId)) {
+            $tenant = $this->findTenantById($tenantId);
+
+            if ($tenant) {
+                return $tenant;
             }
-        );
+
+            Cache::forget($cacheKey);
+        }
+
+        $tenantDomain = TenantDomain::query()
+            ->where('domain', $domain)
+            ->where('is_verified', true)
+            ->with('tenant.database')
+            ->firstOrFail();
+
+        Cache::put($cacheKey, $tenantDomain->tenant_id, config('tenancy.cache.ttl'));
+
+        return $tenantDomain->tenant;
+    }
+
+    protected function findTenantById(string $tenantId): ?Tenant
+    {
+        return Tenant::query()
+            ->with('database')
+            ->whereKey($tenantId)
+            ->whereIn('status', ['active', 'provisioning'])
+            ->first();
     }
 
     protected function cacheTenantConnection(Tenant $tenant): void
