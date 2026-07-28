@@ -1,7 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
-import { GuestRoute, ProtectedRoute } from '@/routes/guards';
+import { GuestRoute, MarketingRoute, ProtectedRoute } from '@/routes/guards';
 import { LoginPage } from '@/pages/auth/LoginPage';
+import { MarketingHomePage } from '@/pages/marketing/MarketingHomePage';
 import { DashboardPage } from '@/pages/dashboard/DashboardPage';
 import { BranchesPage } from '@/pages/branches/BranchesPage';
 import { CustomersPage } from '@/pages/customers/CustomersPage';
@@ -20,13 +21,17 @@ export function AppRoutes() {
     return (
         <BrowserRouter>
             <Routes>
+                <Route element={<MarketingRoute />}>
+                    <Route index element={<MarketingHomePage />} />
+                </Route>
+
                 <Route element={<GuestRoute />}>
                     <Route path="/login" element={<LoginPage />} />
                 </Route>
 
                 <Route element={<ProtectedRoute />}>
                     <Route element={<AppShell />}>
-                        <Route index element={<DashboardPage />} />
+                        <Route path="/dashboard" element={<DashboardPage />} />
                         <Route path="branches" element={<BranchesPage />} />
                         <Route path="customers" element={<CustomersPage />} />
                         <Route path="vehicles" element={<VehiclesPage />} />

@@ -32,7 +32,25 @@ export function GuestRoute() {
     }
 
     if (isAuthenticated) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/dashboard" replace />;
+    }
+
+    return <Outlet />;
+}
+
+export function MarketingRoute() {
+    const { isAuthenticated, isLoading } = useAuth();
+
+    if (isLoading) {
+        return (
+            <div className="flex min-h-screen items-center justify-center">
+                <Skeleton className="h-12 w-48" />
+            </div>
+        );
+    }
+
+    if (isAuthenticated) {
+        return <Navigate to="/dashboard" replace />;
     }
 
     return <Outlet />;

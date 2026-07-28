@@ -43,7 +43,7 @@ export function LoginPage() {
         setError(null);
         try {
             await login(values);
-            navigate('/');
+            navigate('/dashboard');
         } catch (err: unknown) {
             setError(err instanceof ApiClientError ? err.message : 'فشل تسجيل الدخول');
         }

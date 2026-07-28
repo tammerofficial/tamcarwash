@@ -21,7 +21,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { appConfig } from '@/lib/api';
 
 const navItems = [
-    { to: '/', label: t('nav.dashboard'), icon: LayoutDashboard, end: true },
+    { to: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard, end: true },
     { to: '/branches', label: t('nav.branches'), icon: Building2 },
     { to: '/customers', label: t('nav.customers'), icon: Users },
     { to: '/vehicles', label: t('nav.vehicles'), icon: CarFront },
