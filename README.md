@@ -16,9 +16,12 @@ Production-ready SaaS platform for fixed-location car wash businesses in Oman.
 | **Tenant** | `tenant` (dynamic) | Isolated business data per car wash — **no `tenant_id` on business tables** |
 
 **Tenant detection:**
-1. Subdomain — `{slug}.tamcarwash.test`
-2. Custom domain — mapped in `tenant_domains`
-3. Super-admin context — `X-Tenant-Id` header or admin session
+1. Subdomain — `{slug}.tamcarwash.test` or `{slug}.tamcarwash.on-forge.com`
+2. Subdirectory — `{platform-domain}/{tenant-slug}/…` e.g. `https://tamcarwash.on-forge.com/alwadi-wash/dashboard`
+3. Custom domain — mapped in `tenant_domains`
+4. Header / local fallback — `X-Tenant-Slug`, `X-Tenant-Id`, or local default tenant on central domains
+
+**Subdirectory routing strategy:** tenant SPA routes live under `/{slug}/*` on central domains (React Router `basename`). Reserved root paths (`api`, `login`, `register`, `sanctum`, `up`, `landlord`, `build`, `storage`, `dashboard`) are never treated as tenant slugs. Landlord admin UI stays at `/landlord/*`.
 
 ### Module layout
 
@@ -183,9 +186,40 @@ Add to `/etc/hosts`:
 127.0.0.1 tamcarwash.test demo.tamcarwash.test admin.tamcarwash.test
 ```
 
-- **Tenant SPA:** http://demo.tamcarwash.test:8000
+- **Tenant SPA:** http://demo.tamcarwash.test:8000 or http://tamcarwash.test:8000/demo/dashboard (subdirectory)
 - **Tenant API:** http://demo.tamcarwash.test:8000/api/v1
-- **Landlord API:** http://admin.tamcarwash.test:8000/api/landlord/v1
+- **Landlord UI:** http://tamcarwash.test:8000/landlord/login
+- **Landlord API:** http://tamcarwash.test:8000/api/landlord/v1
+
+### Platform admin login (local)
+
+| Email | Password |
+|-------|----------|
+| `admin@tammer.test` | `password` |
+
+Seed with: `php artisan app:seed-production` (runs `PlatformUserSeeder`).
+
+---
+
+## Laravel Forge scheduled jobs
+
+Add these in Forge → Scheduled Jobs (user: `forge`):
+
+| Job | Frequency | Command |
+|-----|-----------|---------|
+| Tenant lifecycle | Weekly | `php /home/forge/tamcarwash.on-forge.com/current/artisan tenants:process-scheduled` |
+| Tenant health | Daily | `php /home/forge/tamcarwash.on-forge.com/current/artisan tenants:health-check` |
+
+Optional monitoring heartbeat — set `FORGE_HEARTBEAT_URL` in Forge env or pass `--heartbeat-url=`:
+
+```bash
+php /home/forge/tamcarwash.on-forge.com/current/artisan tenants:process-scheduled --heartbeat-url=https://your-heartbeat-url
+php /home/forge/tamcarwash.on-forge.com/current/artisan landlord:report-subscriptions
+```
+
+`tenants:process-scheduled` retries stuck provisioning, expires trials, marks overdue subscriptions, and logs a summary. Use `--dry-run` to preview.
+
+The same jobs are registered in `routes/console.php` via Laravel's scheduler (requires a cron entry: `* * * * * php artisan schedule:run`).
 
 ---
 
