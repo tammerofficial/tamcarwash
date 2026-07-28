@@ -12,6 +12,7 @@ export interface TammerAppConfig {
         name: string;
         slug: string;
     } | null;
+    defaultTenantSlug?: string | null;
     allowQuickLogin?: boolean;
 }
 

@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | Tenant-scoped business API. Requires tenant context via subdomain,
-| custom domain, or admin X-Tenant-Id header.
+| custom domain, X-Tenant-Id / X-Tenant-Slug header, or local default.
 |
 */
 

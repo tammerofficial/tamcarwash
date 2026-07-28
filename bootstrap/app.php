@@ -3,6 +3,7 @@
 use App\Http\Middleware\Tenancy\EnsureLandlordContext;
 use App\Http\Middleware\Tenancy\EnsureTenantContext;
 use App\Http\Middleware\Tenancy\IdentifyTenantByCustomDomain;
+use App\Http\Middleware\Tenancy\IdentifyTenantByHeader;
 use App\Http\Middleware\Tenancy\IdentifyTenantBySubdomain;
 use App\Http\Middleware\Tenancy\SetAdminTenantContext;
 use Illuminate\Foundation\Application;
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'api',
                 IdentifyTenantBySubdomain::class,
                 IdentifyTenantByCustomDomain::class,
+                IdentifyTenantByHeader::class,
                 'tenant.context',
             ])
                 ->prefix('api/v1')
@@ -39,12 +41,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant.context' => EnsureTenantContext::class,
             'tenant.subdomain' => IdentifyTenantBySubdomain::class,
             'tenant.domain' => IdentifyTenantByCustomDomain::class,
+            'tenant.header' => IdentifyTenantByHeader::class,
             'tenant.admin' => SetAdminTenantContext::class,
         ]);
 
         $middleware->prependToGroup('api', [
             IdentifyTenantBySubdomain::class,
             IdentifyTenantByCustomDomain::class,
+            IdentifyTenantByHeader::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

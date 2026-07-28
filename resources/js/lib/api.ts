@@ -10,6 +10,7 @@ function readTammerConfig() {
             csrfToken: document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '',
             isLandlord: false,
             tenant: null,
+            defaultTenantSlug: null,
             allowQuickLogin: false,
         }
     );
@@ -71,11 +72,23 @@ class ApiClient {
     }
 
     private headers(extra: HeadersInit = {}): HeadersInit {
+        const config = readTammerConfig();
+        const tenantHeaders: Record<string, string> = {};
+
+        if (!config.isLandlord) {
+            if (config.tenant?.id) {
+                tenantHeaders['X-Tenant-Id'] = config.tenant.id;
+            } else if (config.defaultTenantSlug) {
+                tenantHeaders['X-Tenant-Slug'] = config.defaultTenantSlug;
+            }
+        }
+
         return {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
             ...(this.csrfToken ? { 'X-CSRF-TOKEN': this.csrfToken } : {}),
+            ...tenantHeaders,
             ...extra,
         };
     }

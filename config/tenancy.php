@@ -10,6 +10,8 @@ return [
 
     'platform_domain' => env('TENANCY_PLATFORM_DOMAIN', 'tamcarwash.test'),
 
+    'local_default_tenant_slug' => env('TENANCY_LOCAL_DEFAULT_TENANT_SLUG', 'demo'),
+
     'tenant_database_prefix' => env('TENANT_DB_PREFIX', 'tamcarwash_tenant_'),
 
     'tenant_migrations_path' => database_path('migrations/tenant'),
