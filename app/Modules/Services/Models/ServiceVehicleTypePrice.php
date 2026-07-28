@@ -3,10 +3,10 @@
 namespace App\Modules\Services\Models;
 
 use App\Modules\Vehicles\Enums\VehicleType;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ServiceVehicleTypePrice extends Model
+class ServiceVehicleTypePrice extends TenantModel
 {
     protected $fillable = [
         'service_id',

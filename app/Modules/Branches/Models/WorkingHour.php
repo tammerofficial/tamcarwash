@@ -2,10 +2,10 @@
 
 namespace App\Modules\Branches\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class WorkingHour extends Model
+class WorkingHour extends TenantModel
 {
     protected $fillable = [
         'branch_id',

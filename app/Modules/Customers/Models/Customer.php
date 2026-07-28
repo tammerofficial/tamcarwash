@@ -5,11 +5,11 @@ namespace App\Modules\Customers\Models;
 use App\Modules\Customers\Enums\CustomerStatus;
 use App\Modules\Vehicles\Models\Company;
 use App\Modules\Vehicles\Models\Vehicle;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Customer extends Model
+class Customer extends TenantModel
 {
     protected $fillable = [
         'name',

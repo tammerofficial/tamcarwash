@@ -5,11 +5,11 @@ namespace App\Modules\Branches\Models;
 use App\Modules\Branches\Enums\BranchStatus;
 use App\Modules\Pricing\Models\PeakHourPricing;
 use App\Modules\Services\Models\Service;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Branch extends Model
+class Branch extends TenantModel
 {
     protected $fillable = [
         'name',

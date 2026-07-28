@@ -3,11 +3,11 @@
 namespace App\Modules\Customers\Models;
 
 use App\Modules\Customers\Enums\LoyaltyPointType;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class LoyaltyPoint extends Model
+class LoyaltyPoint extends TenantModel
 {
     protected $fillable = [
         'customer_id',

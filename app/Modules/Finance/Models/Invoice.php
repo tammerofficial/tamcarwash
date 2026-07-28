@@ -6,11 +6,11 @@ use App\Models\User;
 use App\Modules\Finance\Enums\InvoicePaymentStatus;
 use App\Modules\Finance\Enums\InvoiceStatus;
 use App\Modules\Orders\Models\Order;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Invoice extends Model
+class Invoice extends TenantModel
 {
     protected $fillable = [
         'invoice_number',

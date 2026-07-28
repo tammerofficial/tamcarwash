@@ -7,12 +7,12 @@ use App\Modules\Booking\Models\Booking;
 use App\Modules\Orders\Enums\OrderSource;
 use App\Modules\Orders\Enums\OrderStatus;
 use App\Modules\Queue\Models\QueueEntry;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Order extends Model
+class Order extends TenantModel
 {
     protected $fillable = [
         'order_number',

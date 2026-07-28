@@ -4,10 +4,10 @@ namespace App\Modules\Orders\Models;
 
 use App\Models\User;
 use App\Modules\Orders\Enums\OrderItemType;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class OrderItem extends Model
+class OrderItem extends TenantModel
 {
     protected $fillable = [
         'order_id',

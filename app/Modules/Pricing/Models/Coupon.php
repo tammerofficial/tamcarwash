@@ -2,10 +2,10 @@
 
 namespace App\Modules\Pricing\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Coupon extends Model
+class Coupon extends TenantModel
 {
     protected $fillable = [
         'discount_id',

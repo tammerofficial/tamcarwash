@@ -3,12 +3,12 @@
 namespace App\Modules\Services\Models;
 
 use App\Modules\Branches\Models\Branch;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Service extends Model
+class Service extends TenantModel
 {
     protected $fillable = [
         'category_id',

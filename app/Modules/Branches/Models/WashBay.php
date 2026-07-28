@@ -3,10 +3,10 @@
 namespace App\Modules\Branches\Models;
 
 use App\Modules\Branches\Enums\WashBayStatus;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class WashBay extends Model
+class WashBay extends TenantModel
 {
     protected $fillable = [
         'branch_id',

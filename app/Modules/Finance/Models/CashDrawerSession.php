@@ -4,11 +4,11 @@ namespace App\Modules\Finance\Models;
 
 use App\Models\User;
 use App\Modules\Finance\Enums\CashDrawerStatus;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class CashDrawerSession extends Model
+class CashDrawerSession extends TenantModel
 {
     protected $fillable = [
         'branch_id',

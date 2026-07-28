@@ -6,11 +6,11 @@ use App\Modules\Booking\Enums\BookingSource;
 use App\Modules\Booking\Enums\BookingStatus;
 use App\Modules\Orders\Models\Order;
 use App\Modules\Queue\Models\QueueEntry;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Booking extends Model
+class Booking extends TenantModel
 {
     protected $fillable = [
         'booking_number',

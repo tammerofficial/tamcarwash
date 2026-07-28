@@ -3,10 +3,10 @@
 namespace App\Modules\Pricing\Models;
 
 use App\Modules\Pricing\Enums\DiscountType;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Discount extends Model
+class Discount extends TenantModel
 {
     protected $fillable = [
         'name',

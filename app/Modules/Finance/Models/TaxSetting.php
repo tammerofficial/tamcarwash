@@ -2,9 +2,9 @@
 
 namespace App\Modules\Finance\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 
-class TaxSetting extends Model
+class TaxSetting extends TenantModel
 {
     protected $fillable = [
         'vat_enabled',

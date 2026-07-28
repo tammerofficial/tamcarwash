@@ -3,10 +3,10 @@
 namespace App\Modules\Finance\Models;
 
 use App\Modules\Finance\Enums\InvoiceItemType;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class InvoiceItem extends Model
+class InvoiceItem extends TenantModel
 {
     protected $fillable = [
         'invoice_id',

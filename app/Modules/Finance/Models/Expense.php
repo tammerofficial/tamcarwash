@@ -4,10 +4,10 @@ namespace App\Modules\Finance\Models;
 
 use App\Models\User;
 use App\Modules\Finance\Enums\ExpenseStatus;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Expense extends Model
+class Expense extends TenantModel
 {
     protected $fillable = [
         'branch_id',

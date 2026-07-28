@@ -8,12 +8,54 @@ Production-ready SaaS platform for fixed-location car wash businesses in Oman.
 
 ## Architecture
 
-### Multi-tenancy (database-per-tenant)
+### Database-per-Tenant Architecture / بنية قاعدة بيانات لكل مغسلة
 
-| Layer | Connection | Purpose |
-|-------|------------|---------|
-| **Landlord** | `landlord` | Platform control: tenants, domains, plans, subscriptions, platform users |
-| **Tenant** | `tenant` (dynamic) | Isolated business data per car wash — **no `tenant_id` on business tables** |
+Tammer Wash is a **SaaS multi-tenant platform**. Each car wash (مغسلة) gets its **own isolated database**. There is no shared business schema and **no `tenant_id` column** on orders, customers, branches, or any other operational table.
+
+#### English
+
+| Layer | Connection | Schema path | Contains |
+|-------|------------|-------------|----------|
+| **Landlord** | `landlord` | `database/migrations/landlord/` | Platform control only: `tenants`, `tenant_domains`, `tenant_databases`, `plans`, `subscriptions`, `platform_users`, `platform_audit_logs`, `tenant_provisioning_logs`, plus Laravel infra (`cache`, `jobs`, `personal_access_tokens`) and `platform_settings` |
+| **Tenant** | `tenant` (dynamic) | `database/migrations/tenant/` | All business data: branches, customers, vehicles, services, bookings, queue, orders, invoices, payments, permissions, users |
+
+**How isolation works**
+
+1. A request hits tenant middleware (`IdentifyTenantBySubdomain`, custom domain, subdirectory, or `X-Tenant-Slug` header).
+2. `TenantConnectionManager` loads the tenant record from the **landlord** DB, reads `tenant_databases`, and reconfigures the `tenant` connection:
+   - **Local (SQLite):** `database/tenants/{slug}.sqlite`
+   - **Production (MySQL):** schema `tamcarwash_tenant_{slug}` on the shared MySQL server
+3. All business Eloquent models extend `App\Models\TenantModel` and always use the `tenant` connection — never the landlord DB.
+4. Landlord API routes use `EnsureLandlordContext` middleware, which calls `useLandlord()` before any platform query.
+
+**Provisioning flow** (`tenants:create` → `TenantProvisioningService`)
+
+```
+validate → create DB file/schema → register in tenant_databases → migrate tenant path → seed → configure domains → activate
+```
+
+- **SQLite:** creates `database/tenants/{slug}.sqlite`, runs `database/migrations/tenant`
+- **MySQL:** `CREATE DATABASE tamcarwash_tenant_{slug}`, stores credentials in `tenant_databases`, runs the same tenant migrations
+
+**Forge / production MySQL setup**
+
+1. Set in Forge env: `LANDLORD_DB_DRIVER=mysql`, `TENANT_DB_DRIVER=mysql`, landlord DB `tamcarwash_landlord`.
+2. Run landlord migrations once: `php artisan migrate --database=landlord --path=database/migrations/landlord`
+3. Provision tenants via UI or `tenants:create` — each tenant gets its own MySQL schema automatically.
+4. Never run `php artisan migrate` without `--path` — business migrations live only under `database/migrations/tenant/` and are executed per tenant by `TenantMigrationRunner`.
+
+#### العربية
+
+| الطبقة | الاتصال | مسار الهجرات | المحتوى |
+|--------|---------|--------------|---------|
+| **Landlord** | `landlord` | `database/migrations/landlord/` | التحكم بالمنصة فقط: المستأجرون، النطاقات، قواعد البيانات، الخطط، الاشتراكات، مستخدمو المنصة، سجلات التدقيق، سجلات التجهيز |
+| **Tenant** | `tenant` (ديناميكي) | `database/migrations/tenant/` | كل بيانات العمل: الفروع، العملاء، المركبات، الخدمات، الحجوزات، الطابور، الطلبات، الفواتير |
+
+**مبدأ العزل:** كل مغسلة = قاعدة بيانات مستقلة. لا يوجد `tenant_id` في جداول العمل — العزل يتم عبر قاعدة منفصلة وليس عمود مشترك.
+
+**محلياً (SQLite):** ملف `database/tenants/{slug}.sqlite` لكل مغسلة.
+
+**الإنتاج (MySQL على Forge):** schema منفصل `tamcarwash_tenant_{slug}` لكل مغسلة على نفس السيرفر.
 
 **Tenant detection:**
 1. Subdomain — `{slug}.tamcarwash.test` or `{slug}.tamcarwash.on-forge.com`

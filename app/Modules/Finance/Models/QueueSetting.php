@@ -2,9 +2,9 @@
 
 namespace App\Modules\Finance\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 
-class QueueSetting extends Model
+class QueueSetting extends TenantModel
 {
     protected $fillable = [
         'queue_prefix',

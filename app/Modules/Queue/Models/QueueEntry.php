@@ -6,10 +6,10 @@ use App\Modules\Booking\Models\Booking;
 use App\Modules\Orders\Models\Order;
 use App\Modules\Queue\Enums\QueueEntryStatus;
 use App\Modules\Queue\Enums\QueueSource;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class QueueEntry extends Model
+class QueueEntry extends TenantModel
 {
     protected $fillable = [
         'branch_id',

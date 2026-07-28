@@ -2,10 +2,10 @@
 
 namespace App\Modules\Finance\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class PaymentMethod extends Model
+class PaymentMethod extends TenantModel
 {
     protected $fillable = [
         'code',

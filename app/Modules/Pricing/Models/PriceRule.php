@@ -7,10 +7,10 @@ use App\Modules\Pricing\Enums\PriceRuleType;
 use App\Modules\Services\Models\Service;
 use App\Modules\Vehicles\Enums\VehicleType;
 use App\Modules\Vehicles\Models\Company;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class PriceRule extends Model
+class PriceRule extends TenantModel
 {
     protected $fillable = [
         'name',

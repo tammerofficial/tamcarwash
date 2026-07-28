@@ -3,10 +3,10 @@
 namespace App\Modules\Customers\Models;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CustomerNote extends Model
+class CustomerNote extends TenantModel
 {
     protected $fillable = [
         'customer_id',

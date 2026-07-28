@@ -3,10 +3,10 @@
 namespace App\Modules\Pricing\Models;
 
 use App\Modules\Branches\Models\Branch;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class PeakHourPricing extends Model
+class PeakHourPricing extends TenantModel
 {
     protected $table = 'peak_hour_pricing';
 

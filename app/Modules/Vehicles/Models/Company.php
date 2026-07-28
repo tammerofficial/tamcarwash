@@ -3,10 +3,10 @@
 namespace App\Modules\Vehicles\Models;
 
 use App\Modules\Customers\Models\Customer;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Company extends Model
+class Company extends TenantModel
 {
     protected $fillable = [
         'name',

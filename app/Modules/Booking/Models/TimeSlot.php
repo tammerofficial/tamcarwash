@@ -2,10 +2,10 @@
 
 namespace App\Modules\Booking\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class TimeSlot extends Model
+class TimeSlot extends TenantModel
 {
     protected $fillable = [
         'branch_id',

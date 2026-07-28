@@ -2,9 +2,9 @@
 
 namespace App\Modules\Finance\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 
-class InvoiceSetting extends Model
+class InvoiceSetting extends TenantModel
 {
     protected $fillable = [
         'invoice_prefix',

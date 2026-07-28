@@ -2,10 +2,10 @@
 
 namespace App\Modules\Services\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ServiceCategory extends Model
+class ServiceCategory extends TenantModel
 {
     protected $fillable = [
         'name',

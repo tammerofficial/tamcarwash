@@ -4,10 +4,10 @@ namespace App\Modules\Vehicles\Models;
 
 use App\Modules\Customers\Models\Customer;
 use App\Modules\Vehicles\Enums\VehicleType;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Vehicle extends Model
+class Vehicle extends TenantModel
 {
     protected $fillable = [
         'customer_id',

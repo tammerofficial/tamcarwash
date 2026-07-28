@@ -2,10 +2,10 @@
 
 namespace App\Modules\Services\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\TenantModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ServiceAddon extends Model
+class ServiceAddon extends TenantModel
 {
     protected $fillable = [
         'service_id',
