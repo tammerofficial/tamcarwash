@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+/*
+| SPA entry: all browser routes (including /) serve resources/views/app.blade.php.
+| Laravel's default welcome view is not registered here.
+*/
+Route::view('/{any?}', 'app')->where('any', '.*')->name('spa');

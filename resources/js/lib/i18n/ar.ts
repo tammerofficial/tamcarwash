@@ -1,0 +1,181 @@
+export const ar = {
+    app: {
+        name: 'Tammer Wash',
+        tagline: 'نظام إدارة مغاسل السيارات',
+    },
+    nav: {
+        dashboard: 'لوحة التحكم',
+        branches: 'الفروع',
+        customers: 'العملاء',
+        vehicles: 'المركبات',
+        services: 'الخدمات',
+        pricing: 'التسعير',
+        booking: 'الحجوزات',
+        queue: 'الطابور',
+        queueScreen: 'شاشة الطابور',
+        orders: 'الطلبات',
+        invoices: 'الفواتير',
+        taxReports: 'تقارير الضريبة',
+        settings: 'الإعدادات',
+        logout: 'تسجيل الخروج',
+    },
+    auth: {
+        loginTitle: 'تسجيل الدخول',
+        loginSubtitle: 'أدخل بيانات حسابك للمتابعة',
+        landlordLogin: 'دخول المنصة',
+        tenantLogin: 'دخول المغسلة',
+        email: 'البريد الإلكتروني',
+        password: 'كلمة المرور',
+        remember: 'تذكرني',
+        submit: 'دخول',
+        loggingIn: 'جاري الدخول...',
+    },
+    common: {
+        search: 'بحث...',
+        add: 'إضافة',
+        edit: 'تعديل',
+        delete: 'حذف',
+        save: 'حفظ',
+        cancel: 'إلغاء',
+        actions: 'إجراءات',
+        status: 'الحالة',
+        active: 'نشط',
+        inactive: 'غير نشط',
+        loading: 'جاري التحميل...',
+        noData: 'لا توجد بيانات',
+        branch: 'الفرع',
+        allBranches: 'جميع الفروع',
+        today: 'اليوم',
+        refresh: 'تحديث',
+        viewAll: 'عرض الكل',
+        total: 'الإجمالي',
+        filter: 'تصفية',
+        export: 'تصدير',
+    },
+    dashboard: {
+        title: 'لوحة التحكم',
+        todayOrders: 'طلبات اليوم',
+        todayRevenue: 'إيرادات اليوم',
+        queueWaiting: 'في الانتظار',
+        activeBookings: 'حجوزات نشطة',
+        revenueTrend: 'اتجاه الإيرادات',
+        ordersByStatus: 'الطلبات حسب الحالة',
+        topServices: 'أكثر الخدمات',
+    },
+    branches: {
+        title: 'الفروع',
+        subtitle: 'إدارة الفروع وساعات العمل والسعة',
+        name: 'اسم الفرع',
+        code: 'الرمز',
+        city: 'المدينة',
+        capacity: 'السعة',
+        bays: 'الأحواض',
+    },
+    customers: {
+        title: 'العملاء',
+        subtitle: 'إدارة العملاء ونقاط الولاء',
+        name: 'الاسم',
+        phone: 'الجوال',
+        email: 'البريد',
+        loyaltyPoints: 'نقاط الولاء',
+        vehicles: 'المركبات',
+    },
+    vehicles: {
+        title: 'المركبات',
+        subtitle: 'سجل المركبات والأساطيل',
+        plate: 'رقم اللوحة',
+        brand: 'الماركة',
+        model: 'الموديل',
+        color: 'اللون',
+        type: 'النوع',
+        owner: 'المالك',
+    },
+    services: {
+        title: 'الخدمات',
+        subtitle: 'فئات الخدمات والإضافات',
+        name: 'الخدمة',
+        category: 'الفئة',
+        duration: 'المدة (دقيقة)',
+        price: 'السعر',
+        vat: 'ض.ق.م',
+    },
+    pricing: {
+        title: 'التسعير',
+        subtitle: 'قواعد الأسعار والخصومات والكوبونات',
+        ruleName: 'اسم القاعدة',
+        ruleType: 'نوع القاعدة',
+        discount: 'الخصم',
+        coupons: 'الكوبونات',
+    },
+    booking: {
+        title: 'الحجوزات',
+        subtitle: 'إدارة المواعيد والحجوزات',
+        bookingNumber: 'رقم الحجز',
+        scheduledAt: 'الموعد',
+        service: 'الخدمة',
+    },
+    queue: {
+        title: 'الطابور',
+        subtitle: 'إدارة طابور الانتظار',
+        queueNumber: 'رقم الطابور',
+        waiting: 'انتظار',
+        inService: 'قيد الخدمة',
+        ready: 'جاهز',
+        callNext: 'استدعاء التالي',
+        estimatedWait: 'الانتظار المتوقع',
+        screenTitle: 'شاشة الطابور',
+    },
+    orders: {
+        title: 'الطلبات',
+        subtitle: 'متابعة دورة حياة الطلب',
+        orderNumber: 'رقم الطلب',
+        createdAt: 'تاريخ الإنشاء',
+    },
+    invoices: {
+        title: 'الفواتير',
+        subtitle: 'الفواتير والمدفوعات',
+        invoiceNumber: 'رقم الفاتورة',
+        subtotal: 'المجموع الفرعي',
+        vatAmount: 'ض.ق.م',
+        issuedAt: 'تاريخ الإصدار',
+    },
+    taxReports: {
+        title: 'تقارير الضريبة',
+        subtitle: 'تقارير ض.ق.م عمان 5%',
+        taxableSales: 'المبيعات الخاضعة',
+        exemptSales: 'المبيعات المعفاة',
+        vatCollected: 'ض.ق.م المحصّل',
+        vatOnExpenses: 'ض.ق.م المصروفات',
+        netVatDue: 'صافي الضريبة المستحقة',
+        daily: 'يومي',
+        monthly: 'شهري',
+        quarterly: 'ربع سنوي',
+    },
+    settings: {
+        title: 'الإعدادات',
+        subtitle: 'إعدادات المغسلة والضريبة',
+        businessName: 'اسم المنشأة',
+        vatEnabled: 'تفعيل ض.ق.م',
+        vatRate: 'نسبة الضريبة',
+        vatInclusive: 'الأسعار شاملة الضريبة',
+        currency: 'العملة',
+        timezone: 'المنطقة الزمنية',
+    },
+} as const;
+
+export type TranslationKey = typeof ar;
+
+export function t(key: string): string {
+    const parts = key.split('.');
+    let current: unknown = ar;
+
+    for (const part of parts) {
+        if (current && typeof current === 'object' && part in current) {
+            current = (current as Record<string, unknown>)[part];
+        } else {
+            return key;
+        }
+    }
+
+    return typeof current === 'string' ? current : key;
+}

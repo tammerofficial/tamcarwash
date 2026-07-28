@@ -1,58 +1,255 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Tammer Wash
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Production-ready SaaS platform for fixed-location car wash businesses in Oman.
 
-## About Laravel
+**Stack:** Laravel 13 · PHP 8.3+ · React 19 + TypeScript · Tailwind CSS · shadcn/ui · Sanctum · Spatie packages · Redis · Octane/RoadRunner · MySQL 8.4
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Architecture
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Multi-tenancy (database-per-tenant)
 
-## Learning Laravel
+| Layer | Connection | Purpose |
+|-------|------------|---------|
+| **Landlord** | `landlord` | Platform control: tenants, domains, plans, subscriptions, platform users |
+| **Tenant** | `tenant` (dynamic) | Isolated business data per car wash — **no `tenant_id` on business tables** |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Tenant detection:**
+1. Subdomain — `{slug}.tamcarwash.test`
+2. Custom domain — mapped in `tenant_domains`
+3. Super-admin context — `X-Tenant-Id` header or admin session
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Module layout
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+```
+app/
+├── Console/Commands/          # tenants:* + app:seed-production
+├── Http/Middleware/Tenancy/   # Subdomain, domain, context switching
+├── Models/Landlord/           # Tenant, Plan, Subscription, PlatformUser…
+├── Services/Tenancy/          # ConnectionManager, Provisioning, MigrationRunner
+└── Modules/
+    ├── Branches/              # Branches, working hours, holidays, wash bays
+    ├── Customers/             # Profiles, loyalty, notes, blacklist
+    ├── Vehicles/              # Plates, companies, vehicle types
+    ├── Services/              # Categories, addons, pricing, consumables
+    ├── Pricing/               # Rules, coupons, discounts, peak hours
+    ├── Booking/               # Slots, bookings, overbooking prevention
+    ├── Queue/                 # Walk-in/booked queue, analytics
+    ├── Orders/                # Full status flow (pending → completed/cancelled)
+    ├── Finance/               # Invoices, payments, VAT, tax reports, PDF
+    └── Shared/                # Auth, dashboard, API base
 
-## Agentic Development
+database/
+├── migrations/landlord/       # Platform schema
+├── migrations/tenant/         # Per-tenant business schema
+└── seeders/                   # Idempotent production seeders
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+resources/js/                  # React 19 SPA (Arabic-first RTL)
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## Quick start
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 1. Prerequisites
 
-## Code of Conduct
+- PHP 8.3+, Composer 2
+- Node.js 20+, npm
+- Docker & Docker Compose (recommended for MySQL + Redis)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 2. Clone & install
 
-## Security Vulnerabilities
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+npm install
+npm run build
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 3. Start infrastructure
+
+```bash
+docker compose up -d
+```
+
+This starts **MySQL 8.4** and **Redis 7**. Default credentials are in `.env.example`.
+
+### 4. Run landlord migrations
+
+```bash
+php artisan migrate --database=landlord --path=database/migrations/landlord
+php artisan app:seed-production
+```
+
+### 5. Create a tenant
+
+```bash
+php artisan tenants:create \
+  --name="مغسلة تمير التجريبية" \
+  --slug=demo \
+  --owner-email=owner@demo.test \
+  --owner-password=password \
+  --plan=starter
+```
+
+This runs the idempotent 8-step provisioning flow: create DB → migrate → seed → activate.
+
+### 6. Seed tenant data (optional rerun)
+
+```bash
+php artisan app:seed-production --tenants
+# or single tenant:
+php artisan app:seed-production --tenant=demo
+```
+
+### 7. Development servers
+
+```bash
+# Terminal 1 — Laravel
+php artisan serve
+
+# Terminal 2 — Vite (React HMR)
+npm run dev
+```
+
+Add to `/etc/hosts`:
+```
+127.0.0.1 tamcarwash.test demo.tamcarwash.test admin.tamcarwash.test
+```
+
+- **Tenant SPA:** http://demo.tamcarwash.test:8000
+- **Tenant API:** http://demo.tamcarwash.test:8000/api/v1
+- **Landlord API:** http://admin.tamcarwash.test:8000/api/landlord/v1
+
+---
+
+## Artisan commands
+
+| Command | Description |
+|---------|-------------|
+| `tenants:create` | Create and provision a new tenant |
+| `tenants:migrate` | Run tenant migrations (all or `--tenant=slug`) |
+| `tenants:seed` | Run tenant seeders |
+| `tenants:refresh-cache` | Rebuild tenant resolution cache |
+| `tenants:run-scheduled` | Run scheduled tasks per tenant |
+| `tenants:health-check` | Verify tenant DB connectivity |
+| `app:seed-production` | Idempotent landlord + optional tenant seeders |
+
+All seeders use `updateOrCreate` / `firstOrCreate` — safe to rerun, never truncates.
+
+---
+
+## Frontend (React inside Laravel)
+
+React 19 lives in `resources/js/` — no separate frontend app.
+
+```
+resources/js/
+├── app.tsx              # Vite entry
+├── main.tsx             # React bootstrap + providers
+├── components/ui/       # shadcn/ui (Radix + Tailwind)
+├── pages/               # Module pages (dashboard, branches, queue…)
+├── lib/i18n/ar.ts       # Arabic-first strings
+└── lib/api.ts           # Sanctum-aware API client
+```
+
+```bash
+npm run dev      # Vite dev server
+npm run build    # Production build → public/build/
+npm run typecheck
+```
+
+SPA routes are served via catch-all in `routes/web.php` → `resources/views/app.blade.php`.
+
+**`/` (home)** and all non-API browser paths load the React SPA (login/dashboard), not Laravel’s default `welcome` view.
+
+---
+
+## API overview
+
+**Tenant API** — `/api/v1/*` (requires tenant context)
+
+- `POST /auth/login` · `GET /auth/user`
+- `GET /dashboard/stats` — real aggregations (orders, revenue, queue, bookings)
+- CRUD: branches, customers, vehicles, services, pricing, bookings, queue, orders, invoices
+
+**Landlord API** — `/api/landlord/v1/*`
+
+- Platform health, tenant management (scaffolded)
+
+Auth: Laravel Sanctum (`auth:tenant` / `auth:platform` guards).
+
+---
+
+## Oman VAT
+
+- Default rate: **5%** (seeded via `OmanVatSeeder`)
+- Tax-inclusive and tax-exclusive pricing support
+- Invoice fields: subtotal, VAT, total, VATIN, CR number, QR code
+- Tax reports via `TaxReportController`
+
+---
+
+## Octane + RoadRunner (production)
+
+```bash
+# Install RoadRunner binary
+php artisan octane:install --server=roadrunner
+
+# Run (development)
+php artisan octane:start --watch
+
+# Production (behind nginx)
+php artisan octane:start --server=roadrunner --host=0.0.0.0 --port=8000 --workers=4
+```
+
+Configure Redis for cache, sessions, and queues in production. Set `QUEUE_CONNECTION=redis`.
+
+---
+
+## Environment variables
+
+See `.env.example` for full reference. Key settings:
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `DB_CONNECTION` | `landlord` | Default DB connection |
+| `LANDLORD_DB_DATABASE` | `tamcarwash_landlord` | Platform database |
+| `TENANT_DB_PREFIX` | `tamcarwash_tenant_` | Tenant DB name prefix |
+| `TENANCY_PLATFORM_DOMAIN` | `tamcarwash.test` | Base domain for subdomains |
+| `REDIS_CLIENT` | `predis` | Redis client |
+| `QUEUE_CONNECTION` | `redis` | Queue driver |
+
+---
+
+## Packages
+
+| Package | Purpose |
+|---------|---------|
+| `laravel/sanctum` | API token auth |
+| `spatie/laravel-permission` | Roles & permissions |
+| `spatie/laravel-activitylog` | Audit trail |
+| `spatie/laravel-settings` | Typed settings |
+| `spatie/laravel-medialibrary` | Media uploads |
+| `spatie/laravel-query-builder` | Filterable API queries |
+| `maatwebsite/excel` | Excel export |
+| `barryvdh/laravel-dompdf` | Invoice PDF |
+| `predis/predis` | Redis client |
+| `laravel/octane` | High-performance runtime |
+
+---
+
+## Order status flow
+
+```
+pending → checked_in → queued → in_service → quality_check → ready → completed
+                                                                    ↘ cancelled
+```
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT
