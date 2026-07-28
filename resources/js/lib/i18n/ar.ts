@@ -40,6 +40,13 @@ export const ar = {
             worker: 'عامل',
         },
     },
+    landlord: {
+        quickLogin: {
+            title: 'دخول سريع (تطوير)',
+            hint: 'حساب مدير المنصة — بدون إدخال يدوي',
+            platformAdmin: 'مدير المنصة',
+        },
+    },
     register: {
         badge: 'إنشاء مغسلة جديدة',
         title: 'سجّل مغسلتك على تمير واش',
