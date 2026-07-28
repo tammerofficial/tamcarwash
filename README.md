@@ -75,6 +75,23 @@ docker compose up -d
 ```
 
 This starts **MySQL 8.4** and **Redis 7**. Default credentials are in `.env.example`.
+### Local dev without Docker
+
+If Docker is not running (or you do not need Redis locally), use file-based cache and sessions so the SPA loads without `Connection refused` on port 6379:
+
+```bash
+# In .env (do not commit .env)
+SESSION_DRIVER=file
+QUEUE_CONNECTION=sync
+CACHE_STORE=file
+TENANT_CACHE_STORE=file
+
+php artisan config:clear
+```
+
+With Docker, keep the defaults in `.env.example` (`redis` drivers) and run `docker compose up -d`.
+
+
 
 ### 4. Run landlord migrations
 
