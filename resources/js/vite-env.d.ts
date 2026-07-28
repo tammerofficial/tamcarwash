@@ -8,6 +8,7 @@ export interface TammerAppConfig {
     csrfToken: string;
     isLandlord: boolean;
     platformDomain?: string;
+    tenancyMode?: 'subdirectory' | 'subdomain';
     subdirectoryEnabled?: boolean;
     reservedPaths?: string[];
     subdirectorySlug?: string | null;
@@ -16,7 +17,6 @@ export interface TammerAppConfig {
         name: string;
         slug: string;
     } | null;
-    defaultTenantSlug?: string | null;
     allowQuickLogin?: boolean;
 }
 

@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
+import { ExternalLink } from 'lucide-react';
 import { api, endpoints } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -16,7 +18,9 @@ interface LandlordTenantRow {
     subscription_status?: string;
     subscription_ends_at?: string;
     created_at?: string;
+    dashboard_url?: string;
     subdirectory_url?: string;
+    subdomain_url?: string;
 }
 
 export function LandlordTenantsPage() {
@@ -48,6 +52,7 @@ export function LandlordTenantsPage() {
                                     <TableHead>الباقة</TableHead>
                                     <TableHead>الحالة</TableHead>
                                     <TableHead>الاشتراك</TableHead>
+                                    <TableHead>لوحة المستأجر</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -62,6 +67,18 @@ export function LandlordTenantsPage() {
                                             </Badge>
                                         </TableCell>
                                         <TableCell>{tenant.subscription_status ?? '—'}</TableCell>
+                                        <TableCell>
+                                            {tenant.status === 'active' && tenant.dashboard_url ? (
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <a href={tenant.dashboard_url} target="_blank" rel="noopener noreferrer">
+                                                        <ExternalLink className="ms-2 h-4 w-4" />
+                                                        فتح لوحة المستأجر
+                                                    </a>
+                                                </Button>
+                                            ) : (
+                                                '—'
+                                            )}
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

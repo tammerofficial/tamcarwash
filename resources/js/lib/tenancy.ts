@@ -81,7 +81,6 @@ export function resolveTenantSlug(): string | null {
         detectTenantSlugFromSubdomain() ??
         detectTenantSlugFromPathname() ??
         readConfig().tenant?.slug ??
-        readConfig().defaultTenantSlug ??
         null
     );
 }

@@ -14,7 +14,6 @@ function readTammerConfig() {
             isLandlord: false,
             platformDomain: 'tamcarwash.com',
             tenant: null,
-            defaultTenantSlug: null,
             allowQuickLogin: false,
         }
     );
@@ -36,7 +35,7 @@ export function getActiveTenantSlug(): string | null {
         return config.tenant.slug;
     }
 
-    return config.defaultTenantSlug ?? null;
+    return null;
 }
 
 export function setActiveTenantSlug(slug: string): void {

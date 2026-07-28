@@ -23,11 +23,13 @@ class PlatformSettingsController extends ApiController
         $validated = $request->validate([
             'platform_name' => ['sometimes', 'string', 'max:255'],
             'platform_domain' => ['sometimes', 'string', 'max:255'],
+            'tenancy_mode' => ['sometimes', 'in:subdirectory,subdomain'],
             'trial_days' => ['sometimes', 'integer', 'min:0', 'max:365'],
             'support_email' => ['sometimes', 'nullable', 'email', 'max:255'],
         ]);
 
         $updated = $this->settings->update($validated);
+        $this->settings->applyTenancyConfig();
 
         return $this->success($updated, 'تم حفظ إعدادات المنصة.');
     }

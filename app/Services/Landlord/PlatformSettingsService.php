@@ -51,11 +51,64 @@ class PlatformSettingsService
     /**
      * @return array<string, mixed>
      */
+    public function tenancyMode(): string
+    {
+        $mode = $this->get('tenancy_mode');
+
+        if (in_array($mode, ['subdirectory', 'subdomain'], true)) {
+            return $mode;
+        }
+
+        return config('tenancy.subdirectory_enabled', true) ? 'subdirectory' : 'subdomain';
+    }
+
+    public function isSubdirectoryMode(): bool
+    {
+        return $this->tenancyMode() === 'subdirectory';
+    }
+
+    public function tenantDashboardUrl(string $slug): string
+    {
+        if ($this->isSubdirectoryMode()) {
+            return url("/{$slug}/dashboard");
+        }
+
+        $domain = $this->get('platform_domain', config('tenancy.platform_domain'));
+        $scheme = parse_url((string) config('app.url'), PHP_URL_SCHEME) ?: 'https';
+
+        return "{$scheme}://{$slug}.{$domain}/dashboard";
+    }
+
+    public function tenantSubdirectoryUrl(string $slug): string
+    {
+        return url("/{$slug}/dashboard");
+    }
+
+    public function tenantSubdomainUrl(string $slug): string
+    {
+        $domain = $this->get('platform_domain', config('tenancy.platform_domain'));
+        $scheme = parse_url((string) config('app.url'), PHP_URL_SCHEME) ?: 'https';
+
+        return "{$scheme}://{$slug}.{$domain}/dashboard";
+    }
+
+    public function applyTenancyConfig(): void
+    {
+        config([
+            'tenancy.subdirectory_enabled' => $this->isSubdirectoryMode(),
+            'tenancy.platform_domain' => $this->get('platform_domain', config('tenancy.platform_domain')),
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     protected function defaults(): array
     {
         return [
             'platform_name' => config('app.name', 'Tammer Wash'),
             'platform_domain' => config('tenancy.platform_domain'),
+            'tenancy_mode' => config('tenancy.subdirectory_enabled', true) ? 'subdirectory' : 'subdomain',
             'trial_days' => 14,
             'support_email' => config('mail.from.address'),
         ];

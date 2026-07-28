@@ -12,23 +12,24 @@
 
         @php
             use App\Models\Landlord\Tenant;
+            use App\Services\Landlord\PlatformSettingsService;
 
             $host = request()->getHost();
             $path = trim(request()->path(), '/');
             $firstSegment = str($path)->before('/')->toString();
             $reservedPaths = config('tenancy.reserved_paths', []);
+            $platformDomain = config('tenancy.platform_domain');
+            $centralDomains = config('tenancy.central_domains', []);
+
             $isLandlord = str_starts_with($path, 'landlord')
                 || str_starts_with($host, 'admin.')
                 || str_starts_with($host, 'platform.')
                 || str_starts_with($host, 'landlord.');
-            $defaultTenantSlug = config('tenancy.local_default_tenant_slug', 'demo');
+
             $tenant = null;
             $subdirectorySlug = null;
 
             if (! $isLandlord) {
-                $platformDomain = config('tenancy.platform_domain');
-                $centralDomains = config('tenancy.central_domains', []);
-
                 try {
                     if (str_ends_with($host, ".{$platformDomain}")) {
                         $subdomain = str_replace(".{$platformDomain}", '', $host);
@@ -52,15 +53,21 @@
                             ->where('slug', $subdirectorySlug)
                             ->first(['id', 'name', 'slug']);
                     }
-
-                    if (! $tenant && app()->environment('local') && in_array($host, $centralDomains, true)) {
-                        $tenant = Tenant::query()
-                            ->where('slug', $defaultTenantSlug)
-                            ->first(['id', 'name', 'slug']);
-                    }
                 } catch (\Throwable) {
                     // Landlord DB may be unavailable during local setup.
                 }
+            }
+
+            if (! $isLandlord && ! $tenant && in_array($host, $centralDomains, true) && blank($path)) {
+                $isLandlord = true;
+            }
+
+            $tenancyMode = 'subdirectory';
+
+            try {
+                $tenancyMode = app(PlatformSettingsService::class)->tenancyMode();
+            } catch (\Throwable) {
+                $tenancyMode = config('tenancy.subdirectory_enabled', false) ? 'subdirectory' : 'subdomain';
             }
         @endphp
 
@@ -73,10 +80,10 @@
                 csrfToken: @json(csrf_token()),
                 isLandlord: @json($isLandlord),
                 tenant: @json($tenant),
+                tenancyMode: @json($tenancyMode),
                 subdirectoryEnabled: @json(config('tenancy.subdirectory_enabled', false)),
                 reservedPaths: @json(config('tenancy.reserved_paths', [])),
                 subdirectorySlug: @json($subdirectorySlug),
-                defaultTenantSlug: @json(! $isLandlord && app()->environment('local') ? $defaultTenantSlug : null),
                 allowQuickLogin: @json(app()->environment('local')),
                 platformDomain: @json(config('tenancy.platform_domain')),
             };

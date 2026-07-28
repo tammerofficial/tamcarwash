@@ -6,12 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { ApiResponse } from '@/types/api';
+
+type TenancyMode = 'subdirectory' | 'subdomain';
 
 interface PlatformSettings {
     platform_name: string;
     platform_domain: string;
+    tenancy_mode: TenancyMode;
     trial_days: number;
     support_email?: string | null;
 }
@@ -27,6 +31,7 @@ export function LandlordSettingsPage() {
         values: data?.data ?? {
             platform_name: '',
             platform_domain: '',
+            tenancy_mode: 'subdirectory',
             trial_days: 14,
             support_email: '',
         },
@@ -41,6 +46,8 @@ export function LandlordSettingsPage() {
         onError: () => toast.error('تعذر حفظ الإعدادات'),
     });
 
+    const tenancyMode = form.watch('tenancy_mode');
+
     if (isLoading) {
         return <Skeleton className="h-64 w-full" />;
     }
@@ -49,7 +56,7 @@ export function LandlordSettingsPage() {
         <div className="space-y-6">
             <div>
                 <h2 className="text-2xl font-bold">إعدادات المنصة</h2>
-                <p className="text-muted-foreground">اسم المنصة، النطاق، وأيام التجربة</p>
+                <p className="text-muted-foreground">اسم المنصة، النطاق، وطريقة الوصول للمستأجرين</p>
             </div>
 
             <Card>
@@ -81,6 +88,32 @@ export function LandlordSettingsPage() {
                                         <FormControl>
                                             <Input {...field} />
                                         </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="tenancy_mode"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>طريقة الوصول للمستأجرين</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="اختر طريقة الوصول" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="subdirectory">تطوير — مسار فرعي /{`{slug}`}/dashboard</SelectItem>
+                                                <SelectItem value="subdomain">إنتاج — نطاق فرعي {`{slug}`}.domain.com/dashboard</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <p className="text-sm text-muted-foreground">
+                                            {tenancyMode === 'subdirectory'
+                                                ? 'مثال: tamcarwash.test/demo/dashboard — مناسب للتطوير المحلي.'
+                                                : 'مثال: demo.tamcarwash.com/dashboard — مناسب للإنتاج.'}
+                                        </p>
                                         <FormMessage />
                                     </FormItem>
                                 )}

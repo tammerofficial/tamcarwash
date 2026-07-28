@@ -9,6 +9,7 @@ use App\Models\Landlord\TenantProvisioningLog;
 use App\Models\TenantUser;
 use App\Modules\Branches\Enums\BranchStatus;
 use App\Modules\Branches\Models\Branch;
+use App\Services\Landlord\PlatformSettingsService;
 use Database\Seeders\DemoTenantUsersSeeder;
 use Database\Seeders\TenantProductionSeeder;
 use Illuminate\Support\Facades\Artisan;
@@ -259,26 +260,28 @@ class TenantProvisioningService
     {
         $platformDomain = config('tenancy.platform_domain');
         $subdomain = "{$tenant->slug}.{$platformDomain}";
+        $settings = app(PlatformSettingsService::class);
+        $subdirectoryMode = $settings->isSubdirectoryMode();
 
         TenantDomain::query()->updateOrCreate(
             ['tenant_id' => $tenant->id, 'domain' => $subdomain],
             [
                 'type' => 'subdomain',
-                'is_primary' => true,
+                'is_primary' => ! $subdirectoryMode,
                 'is_verified' => true,
                 'verified_at' => now(),
                 'ssl_status' => 'pending',
             ]
         );
 
-        if (config('tenancy.subdirectory_enabled', false)) {
+        if ($subdirectoryMode) {
             $pathDomain = "/{$tenant->slug}";
 
             TenantDomain::query()->updateOrCreate(
                 ['tenant_id' => $tenant->id, 'domain' => $pathDomain],
                 [
                     'type' => 'subdirectory',
-                    'is_primary' => false,
+                    'is_primary' => true,
                     'is_verified' => true,
                     'verified_at' => now(),
                     'ssl_status' => 'n/a',

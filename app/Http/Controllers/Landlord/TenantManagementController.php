@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Landlord;
 
 use App\Models\Landlord\Tenant;
 use App\Modules\Shared\Http\Controllers\ApiController;
+use App\Services\Landlord\PlatformSettingsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TenantManagementController extends ApiController
 {
+    public function __construct(
+        protected PlatformSettingsService $settings,
+    ) {}
+
     public function index(Request $request): JsonResponse
     {
         $perPage = min((int) $request->integer('per_page', 20), 100);
@@ -94,8 +99,9 @@ class TenantManagementController extends ApiController
             'subscription_ends_at' => $subscription?->ends_at?->toIso8601String(),
             'trial_ends_at' => $tenant->trial_ends_at?->toIso8601String(),
             'created_at' => $tenant->created_at?->toIso8601String(),
-            'subdirectory_url' => url("/{$tenant->slug}/dashboard"),
-            'subdomain_url' => "https://{$tenant->slug}.".config('tenancy.platform_domain'),
+            'dashboard_url' => $this->settings->tenantDashboardUrl($tenant->slug),
+            'subdirectory_url' => $this->settings->tenantSubdirectoryUrl($tenant->slug),
+            'subdomain_url' => $this->settings->tenantSubdomainUrl($tenant->slug),
         ];
 
         if ($detailed) {

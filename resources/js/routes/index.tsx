@@ -81,6 +81,7 @@ function LandlordRoutes() {
                     </Route>
                 </Route>
 
+                <Route path="/" element={<Navigate to="/landlord/dashboard" replace />} />
                 <Route path="/landlord" element={<Navigate to="/landlord/dashboard" replace />} />
                 <Route path="/landlord/*" element={<Navigate to="/landlord/dashboard" replace />} />
             </Routes>
