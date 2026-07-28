@@ -119,7 +119,10 @@ export function LoginPage() {
                                     render={({ field }) => (
                                         <FormItem className="flex items-center gap-2 space-y-0">
                                             <FormControl>
-                                                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                                                <Checkbox
+                                                    checked={field.value}
+                                                    onCheckedChange={(checked) => field.onChange(checked === true)}
+                                                />
                                             </FormControl>
                                             <FormLabel className="!mt-0 font-normal">{t('auth.remember')}</FormLabel>
                                         </FormItem>

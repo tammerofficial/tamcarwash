@@ -17,7 +17,6 @@ class TenantAuthController extends ApiController
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
-            'remember' => ['nullable', 'boolean'],
         ]);
 
         $user = TenantUser::query()->where('email', $credentials['email'])->first();

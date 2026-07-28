@@ -36,7 +36,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, [refreshUser]);
 
     const login = useCallback(async (payload: LoginPayload) => {
-        const response = await api.post<ApiResponse<LoginResponse>>(endpoints.auth.login, payload);
+        await api.ensureCsrfCookie();
+
+        const response = await api.post<ApiResponse<LoginResponse>>(endpoints.auth.login, {
+            email: payload.email,
+            password: payload.password,
+            remember: payload.remember === true,
+        });
         setUser(response.data.user);
     }, []);
 
