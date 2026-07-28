@@ -6,6 +6,10 @@ use Symfony\Component\Console\Input\ArgvInput;
 
 define('LARAVEL_START', microtime(true));
 
+if (PHP_SAPI === 'cli') {
+    ini_set('memory_limit', '512M');
+}
+
 // Register the Composer autoloader...
 require __DIR__.'/vendor/autoload.php';
 
