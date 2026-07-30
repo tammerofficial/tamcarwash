@@ -15,6 +15,7 @@ use App\Modules\Services\Http\Resources\ServiceResource;
 use App\Modules\Services\Models\Service;
 use App\Modules\Shared\Http\Requests\StorePublicBookingRequest;
 use App\Modules\Vehicles\Models\Vehicle;
+use App\Support\DefaultContact;
 use App\Services\Tenancy\TenantContext;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -46,8 +47,9 @@ class StorefrontController extends ApiController
             'business_name' => $tenant->name,
             'tenant_slug' => $tenant->slug,
             'email' => $tenant->email,
-            'phone' => $tenant->phone,
-            'country' => $tenant->country ?? 'OM',
+            'phone' => $tenant->phone ?: DefaultContact::phone(),
+            'address' => DefaultContact::address(),
+            'country' => $tenant->country ?? 'KW',
             'timezone' => $tenant->timezone ?? config('app.timezone', 'Asia/Muscat'),
             'currency' => config('tammer.vat.currency', 'OMR'),
             'vat_rate' => (float) ($taxSettings?->vat_rate ?? config('tammer.vat.default_rate', 5)),
@@ -85,7 +87,19 @@ class StorefrontController extends ApiController
             ->orderBy('name')
             ->get();
 
-        return $this->success(BranchResource::collection($branches));
+        $branchesWithDefaults = $branches->map(function (Branch $branch) {
+            $data = BranchResource::make($branch)->resolve();
+
+            $data['phone'] = filled($data['phone'] ?? null) ? $data['phone'] : DefaultContact::phone();
+
+            if (blank($data['address'] ?? null) && blank($data['city'] ?? null)) {
+                $data['address'] = DefaultContact::address();
+            }
+
+            return $data;
+        });
+
+        return $this->success($branchesWithDefaults);
     }
 
     public function availableTimeSlots(Request $request): JsonResponse

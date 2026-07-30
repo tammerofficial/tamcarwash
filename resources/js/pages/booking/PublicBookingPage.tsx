@@ -299,7 +299,7 @@ export function PublicBookingPage() {
                                                 id="customer-phone"
                                                 value={customerPhone}
                                                 onChange={(event) => setCustomerPhone(event.target.value)}
-                                                placeholder="96890000000"
+                                                placeholder="+965 18XXXXXX"
                                             />
                                         </div>
                                     </div>

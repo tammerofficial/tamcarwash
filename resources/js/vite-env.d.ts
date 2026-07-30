@@ -29,6 +29,10 @@ export interface TammerAppConfig {
         branding?: TenantBranding | null;
     } | null;
     allowQuickLogin?: boolean;
+    defaultContact?: {
+        phone: string;
+        address: string;
+    };
 }
 
 declare global {

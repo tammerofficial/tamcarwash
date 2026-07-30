@@ -90,7 +90,7 @@
                 'name' => $tenant->name,
                 'slug' => $tenant->slug,
                 'email' => $tenant->email,
-                'phone' => $tenant->phone,
+                'phone' => $tenant->phone ?: config('tammer.contact.phone', '+965 18XXXXXX'),
                 'branding' => $tenantBranding,
             ] : null;
         @endphp
@@ -110,6 +110,10 @@
                 subdirectorySlug: @json($subdirectorySlug),
                 allowQuickLogin: @json(app()->environment('local')),
                 platformDomain: @json(config('tenancy.platform_domain')),
+                defaultContact: @json([
+                    'phone' => config('tammer.contact.phone', '+965 18XXXXXX'),
+                    'address' => config('tammer.contact.address', 'العاصمة ، الكويت'),
+                ]),
             };
         </script>
 

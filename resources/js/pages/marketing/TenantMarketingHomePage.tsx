@@ -18,8 +18,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Skeleton } from '@/components/ui/skeleton';
 import {
     formatPrice,
+    getBranchAddress,
+    getBranchPhone,
     getTenantBranding,
     getTenantDisplayName,
+    getTenantPhone,
     useStorefrontBranches,
     useStorefrontProfile,
     useStorefrontServices,
@@ -32,7 +35,7 @@ export function TenantMarketingHomePage() {
 
     const branding = getTenantBranding(profile);
     const businessName = getTenantDisplayName(profile);
-    const primaryBranch = branches?.[0];
+    const contactPhone = getTenantPhone(profile);
     const currency = profile?.currency ?? 'OMR';
 
     const aboutText =
@@ -105,17 +108,12 @@ export function TenantMarketingHomePage() {
                                 </Button>
                             </div>
 
-                            {(profile?.phone || primaryBranch?.phone) && (
-                                <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
-                                    <Phone className="h-4 w-4" />
-                                    <a
-                                        href={`tel:${profile?.phone ?? primaryBranch?.phone}`}
-                                        className="hover:text-foreground"
-                                    >
-                                        {profile?.phone ?? primaryBranch?.phone}
-                                    </a>
-                                </p>
-                            )}
+                            <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+                                <Phone className="h-4 w-4" />
+                                <a href={`tel:${contactPhone}`} className="hover:text-foreground">
+                                    {contactPhone}
+                                </a>
+                            </p>
                         </div>
 
                         <div className="relative hidden lg:block">
@@ -292,18 +290,16 @@ export function TenantMarketingHomePage() {
                                                 {branch.name}
                                             </CardTitle>
                                             <CardDescription>
-                                                {[branch.address, branch.city].filter(Boolean).join('، ')}
+                                                {getBranchAddress(branch, profile)}
                                             </CardDescription>
                                         </CardHeader>
                                         <CardContent className="space-y-2 text-sm text-muted-foreground">
-                                            {branch.phone && (
-                                                <p className="flex items-center gap-2">
-                                                    <Phone className="h-4 w-4" />
-                                                    <a href={`tel:${branch.phone}`} className="hover:text-foreground">
-                                                        {branch.phone}
-                                                    </a>
-                                                </p>
-                                            )}
+                                            <p className="flex items-center gap-2">
+                                                <Phone className="h-4 w-4" />
+                                                <a href={`tel:${getBranchPhone(branch, profile)}`} className="hover:text-foreground">
+                                                    {getBranchPhone(branch, profile)}
+                                                </a>
+                                            </p>
                                             {branch.working_hours && branch.working_hours.length > 0 && (
                                                 <div className="flex items-start gap-2">
                                                     <Clock className="mt-0.5 h-4 w-4" />
@@ -322,8 +318,20 @@ export function TenantMarketingHomePage() {
                             </div>
                         ) : (
                             <Card>
-                                <CardContent className="py-10 text-center text-muted-foreground">
-                                    معلومات الفروع قيد التحديث.
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <MapPin className="h-5 w-5" style={{ color: branding.primaryColor }} />
+                                        {businessName}
+                                    </CardTitle>
+                                    <CardDescription>{getBranchAddress(undefined, profile)}</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <Phone className="h-4 w-4" />
+                                        <a href={`tel:${contactPhone}`} className="hover:text-foreground">
+                                            {contactPhone}
+                                        </a>
+                                    </p>
                                 </CardContent>
                             </Card>
                         )}

@@ -15,6 +15,10 @@ function readTammerConfig() {
             platformDomain: 'tamcarwash.com',
             tenant: null,
             allowQuickLogin: false,
+            defaultContact: {
+                phone: '+965 18XXXXXX',
+                address: 'العاصمة ، الكويت',
+            },
         }
     );
 }

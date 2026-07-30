@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { CalendarDays, Droplets, LogIn, Menu, Phone, X } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { getTenantBranding, getTenantDisplayName } from '@/hooks/useStorefront';
+import { getTenantBranding, getTenantDisplayName, getTenantPhone } from '@/hooks/useStorefront';
 import type { StorefrontProfile } from '@/types/api';
 import { cn } from '@/lib/utils';
 
@@ -18,6 +18,7 @@ export function TenantMarketingHeader({ profile }: TenantMarketingHeaderProps) {
     const [mobileOpen, setMobileOpen] = useState(false);
     const branding = getTenantBranding(profile);
     const businessName = getTenantDisplayName(profile);
+    const contactPhone = getTenantPhone(profile);
 
     const navItems = [
         { id: 'services', label: 'الخدمات' },
@@ -68,14 +69,12 @@ export function TenantMarketingHeader({ profile }: TenantMarketingHeaderProps) {
                 </nav>
 
                 <div className="hidden items-center gap-2 md:flex">
-                    {profile?.phone && (
-                        <Button variant="ghost" size="sm" asChild>
-                            <a href={`tel:${profile.phone}`}>
-                                <Phone className="me-2 h-4 w-4" />
-                                {profile.phone}
-                            </a>
-                        </Button>
-                    )}
+                    <Button variant="ghost" size="sm" asChild>
+                        <a href={`tel:${contactPhone}`}>
+                            <Phone className="me-2 h-4 w-4" />
+                            {contactPhone}
+                        </a>
+                    </Button>
                     <Button variant="outline" size="sm" asChild>
                         <Link to="/login">
                             <LogIn className="me-2 h-4 w-4" />

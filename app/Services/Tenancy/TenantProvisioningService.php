@@ -9,6 +9,7 @@ use App\Models\Landlord\TenantProvisioningLog;
 use App\Models\TenantUser;
 use App\Modules\Branches\Enums\BranchStatus;
 use App\Modules\Branches\Models\Branch;
+use App\Support\DefaultContact;
 use App\Services\Landlord\PlatformSettingsService;
 use Database\Seeders\TenantProductionSeeder;
 use Illuminate\Support\Facades\Artisan;
@@ -236,7 +237,8 @@ class TenantProvisioningService
             ['code' => 'main'],
             [
                 'name' => $tenant->name,
-                'city' => 'مسقط',
+                'address' => DefaultContact::address(),
+                'phone' => $tenant->phone ?: DefaultContact::phone(),
                 'status' => BranchStatus::Active,
                 'is_active' => true,
                 'capacity_per_hour' => 10,

@@ -237,6 +237,7 @@ export interface StorefrontProfile {
     tenant_slug?: string;
     email?: string | null;
     phone?: string | null;
+    address?: string | null;
     country?: string;
     timezone?: string;
     currency?: string;

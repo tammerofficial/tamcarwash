@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'contact' => [
+        'phone' => env('TAMMER_DEFAULT_PHONE', '+965 18XXXXXX'),
+        'address' => env('TAMMER_DEFAULT_ADDRESS', 'العاصمة ، الكويت'),
+    ],
+
     'models' => [
         'branch' => env('TAMMER_BRANCH_MODEL', 'App\\Modules\\Branches\\Models\\Branch'),
         'customer' => env('TAMMER_CUSTOMER_MODEL', 'App\\Modules\\Customers\\Models\\Customer'),

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { CalendarDays, Droplets, Facebook, Instagram, Mail, MapPin, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { ARABIC_DAYS, getTenantBranding, getTenantDisplayName } from '@/hooks/useStorefront';
+import { ARABIC_DAYS, getBranchAddress, getTenantBranding, getTenantDisplayName, getTenantPhone } from '@/hooks/useStorefront';
 import type { StorefrontBranch, StorefrontProfile } from '@/types/api';
 
 interface TenantMarketingFooterProps {
@@ -32,6 +32,8 @@ export function TenantMarketingFooter({ profile, branches }: TenantMarketingFoot
     const businessName = getTenantDisplayName(profile);
     const primaryBranch = branches?.[0];
     const social = branding.social ?? {};
+    const contactPhone = getTenantPhone(profile);
+    const contactAddress = getBranchAddress(primaryBranch, profile);
 
     return (
         <footer className="border-t bg-muted/30">
@@ -69,14 +71,12 @@ export function TenantMarketingFooter({ profile, branches }: TenantMarketingFoot
                     <div>
                         <h4 className="mb-3 text-sm font-semibold">تواصل معنا</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                            {profile?.phone && (
-                                <li className="flex items-center gap-2">
-                                    <Phone className="h-4 w-4 shrink-0" />
-                                    <a href={`tel:${profile.phone}`} className="hover:text-foreground">
-                                        {profile.phone}
-                                    </a>
-                                </li>
-                            )}
+                            <li className="flex items-center gap-2">
+                                <Phone className="h-4 w-4 shrink-0" />
+                                <a href={`tel:${contactPhone}`} className="hover:text-foreground">
+                                    {contactPhone}
+                                </a>
+                            </li>
                             {profile?.email && (
                                 <li className="flex items-center gap-2">
                                     <Mail className="h-4 w-4 shrink-0" />
@@ -85,15 +85,10 @@ export function TenantMarketingFooter({ profile, branches }: TenantMarketingFoot
                                     </a>
                                 </li>
                             )}
-                            {primaryBranch && (
-                                <li className="flex items-start gap-2">
-                                    <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-                                    <span>
-                                        {[primaryBranch.address, primaryBranch.city].filter(Boolean).join('، ') ||
-                                            primaryBranch.name}
-                                    </span>
-                                </li>
-                            )}
+                            <li className="flex items-start gap-2">
+                                <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
+                                <span>{contactAddress}</span>
+                            </li>
                         </ul>
                     </div>
 

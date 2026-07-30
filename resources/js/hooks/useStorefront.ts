@@ -7,6 +7,30 @@ import type {
     StorefrontService,
 } from '@/types/api';
 
+export const DEFAULT_CONTACT = {
+    phone: appConfig.defaultContact?.phone ?? '+965 18XXXXXX',
+    address: appConfig.defaultContact?.address ?? 'العاصمة ، الكويت',
+};
+
+export function getTenantPhone(profile?: StorefrontProfile | null): string {
+    return profile?.phone ?? appConfig.tenant?.phone ?? DEFAULT_CONTACT.phone;
+}
+
+export function getBranchAddress(branch?: StorefrontBranch | null, profile?: StorefrontProfile | null): string {
+    if (branch) {
+        const parts = [branch.address, branch.city].filter(Boolean);
+        if (parts.length > 0) {
+            return parts.join('، ');
+        }
+    }
+
+    return profile?.address ?? DEFAULT_CONTACT.address;
+}
+
+export function getBranchPhone(branch?: StorefrontBranch | null, profile?: StorefrontProfile | null): string {
+    return branch?.phone ?? getTenantPhone(profile);
+}
+
 export function useStorefrontProfile() {
     return useQuery({
         queryKey: ['storefront', 'profile'],

@@ -259,7 +259,7 @@ export function RegisterTenantPage() {
                                             <FormItem>
                                                 <FormLabel>{t('register.phone')}</FormLabel>
                                                 <FormControl>
-                                                    <Input dir="ltr" placeholder="+968 9xxx xxxx" {...field} />
+                                                    <Input dir="ltr" placeholder="+965 18XXXXXX" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>

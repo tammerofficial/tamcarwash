@@ -20,7 +20,7 @@ class OmanVatSeeder extends IdempotentSeeder
                 'prices_tax_inclusive' => false,
                 'legal_name_ar' => 'مغسلة تمير للسيارات',
                 'legal_name_en' => 'Tammer Car Wash',
-                'address' => 'سلطنة عمان',
+                'address' => config('tammer.contact.address', 'العاصمة ، الكويت'),
             ]);
             $tax->wasRecentlyCreated ? $created++ : $updated++;
         }
