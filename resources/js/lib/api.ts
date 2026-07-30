@@ -96,6 +96,13 @@ export const endpoints = {
     invoices: 'invoices',
     taxReports: 'tax-reports',
     settings: 'settings',
+    storefront: {
+        profile: 'storefront',
+        services: 'storefront/services',
+        branches: 'storefront/branches',
+        timeSlots: 'storefront/time-slots/available',
+        bookings: 'storefront/bookings',
+    },
 } as const;
 
 class ApiClient {

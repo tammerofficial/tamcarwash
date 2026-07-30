@@ -28,6 +28,15 @@ return [
 
     'local_default_tenant_slug' => env('TENANCY_LOCAL_DEFAULT_TENANT_SLUG', 'demo'),
 
+    /*
+    | When true, DemoTenantUsersSeeder runs for every tenant during provisioning
+    | and production seed — not only slug "demo". Defaults to true in local.
+    */
+    'seed_demo_users' => filter_var(
+        env('TENANCY_SEED_DEMO_USERS', env('APP_ENV') === 'local'),
+        FILTER_VALIDATE_BOOL
+    ),
+
     'tenant_database_prefix' => env('TENANT_DB_PREFIX', 'tamcarwash_tenant_'),
 
     'tenant_migrations_path' => database_path('migrations/tenant'),

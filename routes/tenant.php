@@ -20,6 +20,7 @@ use App\Modules\Queue\Http\Controllers\QueueController;
 use App\Modules\Services\Http\Controllers\ServiceCategoryController;
 use App\Modules\Services\Http\Controllers\ServiceController;
 use App\Modules\Shared\Http\Controllers\DashboardController;
+use App\Modules\Shared\Http\Controllers\StorefrontController;
 use App\Modules\Shared\Http\Controllers\TenantAuthController;
 use App\Modules\Vehicles\Http\Controllers\CompanyController;
 use App\Modules\Vehicles\Http\Controllers\VehicleController;
@@ -52,6 +53,14 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::get('queue/screen/public', [QueueController::class, 'screen']);
+
+Route::prefix('storefront')->group(function () {
+    Route::get('/', [StorefrontController::class, 'show']);
+    Route::get('services', [StorefrontController::class, 'services']);
+    Route::get('branches', [StorefrontController::class, 'branches']);
+    Route::get('time-slots/available', [StorefrontController::class, 'availableTimeSlots']);
+    Route::post('bookings', [StorefrontController::class, 'storeBooking']);
+});
 
 Route::middleware('auth:tenant')->group(function () {
     Route::get('/me', fn () => response()->json([

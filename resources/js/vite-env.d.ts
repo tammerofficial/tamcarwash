@@ -1,5 +1,13 @@
 /// <reference types="vite/client" />
 
+export interface TenantBranding {
+    logo_url?: string | null;
+    primary_color?: string;
+    tagline?: string | null;
+    about?: string | null;
+    social?: Record<string, string>;
+}
+
 export interface TammerAppConfig {
     appName: string;
     apiBaseUrl: string;
@@ -16,6 +24,9 @@ export interface TammerAppConfig {
         id: string;
         name: string;
         slug: string;
+        email?: string | null;
+        phone?: string | null;
+        branding?: TenantBranding | null;
     } | null;
     allowQuickLogin?: boolean;
 }

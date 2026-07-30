@@ -10,7 +10,6 @@ use App\Models\TenantUser;
 use App\Modules\Branches\Enums\BranchStatus;
 use App\Modules\Branches\Models\Branch;
 use App\Services\Landlord\PlatformSettingsService;
-use Database\Seeders\DemoTenantUsersSeeder;
 use Database\Seeders\TenantProductionSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +22,7 @@ class TenantProvisioningService
     public function __construct(
         protected TenantConnectionManager $connectionManager,
         protected TenantMigrationRunner $migrationRunner,
+        protected DemoUserSeedingService $demoUserSeeding,
     ) {}
 
     /**
@@ -243,12 +243,8 @@ class TenantProvisioningService
             ]
         );
 
-        if ($tenant->slug === 'demo') {
-            Artisan::call('db:seed', [
-                '--class' => DemoTenantUsersSeeder::class,
-                '--force' => true,
-                '--database' => config('tenancy.tenant_connection', 'tenant'),
-            ]);
+        if ($this->demoUserSeeding->shouldSeedFor($tenant)) {
+            $this->demoUserSeeding->seed();
         }
 
         $this->connectionManager->useLandlord();

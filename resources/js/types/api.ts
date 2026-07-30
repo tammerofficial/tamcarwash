@@ -223,3 +223,94 @@ export interface TenantSettings {
     timezone: string;
     plan?: PlanMeta | null;
 }
+
+export interface StorefrontBranding {
+    logo_url?: string | null;
+    primary_color?: string;
+    tagline?: string | null;
+    about?: string | null;
+    social?: Record<string, string>;
+}
+
+export interface StorefrontProfile {
+    business_name: string;
+    tenant_slug?: string;
+    email?: string | null;
+    phone?: string | null;
+    country?: string;
+    timezone?: string;
+    currency?: string;
+    vat_rate?: number;
+    branding?: StorefrontBranding;
+    stats?: {
+        branches: number;
+        services: number;
+    };
+}
+
+export interface StorefrontBranch {
+    id: number;
+    name: string;
+    code: string;
+    address?: string;
+    city: string;
+    phone?: string;
+    email?: string;
+    is_active: boolean;
+    working_hours?: WorkingHour[];
+}
+
+export interface WorkingHour {
+    id: number;
+    day_of_week: number;
+    opens_at?: string;
+    closes_at?: string;
+    is_closed: boolean;
+}
+
+export interface StorefrontService {
+    id: number;
+    name: string;
+    name_ar?: string;
+    description?: string;
+    duration_minutes: number;
+    base_price: number;
+    vat_included: boolean;
+    is_active: boolean;
+    category?: {
+        id: number;
+        name: string;
+    };
+}
+
+export interface StorefrontTimeSlot {
+    id: number;
+    branch_id: number;
+    slot_date: string;
+    start_time: string;
+    end_time: string;
+    remaining_capacity: number;
+    is_available: boolean;
+}
+
+export interface PublicBookingPayload {
+    branch_id: number;
+    time_slot_id?: number;
+    scheduled_date: string;
+    scheduled_start_time: string;
+    scheduled_end_time?: string;
+    notes?: string;
+    service_ids?: number[];
+    customer: {
+        name: string;
+        phone: string;
+        email?: string;
+    };
+    vehicle: {
+        plate_number: string;
+        brand?: string;
+        model?: string;
+        color?: string;
+        vehicle_type?: string;
+    };
+}

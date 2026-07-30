@@ -7,6 +7,8 @@ import { LandlordAuthProvider } from '@/providers/LandlordAuthProvider';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterTenantPage } from '@/pages/auth/RegisterTenantPage';
 import { MarketingHomePage } from '@/pages/marketing/MarketingHomePage';
+import { TenantMarketingHomePage } from '@/pages/marketing/TenantMarketingHomePage';
+import { PublicBookingPage } from '@/pages/booking/PublicBookingPage';
 import { DashboardPage } from '@/pages/dashboard/DashboardPage';
 import { BranchesPage } from '@/pages/branches/BranchesPage';
 import { CustomersPage } from '@/pages/customers/CustomersPage';
@@ -26,13 +28,16 @@ import { LandlordTenantsPage } from '@/pages/landlord/LandlordTenantsPage';
 import { LandlordSubscriptionsPage } from '@/pages/landlord/LandlordSubscriptionsPage';
 import { LandlordPlansPage } from '@/pages/landlord/LandlordPlansPage';
 import { LandlordSettingsPage } from '@/pages/landlord/LandlordSettingsPage';
-import { getRouterBasename, isLandlordContext } from '@/lib/tenancy';
+import { getRouterBasename, isLandlordContext, isTenantContext } from '@/lib/tenancy';
 
 function TenantRoutes() {
+    const tenantPublic = isTenantContext();
+
     return (
         <Routes>
             <Route element={<MarketingRoute />}>
-                <Route index element={<MarketingHomePage />} />
+                <Route index element={tenantPublic ? <TenantMarketingHomePage /> : <MarketingHomePage />} />
+                <Route path="/booking" element={<PublicBookingPage />} />
             </Route>
 
             <Route element={<GuestRoute />}>

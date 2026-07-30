@@ -109,3 +109,7 @@ export function tenantPath(path: string): string {
 
     return `${basename}${normalized}`;
 }
+
+export function isTenantContext(): boolean {
+    return ! isLandlordContext() && resolveTenantSlug() !== null;
+}

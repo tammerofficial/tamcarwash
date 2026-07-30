@@ -37,7 +37,7 @@
                         if (filled($subdomain) && ! in_array($subdomain, ['www', 'api', 'admin', 'landlord', 'platform'], true)) {
                             $tenant = Tenant::query()
                                 ->where('slug', $subdomain)
-                                ->first(['id', 'name', 'slug']);
+                                ->first(['id', 'name', 'slug', 'email', 'phone', 'settings', 'metadata']);
                         }
                     }
 
@@ -51,7 +51,7 @@
                         $subdirectorySlug = strtolower($firstSegment);
                         $tenant = Tenant::query()
                             ->where('slug', $subdirectorySlug)
-                            ->first(['id', 'name', 'slug']);
+                            ->first(['id', 'name', 'slug', 'email', 'phone', 'settings', 'metadata']);
                     }
                 } catch (\Throwable) {
                     // Landlord DB may be unavailable during local setup.
@@ -69,6 +69,30 @@
             } catch (\Throwable) {
                 $tenancyMode = config('tenancy.subdirectory_enabled', false) ? 'subdirectory' : 'subdomain';
             }
+
+            $tenantBranding = null;
+
+            if ($tenant) {
+                $tenantSettings = is_array($tenant->settings ?? null) ? $tenant->settings : [];
+                $tenantMetadata = is_array($tenant->metadata ?? null) ? $tenant->metadata : [];
+
+                $tenantBranding = [
+                    'logo_url' => $tenantSettings['logo_url'] ?? $tenantMetadata['logo_url'] ?? null,
+                    'primary_color' => $tenantSettings['primary_color'] ?? $tenantMetadata['primary_color'] ?? '#0ea5e9',
+                    'tagline' => $tenantSettings['tagline'] ?? $tenantMetadata['tagline'] ?? null,
+                    'about' => $tenantSettings['about'] ?? $tenantMetadata['about'] ?? null,
+                    'social' => $tenantSettings['social'] ?? $tenantMetadata['social'] ?? [],
+                ];
+            }
+
+            $tenantPayload = $tenant ? [
+                'id' => $tenant->id,
+                'name' => $tenant->name,
+                'slug' => $tenant->slug,
+                'email' => $tenant->email,
+                'phone' => $tenant->phone,
+                'branding' => $tenantBranding,
+            ] : null;
         @endphp
 
         <script>
@@ -79,7 +103,7 @@
                 sanctumUrl: @json(url('/sanctum/csrf-cookie')),
                 csrfToken: @json(csrf_token()),
                 isLandlord: @json($isLandlord),
-                tenant: @json($tenant),
+                tenant: @json($tenantPayload),
                 tenancyMode: @json($tenancyMode),
                 subdirectoryEnabled: @json(config('tenancy.subdirectory_enabled', false)),
                 reservedPaths: @json(config('tenancy.reserved_paths', [])),

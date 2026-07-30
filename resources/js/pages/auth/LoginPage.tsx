@@ -71,7 +71,12 @@ export function LoginPage() {
         form.setValue('password', password);
 
         try {
-            await submitLogin({ email, password, remember: false });
+            await submitLogin({
+                email,
+                password,
+                remember: false,
+                tenant_slug: form.getValues('tenant_slug')?.trim() || storedTenantSlug || undefined,
+            });
         } finally {
             setQuickLoginRole(null);
         }

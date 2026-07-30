@@ -33,7 +33,7 @@ export const ar = {
         tenantSlugHint: 'الرابط الذي اخترته عند التسجيل (مثل: al-wadi-wash)',
         quickLogin: {
             title: 'دخول سريع (تطوير)',
-            hint: 'حسابات تجريبية — بدون إدخال يدوي',
+            hint: 'حسابات تجريبية — كلمة المرور: password',
             owner: 'مالك',
             manager: 'مدير',
             cashier: 'كاشير',

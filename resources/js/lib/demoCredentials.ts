@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import { CreditCard, Crown, Shield, UserCog, Wrench } from 'lucide-react';
 
-/** Demo tenant users — seeded by DemoTenantUsersSeeder (see README quick login) */
+/** Demo quick-login users — seeded by DemoTenantUsersSeeder (demo tenant + all tenants in local dev) */
 /** Demo landlord user — seeded by PlatformUserSeeder / LandlordProductionSeeder */
 export const DEMO_PASSWORD = 'password';
 
