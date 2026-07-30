@@ -28,3 +28,4 @@ php artisan tenants:migrate
 php artisan optimize
 
 echo "Deploy finished: landlord migrated, production seeders run, tenant migrations applied."
+echo "If web routes return 500 but /up works, set SESSION_DRIVER=file in Forge env and run: php artisan config:clear && php artisan optimize"

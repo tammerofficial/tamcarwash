@@ -249,9 +249,43 @@ Tammer Wash uses **landlord** and **per-tenant** migration paths. Running bare `
 
 **Forge environment (required)**
 
-- `DB_CONNECTION=landlord` (not `mysql` alone)
-- `LANDLORD_DB_DATABASE=tamcarwash_landlord`
-- `TENANT_DB_DRIVER=mysql` and `TENANT_DB_PREFIX=tamcarwash_tenant_`
+| Variable | Value |
+|----------|-------|
+| `APP_KEY` | `php artisan key:generate --show` (must be set) |
+| `APP_ENV` | `production` |
+| `APP_DEBUG` | `false` |
+| `APP_URL` | `https://tamcarwash.on-forge.com` |
+| `DB_CONNECTION` | `landlord` (not `mysql` alone) |
+| `LANDLORD_DB_DRIVER` | `mysql` |
+| `LANDLORD_DB_DATABASE` | `tamcarwash_landlord` |
+| `TENANT_DB_DRIVER` | `mysql` |
+| `TENANT_DB_PREFIX` | `tamcarwash_tenant_` |
+| `PLATFORM_DOMAIN` | `tamcarwash.on-forge.com` |
+| `TENANCY_PLATFORM_DOMAIN` | `tamcarwash.on-forge.com` |
+| `TENANCY_CENTRAL_DOMAINS` | includes `tamcarwash.on-forge.com` |
+| `SESSION_DRIVER` | `file` (or `redis` with Redis installed) |
+| `CACHE_STORE` | `file` (or `redis`) |
+| `SESSION_DOMAIN` | `.tamcarwash.on-forge.com` |
+| `SANCTUM_STATEFUL_DOMAINS` | `tamcarwash.on-forge.com,*.tamcarwash.on-forge.com` |
+
+**If the site returns 500 but `/up` and `/api/landlord/v1/health` work**
+
+Web routes use sessions; API/health routes do not. Common causes:
+
+1. **`SESSION_DRIVER=database` without a `sessions` table** — set `SESSION_DRIVER=file` in Forge env, then `php artisan config:clear && php artisan optimize`.
+2. **Missing `APP_KEY`** — run `php artisan key:generate --show` and paste into Forge env.
+3. **Landlord migrations not run** — run the deploy script migration step (includes `sessions` table when using database sessions).
+4. **Stale config cache** — `php artisan config:clear && php artisan optimize`.
+
+Quick diagnostic on the server:
+
+```bash
+cd /home/forge/tamcarwash.on-forge.com/current
+php artisan about
+tail -50 storage/logs/laravel.log
+grep SESSION_DRIVER .env
+php artisan migrate:status --database=landlord --path=database/migrations/landlord
+```
 
 **Deployment script** — copy from [`deploy/forge-deploy.sh`](deploy/forge-deploy.sh) or use:
 
@@ -419,7 +453,7 @@ See `.env.example` for full reference. Key settings:
 | `TENANCY_SUBDIRECTORY_ENABLED` | `true` | enable `/{slug}/*` tenant URLs |
 | `TENANCY_CENTRAL_DOMAINS` | includes platform host | hosts without subdomain tenant |
 | `FORGE_HEARTBEAT_URL` | optional | Forge/monitoring ping after scheduled jobs |
-| `CACHE_STORE` / `SESSION_DRIVER` | `file` | `redis` |
+| `CACHE_STORE` / `SESSION_DRIVER` | `file` | `file` (or `redis` when Redis is configured) |
 
 ---
 
