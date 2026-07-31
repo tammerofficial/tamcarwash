@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { CalendarDays, Droplets, Facebook, Instagram, Mail, MapPin, Phone } from 'lucide-react';
+import { MarketingCredits } from '@/components/marketing/MarketingCredits';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ARABIC_DAYS, getBranchAddress, getTenantBranding, getTenantDisplayName, getTenantPhone } from '@/hooks/useStorefront';
@@ -155,11 +156,14 @@ export function TenantMarketingFooter({ profile, branches }: TenantMarketingFoot
 
                 <Separator className="my-8" />
 
-                <div className="flex flex-col items-center justify-between gap-2 text-sm text-muted-foreground sm:flex-row">
-                    <p>
-                        © {year} {businessName}. جميع الحقوق محفوظة.
-                    </p>
-                    <p>مدعوم من تمير واش</p>
+                <div className="flex flex-col items-center gap-3">
+                    <div className="flex w-full flex-col items-center justify-between gap-2 text-sm text-muted-foreground sm:flex-row">
+                        <p>
+                            © {year} {businessName}. جميع الحقوق محفوظة.
+                        </p>
+                        <p>مدعوم من تمير واش</p>
+                    </div>
+                    <MarketingCredits />
                 </div>
             </div>
         </footer>

@@ -23,6 +23,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from '@/components/ui/accordion';
+import { MarketingCredits } from '@/components/marketing/MarketingCredits';
 import { Separator } from '@/components/ui/separator';
 import { t } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -493,9 +494,12 @@ export function MarketingHomePage() {
 
                     <Separator className="my-8" />
 
-                    <p className="text-center text-sm text-muted-foreground">
-                        {t('marketing.footer.copyright').replace('{year}', String(year))}
-                    </p>
+                    <div className="space-y-2 text-center">
+                        <p className="text-sm text-muted-foreground">
+                            {t('marketing.footer.copyright').replace('{year}', String(year))}
+                        </p>
+                        <MarketingCredits />
+                    </div>
                 </div>
             </footer>
         </div>
