@@ -1,13 +1,40 @@
 import { appConfig } from '@/lib/api';
 import type { StorefrontProfile, TenantBrandingPayload } from '@/types/api';
 
-/** Dark teal hero background — verified in PublicHero, HomePage headings */
-export const DEFAULT_BRAND_PRIMARY = '#004d4d';
+export function initDocumentTitle(): void {
+    document.title = getDocumentTitle();
+}
 
-/** Teal accent (tailwind teal-500) — verified in PublicHero CTAs, TrustStrip icons */
-export const DEFAULT_BRAND_SECONDARY = '#14b8a6';
+export function getAppName(): string {
+    return appConfig.appName || appConfig.platform?.name || 'تمير واش';
+}
 
-export const DEFAULT_BRAND_PRIMARY_DARK = '#002d2d';
+export function getAppTagline(): string | null {
+    return appConfig.tagline ?? appConfig.platform?.tagline ?? null;
+}
+
+export function getPlatformName(): string {
+    return appConfig.platform?.name ?? appConfig.appName ?? 'تمير واش';
+}
+
+export function getPlatformTagline(): string | null {
+    return appConfig.platform?.tagline ?? null;
+}
+
+export function getDocumentTitle(): string {
+    const name = getAppName();
+    const tagline = getAppTagline();
+
+    return tagline ? `${name} — ${tagline}` : name;
+}
+
+/** Professional government deep blue primary */
+export const DEFAULT_BRAND_PRIMARY = '#003D5C';
+
+/** Bright light blue accent for institutional design */
+export const DEFAULT_BRAND_SECONDARY = '#4A90E2';
+
+export const DEFAULT_BRAND_PRIMARY_DARK = '#001F35';
 
 export interface ResolvedTenantBranding {
     logoUrl: string | null;

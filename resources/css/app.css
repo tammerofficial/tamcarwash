@@ -84,10 +84,10 @@
     --admin-sidebar-active: 180 100% 15%;
     --admin-sidebar-active-foreground: 0 0% 100%;
 
-    /* Tenant storefront branding (homepage/marketing) */
-    --brand-primary: #004d4d;
-    --brand-secondary: #14b8a6;
-    --brand-primary-dark: #002d2d;
+    /* Tenant storefront branding (homepage/marketing) - Government Professional Blue */
+    --brand-primary: #003D5C;
+    --brand-secondary: #4A90E2;
+    --brand-primary-dark: #001F35;
 }
 
 .dark {

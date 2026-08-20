@@ -1,9 +1,14 @@
 <?php
 
 return [
+    'platform' => [
+        'name' => env('TAMMER_PLATFORM_NAME', 'تمير واش'),
+        'tagline' => env('TAMMER_PLATFORM_TAGLINE', 'Enterprise SaaS'),
+    ],
+
     'branding' => [
-        'primary_color' => '#004d4d',
-        'secondary_color' => '#14b8a6',
+        'primary_color' => '#003D5C',
+        'secondary_color' => '#4A90E2',
     ],
 
     'contact' => [
