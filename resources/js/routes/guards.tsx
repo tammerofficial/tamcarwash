@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/providers/AuthProvider';
 import { Skeleton } from '@/components/ui/skeleton';
+import { isTenantContext } from '@/lib/tenancy';
 
 export function ProtectedRoute() {
     const { isAuthenticated, isLoading } = useAuth();
@@ -40,6 +41,7 @@ export function GuestRoute() {
 
 export function MarketingRoute() {
     const { isAuthenticated, isLoading } = useAuth();
+    const tenantPublic = isTenantContext();
 
     if (isLoading) {
         return (
@@ -49,7 +51,9 @@ export function MarketingRoute() {
         );
     }
 
-    if (isAuthenticated) {
+    // Platform marketing home: send logged-in users to dashboard.
+    // Tenant public home: always show landing for guests and authenticated users.
+    if (isAuthenticated && !tenantPublic) {
         return <Navigate to="/dashboard" replace />;
     }
 

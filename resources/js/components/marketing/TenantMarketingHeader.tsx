@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { CalendarDays, Droplets, LogIn, Menu, Phone, X } from 'lucide-react';
+import { CalendarDays, Droplets, LayoutDashboard, LogIn, Menu, Phone, X } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { getTenantBranding, getTenantDisplayName, getTenantPhone } from '@/hooks/useStorefront';
 import type { StorefrontProfile } from '@/types/api';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/providers/AuthProvider';
 
 interface TenantMarketingHeaderProps {
     profile?: StorefrontProfile | null;
@@ -16,6 +17,7 @@ function scrollTo(id: string) {
 
 export function TenantMarketingHeader({ profile }: TenantMarketingHeaderProps) {
     const [mobileOpen, setMobileOpen] = useState(false);
+    const { isAuthenticated } = useAuth();
     const branding = getTenantBranding(profile);
     const businessName = getTenantDisplayName(profile);
     const contactPhone = getTenantPhone(profile);
@@ -75,12 +77,21 @@ export function TenantMarketingHeader({ profile }: TenantMarketingHeaderProps) {
                             {contactPhone}
                         </a>
                     </Button>
-                    <Button variant="outline" size="sm" asChild>
-                        <Link to="/login">
-                            <LogIn className="me-2 h-4 w-4" />
-                            دخول الموظفين
-                        </Link>
-                    </Button>
+                    {isAuthenticated ? (
+                        <Button variant="outline" size="sm" asChild>
+                            <Link to="/dashboard">
+                                <LayoutDashboard className="me-2 h-4 w-4" />
+                                لوحة التحكم
+                            </Link>
+                        </Button>
+                    ) : (
+                        <Button variant="outline" size="sm" asChild>
+                            <Link to="/login">
+                                <LogIn className="me-2 h-4 w-4" />
+                                دخول الموظفين
+                            </Link>
+                        </Button>
+                    )}
                     <Button size="sm" asChild style={{ backgroundColor: branding.primaryColor }}>
                         <Link to="/booking">
                             <CalendarDays className="me-2 h-4 w-4" />
@@ -119,11 +130,20 @@ export function TenantMarketingHeader({ profile }: TenantMarketingHeaderProps) {
                             {item.label}
                         </button>
                     ))}
-                    <Button variant="outline" asChild className="mt-2">
-                        <Link to="/login" onClick={() => setMobileOpen(false)}>
-                            دخول الموظفين
-                        </Link>
-                    </Button>
+                    {isAuthenticated ? (
+                        <Button variant="outline" asChild className="mt-2">
+                            <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
+                                <LayoutDashboard className="me-2 h-4 w-4" />
+                                لوحة التحكم
+                            </Link>
+                        </Button>
+                    ) : (
+                        <Button variant="outline" asChild className="mt-2">
+                            <Link to="/login" onClick={() => setMobileOpen(false)}>
+                                دخول الموظفين
+                            </Link>
+                        </Button>
+                    )}
                     <Button asChild style={{ backgroundColor: branding.primaryColor }}>
                         <Link to="/booking" onClick={() => setMobileOpen(false)}>
                             احجز موعد غسيل سيارتك
