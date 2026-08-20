@@ -27,7 +27,7 @@ class DiscountController extends ApiController
 
         $discounts = QueryBuilder::for(Discount::class)
             ->allowedFilters(AllowedFilter::exact('is_active'), AllowedFilter::exact('type'))
-            ->allowedIncludes(['coupons'])
+            ->allowedIncludes('coupons')
             ->paginate($request->integer('per_page', 20));
 
         return $this->paginatedResourceResponse($discounts, DiscountResource::class);

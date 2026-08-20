@@ -29,7 +29,7 @@ class ServiceCategoryController extends ApiController
         $categories = QueryBuilder::for(ServiceCategory::class)
             ->allowedFilters(AllowedFilter::exact('is_active'), AllowedFilter::partial('name'))
             ->allowedSorts('sort_order', 'name')
-            ->allowedIncludes(['services'])
+            ->allowedIncludes('services')
             ->paginate($request->integer('per_page', 50));
 
         return $this->paginatedResourceResponse($categories, ServiceCategoryResource::class);

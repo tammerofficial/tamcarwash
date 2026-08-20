@@ -63,7 +63,7 @@ class DashboardController extends ApiController
             ->groupBy('status')
             ->get()
             ->map(fn ($row) => [
-                'status' => (string) $row->status,
+                'status' => $row->status instanceof \BackedEnum ? $row->status->value : (string) $row->status,
                 'count' => (int) $row->count,
             ])
             ->values()

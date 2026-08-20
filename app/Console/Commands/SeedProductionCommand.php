@@ -16,7 +16,8 @@ class SeedProductionCommand extends Command
 {
     protected $signature = 'app:seed-production
                             {--tenants : Seed all active tenant databases}
-                            {--tenant= : Seed a specific tenant slug or UUID}';
+                            {--tenant= : Seed a specific tenant slug or UUID}
+                            {--force : Accepted for deploy-script compatibility (seeding is already non-destructive)}';
 
     protected $description = 'Run idempotent production seeders for landlord and optionally tenant databases (never truncates)';
 
