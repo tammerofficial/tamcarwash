@@ -124,7 +124,7 @@ function VehicleFormDialog({
             onOpenChange(false);
         },
         onError: (error) => {
-            applyFieldErrors(error, form.setError);
+            applyFieldErrors<VehicleFormValues>(error, form.setError);
             showApiError(error, isEdit ? t('vehicles.updateError') : t('vehicles.createError'));
         },
     });

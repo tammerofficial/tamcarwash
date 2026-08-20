@@ -120,7 +120,7 @@ function CustomerFormDialog({
             }
         },
         onError: (error) => {
-            applyFieldErrors(error, form.setError);
+            applyFieldErrors<CustomerFormValues>(error, form.setError);
             showApiError(error, isEdit ? t('customers.updateError') : t('customers.createError'));
         },
     });

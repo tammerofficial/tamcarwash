@@ -155,7 +155,7 @@ function BranchFormDialog({
             onOpenChange(false);
         },
         onError: (error) => {
-            applyFieldErrors(error, form.setError);
+            applyFieldErrors<BranchFormValues>(error, form.setError);
             showApiError(error, isEdit ? t('branches.updateError') : t('branches.createError'));
         },
     });
