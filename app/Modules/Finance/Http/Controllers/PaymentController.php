@@ -17,6 +17,8 @@ class PaymentController extends ApiController
 
     public function index(Request $request): JsonResponse
     {
+        $this->authorize('viewAny', Payment::class);
+
         $payments = QueryBuilder::for(Payment::class)
             ->allowedFilters(
                 AllowedFilter::exact('branch_id'),
@@ -40,6 +42,8 @@ class PaymentController extends ApiController
 
     public function store(Request $request): JsonResponse
     {
+        $this->authorize('create', Payment::class);
+
         $validated = $request->validate([
             'invoice_id' => ['nullable', 'exists:invoices,id'],
             'order_id' => ['nullable', 'exists:orders,id'],

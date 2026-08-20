@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
-import { Car, Loader2, ArrowRight, ShieldCheck, Building2, Lock, User as UserIcon, LogIn, Droplets, Info, ChevronRight, ClipboardList, Users } from 'lucide-react';
+import { Car, Loader2, ArrowLeft, ShieldCheck, Building2, Lock, User as UserIcon, LogIn, Droplets, Info, ChevronLeft, ClipboardList, Users } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
 import { appConfig, getActiveTenantSlug } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -114,65 +114,8 @@ export function LoginPage() {
         <section className="min-h-screen bg-muted/30 flex items-center justify-center p-4 sm:p-6 lg:p-8 animate-in fade-in duration-700">
             <div className="w-full max-w-[1200px] bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-border/40 grid lg:grid-cols-12">
                 
-                {/* 1. Left Aside: Institutional Branding & Values */}
-                <aside className="lg:col-span-5 relative overflow-hidden bg-primary text-primary-foreground p-8 sm:p-12 flex flex-col justify-between min-h-[400px] lg:min-h-[700px]">
-                    {/* Background Decorations */}
-                    <div className="absolute inset-0 pointer-events-none opacity-5">
-                        <Car className="absolute -top-10 -left-10 h-64 w-64 rotate-12" />
-                        <Droplets className="absolute -bottom-20 right-20 h-96 w-96 -rotate-12" />
-                        <Car className="absolute top-1/2 left-1/3 h-48 w-48 opacity-50" />
-                    </div>
-
-                    <div className="relative z-10 space-y-10">
-                        <div className="space-y-6">
-                            <div className="bg-white p-4 rounded-3xl inline-block shadow-xl">
-                                <Car className="h-10 w-10 text-primary" />
-                            </div>
-                            <div className="space-y-2">
-                                <Badge className="bg-white/20 text-white border-none px-4 py-1 rounded-full font-black text-[10px] uppercase tracking-widest">
-                                    {isLandlord ? t('auth.landlordPortal') || 'بوابة الإدارة المركزية' : t('auth.tenantPortal') || 'بوابة المشتركين'}
-                                </Badge>
-                                <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-tight mt-4">
-                                    {t('auth.loginTitle')}
-                                </h1>
-                            </div>
-                            <p className="text-white/60 text-lg leading-relaxed max-w-sm font-medium">
-                                {isLandlord ? t('auth.landlordLogin') : t('auth.tenantLogin')}
-                            </p>
-                        </div>
-
-                        {/* Value Props / Features */}
-                        <div className="space-y-4">
-                            {features.map((feature, i) => (
-                                <div key={i} className="flex items-center gap-4 group">
-                                    <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center text-white group-hover:bg-white group-hover:text-primary transition-all duration-300">
-                                        <feature.icon className="h-5 w-5" />
-                                    </div>
-                                    <div>
-                                        <p className="font-black text-sm">{feature.title}</p>
-                                        <p className="text-xs text-white/40 font-bold">{feature.body}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="relative z-10">
-                        <div className="p-6 rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur-md">
-                            <div className="flex items-center gap-4">
-                                <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white">
-                                    <ShieldCheck className="h-5 w-5" />
-                                </div>
-                                <p className="text-xs text-white/60 font-bold leading-relaxed">
-                                    {t('auth.officialNotice') || 'نظام آمن ومشفر لحماية بياناتك ومعاملاتك المالية.'}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </aside>
-
-                {/* 2. Right Side: Login Form */}
-                <main className="lg:col-span-7 bg-muted/5 p-8 sm:p-12 lg:p-20 flex flex-col justify-center">
+                {/* 1. Login Form — first in RTL grid = right side */}
+                <main className="lg:col-span-7 bg-muted/5 p-8 sm:p-12 lg:p-20 flex flex-col justify-center order-2 lg:order-1">
                     <div className="max-w-md mx-auto w-full space-y-10">
                         {/* Welcome Header */}
                         <div className="space-y-4 text-center lg:text-start">
@@ -307,7 +250,7 @@ export function LoginPage() {
                                         ) : (
                                             <div className="flex items-center gap-3">
                                                 {t('auth.submit')}
-                                                <ArrowRight className="h-5 w-5" />
+                                                <ArrowLeft className="h-5 w-5" />
                                             </div>
                                         )}
                                     </Button>
@@ -350,7 +293,7 @@ export function LoginPage() {
                                                 {isLoading ? (
                                                     <Loader2 className="h-3 w-3 animate-spin text-primary" />
                                                 ) : (
-                                                    <ChevronRight className="h-4 w-4 text-muted-foreground/30 group-hover:text-primary" />
+                                                    <ChevronLeft className="h-4 w-4 text-muted-foreground/30 group-hover:text-primary" />
                                                 )}
                                             </Button>
                                         );
@@ -360,6 +303,63 @@ export function LoginPage() {
                         )}
                     </div>
                 </main>
+
+                {/* 2. Branding panel — second in RTL grid = left side */}
+                <aside className="lg:col-span-5 relative overflow-hidden bg-primary text-primary-foreground p-8 sm:p-12 flex flex-col justify-between min-h-[400px] lg:min-h-[700px] order-1 lg:order-2">
+                    {/* Background Decorations */}
+                    <div className="absolute inset-0 pointer-events-none opacity-5">
+                        <Car className="absolute -top-10 -start-10 h-64 w-64 rotate-12" />
+                        <Droplets className="absolute -bottom-20 end-20 h-96 w-96 -rotate-12" />
+                        <Car className="absolute top-1/2 start-1/3 h-48 w-48 opacity-50" />
+                    </div>
+
+                    <div className="relative z-10 space-y-10">
+                        <div className="space-y-6">
+                            <div className="bg-white p-4 rounded-3xl inline-block shadow-xl">
+                                <Car className="h-10 w-10 text-primary" />
+                            </div>
+                            <div className="space-y-2">
+                                <Badge className="bg-white/20 text-white border-none px-4 py-1 rounded-full font-black text-[10px] uppercase tracking-widest">
+                                    {isLandlord ? t('auth.landlordPortal') || 'بوابة الإدارة المركزية' : t('auth.tenantPortal') || 'بوابة المشتركين'}
+                                </Badge>
+                                <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-tight mt-4">
+                                    {t('auth.loginTitle')}
+                                </h1>
+                            </div>
+                            <p className="text-white/60 text-lg leading-relaxed max-w-sm font-medium">
+                                {isLandlord ? t('auth.landlordLogin') : t('auth.tenantLogin')}
+                            </p>
+                        </div>
+
+                        {/* Value Props / Features */}
+                        <div className="space-y-4">
+                            {features.map((feature, i) => (
+                                <div key={i} className="flex items-center gap-4 group">
+                                    <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center text-white group-hover:bg-white group-hover:text-primary transition-all duration-300">
+                                        <feature.icon className="h-5 w-5" />
+                                    </div>
+                                    <div className="text-start">
+                                        <p className="font-black text-sm">{feature.title}</p>
+                                        <p className="text-xs text-white/40 font-bold">{feature.body}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="relative z-10">
+                        <div className="p-6 rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur-md">
+                            <div className="flex items-center gap-4">
+                                <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white">
+                                    <ShieldCheck className="h-5 w-5" />
+                                </div>
+                                <p className="text-xs text-white/60 font-bold leading-relaxed text-start">
+                                    {t('auth.officialNotice') || 'نظام آمن ومشفر لحماية بياناتك ومعاملاتك المالية.'}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
             </div>
         </section>
     );

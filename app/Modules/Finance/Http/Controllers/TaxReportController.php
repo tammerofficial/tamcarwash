@@ -14,6 +14,8 @@ class TaxReportController extends ApiController
 
     public function summary(Request $request): JsonResponse
     {
+        $this->authorize('viewFinanceReports');
+
         $validated = $request->validate([
             'period' => ['nullable', 'in:daily,monthly,quarterly'],
             'branch_id' => ['nullable', 'integer'],
@@ -55,6 +57,8 @@ class TaxReportController extends ApiController
 
     public function daily(Request $request): JsonResponse
     {
+        $this->authorize('viewFinanceReports');
+
         $validated = $request->validate([
             'date' => ['nullable', 'date'],
             'branch_id' => ['nullable', 'integer'],
@@ -68,6 +72,8 @@ class TaxReportController extends ApiController
 
     public function monthly(Request $request): JsonResponse
     {
+        $this->authorize('viewFinanceReports');
+
         $validated = $request->validate([
             'year' => ['nullable', 'integer', 'min:2020', 'max:2100'],
             'month' => ['nullable', 'integer', 'min:1', 'max:12'],
@@ -85,6 +91,8 @@ class TaxReportController extends ApiController
 
     public function quarterly(Request $request): JsonResponse
     {
+        $this->authorize('viewFinanceReports');
+
         $validated = $request->validate([
             'year' => ['nullable', 'integer', 'min:2020', 'max:2100'],
             'quarter' => ['nullable', 'integer', 'min:1', 'max:4'],
@@ -102,6 +110,8 @@ class TaxReportController extends ApiController
 
     public function breakdown(Request $request): JsonResponse
     {
+        $this->authorize('viewFinanceReports');
+
         $validated = $request->validate([
             'from' => ['required', 'date'],
             'to' => ['required', 'date', 'after_or_equal:from'],

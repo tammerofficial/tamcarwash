@@ -66,7 +66,7 @@ export function MarketingHomePage() {
     const year = new Date().getFullYear();
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background" dir="rtl">
             {/* Navbar */}
             <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-lg">
                 <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">

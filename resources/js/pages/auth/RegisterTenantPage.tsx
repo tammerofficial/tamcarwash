@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowRight, Check, Droplets, Loader2 } from 'lucide-react';
+import { ArrowLeft, Check, Droplets, Loader2 } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
 import {
     api,
@@ -335,7 +335,7 @@ export function RegisterTenantPage() {
                                     ) : (
                                         <>
                                             {t('register.submit')}
-                                            <ArrowRight className="size-4" />
+                                            <ArrowLeft className="size-4" />
                                         </>
                                     )}
                                 </Button>

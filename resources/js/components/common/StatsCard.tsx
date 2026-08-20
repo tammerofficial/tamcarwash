@@ -38,7 +38,7 @@ export function StatsCard({ title, value, icon: Icon, format = 'number', loading
                 </>
             )}
             
-            <ArrowUpRight className="absolute bottom-8 end-8 h-5 w-5 text-muted-foreground/20 group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+            <ArrowUpRight className="absolute bottom-8 end-8 h-5 w-5 text-muted-foreground/20 group-hover:text-primary group-hover:-translate-x-1 group-hover:-translate-y-1 transition-all rtl:rotate-90" />
         </Card>
     );
 }

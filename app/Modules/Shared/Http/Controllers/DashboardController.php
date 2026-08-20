@@ -21,6 +21,8 @@ class DashboardController extends ApiController
 
     public function stats(Request $request): JsonResponse
     {
+        abort_unless($request->user()?->can('dashboard.view'), 403);
+
         $branchId = $request->integer('branch_id') ?: null;
         $today = now()->toDateString();
 

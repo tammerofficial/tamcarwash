@@ -125,7 +125,22 @@
     }
 
     body {
-        @apply bg-background text-foreground font-sans antialiased;
+        @apply bg-background text-foreground font-sans antialiased text-start;
+    }
+
+    input:not([dir='ltr']),
+    textarea:not([dir='ltr']),
+    select:not([dir='ltr']) {
+        text-align: start;
+    }
+
+    input[dir='ltr'],
+    textarea[dir='ltr'] {
+        text-align: left;
+    }
+
+    table {
+        direction: rtl;
     }
 }
 
@@ -151,10 +166,6 @@
 
     .admin-sidebar-nav-item--active {
         @apply bg-primary text-primary-foreground shadow-lg scale-[1.02];
-        background-image: linear-gradient(90deg, hsl(var(--primary)) 0%, #0ea5e9 100%);
-    }
-
-    [dir='rtl'] .admin-sidebar-nav-item--active {
         background-image: linear-gradient(270deg, hsl(var(--primary)) 0%, #0ea5e9 100%);
     }
 

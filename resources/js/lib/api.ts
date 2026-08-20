@@ -85,21 +85,49 @@ export const endpoints = {
     branches: 'branches',
     customers: 'customers',
     vehicles: 'vehicles',
+    serviceCategories: 'service-categories',
     services: 'services',
+    service: (id: number) => `services/${id}`,
     pricing: {
         rules: 'pricing/rules',
+        discounts: 'pricing/discounts',
         coupons: 'pricing/coupons',
+        couponsValidate: 'pricing/coupons/validate',
     },
     bookings: 'bookings',
+    booking: (id: number) => `bookings/${id}`,
+    bookingConfirm: (id: number) => `bookings/${id}/confirm`,
+    bookingCancel: (id: number) => `bookings/${id}/cancel`,
+    bookingReschedule: (id: number) => `bookings/${id}/reschedule`,
+    timeSlots: {
+        available: 'time-slots/available',
+    },
     queue: {
         entries: 'queue/entries',
+        walkIn: 'queue/entries/walk-in',
+        fromBooking: (bookingId: number) => `queue/entries/from-booking/${bookingId}`,
+        entryStatus: (id: number) => `queue/entries/${id}/status`,
         callNext: 'queue/call-next',
+        estimatedWait: 'queue/estimated-wait',
         screen: 'queue/screen',
     },
     orders: 'orders',
+    order: (id: number) => `orders/${id}`,
+    orderTransition: (id: number) => `orders/${id}/transition`,
+    orderAssignWorker: (id: number) => `orders/${id}/assign-worker`,
+    orderAddItem: (id: number) => `orders/${id}/items`,
+    orderInvoice: (orderId: number) => `orders/${orderId}/invoice`,
     invoices: 'invoices',
+    invoice: (id: number) => `invoices/${id}`,
+    invoiceVoid: (id: number) => `invoices/${id}/void`,
+    invoicePdf: (id: number) => `invoices/${id}/pdf`,
     taxReports: 'tax-reports',
+    taxReportsDaily: 'tax-reports/daily',
+    taxReportsMonthly: 'tax-reports/monthly',
+    taxReportsQuarterly: 'tax-reports/quarterly',
+    taxReportsBreakdown: 'tax-reports/breakdown',
     settings: 'settings',
+    taxSettings: 'tax-settings',
     storefront: {
         profile: 'storefront',
         services: 'storefront/services',
@@ -240,6 +268,21 @@ class ApiClient {
         return response.json() as Promise<T>;
     }
 
+    async patch<T>(endpoint: string, body?: unknown): Promise<T> {
+        const response = await fetch(this.buildUrl(endpoint), {
+            method: 'PATCH',
+            headers: this.headers(),
+            credentials: 'same-origin',
+            body: body !== undefined ? JSON.stringify(body) : undefined,
+        });
+
+        if (!response.ok) {
+            await this.handleError(response);
+        }
+
+        return response.json() as Promise<T>;
+    }
+
     async put<T>(endpoint: string, body?: unknown): Promise<T> {
         const response = await fetch(this.buildUrl(endpoint), {
             method: 'PUT',
@@ -280,3 +323,9 @@ class ApiClient {
 
 export const api = new ApiClient();
 export { readTammerConfig as getTammerConfig };
+
+export function buildApiUrl(endpoint: string): string {
+    const config = readTammerConfig();
+    const base = isLandlordContext() ? config.landlordApiBaseUrl : config.apiBaseUrl;
+    return `${window.location.origin}${base}/${endpoint.replace(/^\//, '')}`;
+}

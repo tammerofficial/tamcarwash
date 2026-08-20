@@ -39,11 +39,11 @@ export function AppShell() {
 
     return (
         <div className="flex min-h-screen bg-muted/30">
-            {/* Desktop Sidebar */}
+            {/* Desktop Sidebar — first in RTL flex = right side */}
             <Sidebar 
                 collapsed={collapsed} 
                 onToggleCollapse={() => setCollapsed((v) => !v)}
-                className="hidden lg:flex"
+                className="hidden lg:flex shrink-0"
             />
 
             {/* Mobile Sidebar Overlay */}
@@ -63,15 +63,11 @@ export function AppShell() {
                     onClick={closeMobileNav}
                 />
 
-                {/* Sidebar Panel */}
+                {/* Sidebar Panel — slides from start (right in RTL) */}
                 <div
                     className={cn(
                         'absolute inset-y-0 start-0 transition-transform duration-300 ease-out shadow-2xl',
-                        mobileNavOpen
-                            ? 'translate-x-0'
-                            : document.documentElement.dir === 'rtl'
-                              ? 'translate-x-full'
-                              : '-translate-x-full',
+                        mobileNavOpen ? 'translate-x-0' : 'translate-x-full',
                     )}
                 >
                     <Sidebar

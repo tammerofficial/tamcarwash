@@ -58,12 +58,10 @@ export function Sidebar({
     onNavigate,
     className 
 }: SidebarProps) {
-    const isRtl = document.documentElement.dir === 'rtl';
-
     return (
         <aside
             className={cn(
-                'admin-sidebar flex flex-col transition-all duration-300 shadow-2xl border-s border-white/5',
+                'admin-sidebar flex flex-col transition-all duration-300 shadow-2xl border-e border-white/5 shrink-0',
                 collapsed ? 'admin-sidebar--collapsed w-[4.75rem]' : 'w-72',
                 className,
             )}
@@ -81,9 +79,9 @@ export function Sidebar({
                         aria-label={t('admin.sidebarCollapse') || 'طي القائمة'}
                     >
                         {collapsed ? (
-                            isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />
+                            <ChevronLeft className="h-4 w-4" />
                         ) : (
-                            isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />
+                            <ChevronRight className="h-4 w-4" />
                         )}
                     </Button>
                 )}

@@ -27,14 +27,37 @@ export interface ApiResponse<T> {
     data: T;
 }
 
+export interface WashBay {
+    id: number;
+    name: string;
+    bay_number: number;
+    status?: string;
+    status_label?: string;
+    is_active: boolean;
+}
+
 export interface Branch {
     id: number;
     name: string;
     code: string;
+    address?: string;
     city: string;
+    phone?: string;
+    email?: string;
     is_active: boolean;
     capacity?: number;
+    capacity_per_hour?: number;
     wash_bays_count?: number;
+    wash_bays?: WashBay[];
+    working_hours?: WorkingHour[];
+}
+
+export interface CustomerNote {
+    id: number;
+    note: string;
+    is_pinned: boolean;
+    user_id?: number;
+    created_at?: string;
 }
 
 export interface Customer {
@@ -43,9 +66,16 @@ export interface Customer {
     phone: string;
     email?: string;
     status: 'active' | 'inactive' | 'blacklisted';
+    status_label?: string;
+    loyalty_points_balance?: number;
     loyalty_points?: number;
     vehicles_count?: number;
+    notes?: CustomerNote[];
+    blacklisted_at?: string;
+    blacklist_reason?: string;
 }
+
+export type VehicleType = 'sedan' | 'suv' | 'truck' | 'motorcycle' | 'van' | 'bus' | 'other';
 
 export interface Vehicle {
     id: number;
@@ -53,72 +83,291 @@ export interface Vehicle {
     brand: string;
     model: string;
     color: string;
-    type: string;
+    vehicle_type?: VehicleType;
+    vehicle_type_label?: string;
+    type?: string;
     customer_id: number;
     customer?: Customer;
+    is_active?: boolean;
+}
+
+export interface ServiceCategory {
+    id: number;
+    name: string;
+    name_ar?: string;
+    slug?: string;
+    sort_order?: number;
+    is_active: boolean;
+    services_count?: number;
+}
+
+export interface ServiceAddon {
+    id: number;
+    name: string;
+    name_ar?: string;
+    price: number;
+    duration_minutes: number;
+    vat_included: boolean;
+    is_active: boolean;
 }
 
 export interface Service {
     id: number;
+    category_id: number;
     name: string;
-    category?: string;
+    name_ar?: string;
+    slug?: string;
+    description?: string;
     duration_minutes: number;
     base_price: number;
-    vat_inclusive: boolean;
+    vat_included: boolean;
+    vat_rate?: number;
+    sort_order?: number;
     is_active: boolean;
+    category?: ServiceCategory;
+    addons?: ServiceAddon[];
 }
 
 export interface PriceRule {
     id: number;
     name: string;
     rule_type: string;
-    discount_type: 'percentage' | 'fixed';
-    discount_value: number;
+    rule_type_label?: string;
+    branch_id?: number | null;
+    service_id?: number | null;
+    vehicle_type?: string | null;
+    price?: number | null;
+    discount_percent?: number | null;
+    priority?: number;
     is_active: boolean;
+    valid_from?: string | null;
+    valid_until?: string | null;
+}
+
+export interface Discount {
+    id: number;
+    name: string;
+    type: 'percentage' | 'fixed';
+    type_label?: string;
+    value: number;
+    min_order_amount?: number | null;
+    max_uses?: number | null;
+    used_count?: number;
+    is_active: boolean;
+}
+
+export interface Coupon {
+    id: number;
+    discount_id: number;
+    code: string;
+    max_uses_per_customer?: number | null;
+    max_uses?: number | null;
+    used_count?: number;
+    is_active: boolean;
+    discount?: Discount;
+}
+
+export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
+
+export interface TimeSlot {
+    id: number;
+    branch_id: number;
+    slot_date: string;
+    start_time: string;
+    end_time: string;
+    capacity: number;
+    booked_count: number;
+    remaining_capacity: number;
+    is_available: boolean;
 }
 
 export interface Booking {
     id: number;
     booking_number: string;
-    customer_name: string;
-    vehicle_plate: string;
-    service_name: string;
-    scheduled_at: string;
-    status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
     branch_id: number;
+    customer_id: number;
+    vehicle_id: number;
+    time_slot_id?: number | null;
+    scheduled_date: string;
+    scheduled_start_time: string;
+    scheduled_end_time?: string | null;
+    status: BookingStatus;
+    status_label?: string;
+    source?: string;
+    source_label?: string;
+    notes?: string | null;
+    cancellation_reason?: string | null;
+    service_ids?: number[];
+    customer_name?: string;
+    vehicle_plate?: string;
+    time_slot?: TimeSlot;
+    created_at?: string;
 }
+
+export type QueueEntryStatus = 'waiting' | 'arrived' | 'in_service' | 'ready' | 'completed' | 'no_show';
 
 export interface QueueEntry {
     id: number;
+    branch_id: number;
     queue_number: string;
-    customer_name: string;
-    vehicle_plate: string;
-    status: 'waiting' | 'arrived' | 'in_service' | 'ready' | 'completed' | 'no_show';
-    source: 'walk_in' | 'booking';
+    queue_date?: string;
+    customer_name?: string;
+    vehicle_plate?: string;
+    status: QueueEntryStatus;
+    status_label?: string;
+    source: 'walk_in' | 'booking' | 'booked';
+    source_label?: string;
     estimated_wait_minutes?: number;
-    called_at?: string;
+    priority?: number;
+    booking_id?: number | null;
+    called_at?: string | null;
+    arrived_at?: string | null;
+    in_service_at?: string | null;
+    ready_at?: string | null;
+    completed_at?: string | null;
+    notes?: string | null;
+}
+
+export interface QueueScreenData {
+    branch_id: number;
+    queue_date: string;
+    current_number?: string | null;
+    current_status?: QueueEntryStatus | null;
+    waiting_count: number;
+    estimated_wait_minutes: number;
+    entries: QueueEntry[];
+}
+
+export type OrderStatus =
+    | 'pending'
+    | 'checked_in'
+    | 'queued'
+    | 'in_service'
+    | 'quality_check'
+    | 'ready'
+    | 'completed'
+    | 'cancelled';
+
+export interface OrderItem {
+    id: number;
+    order_id: number;
+    service_id?: number;
+    addon_id?: number;
+    item_type: 'service' | 'addon';
+    item_type_label?: string;
+    name: string;
+    quantity: number;
+    unit_price: number;
+    discount_amount: number;
+    tax_amount: number;
+    total_price: number;
+    worker_id?: number;
+    status?: string;
 }
 
 export interface Order {
     id: number;
     order_number: string;
-    customer_name: string;
-    vehicle_plate: string;
-    total: number;
-    status: string;
     branch_id: number;
+    customer_id?: number;
+    vehicle_id?: number;
+    worker_id?: number;
+    status: OrderStatus;
+    status_label?: string;
+    source?: string;
+    source_label?: string;
+    subtotal: number;
+    discount_amount: number;
+    tax_amount: number;
+    total_amount: number;
+    notes?: string;
+    cancellation_reason?: string;
+    items?: OrderItem[];
+    customer?: Customer;
+    vehicle?: Vehicle;
+    worker?: User;
     created_at: string;
+    updated_at?: string;
+}
+
+export type InvoiceStatus = 'draft' | 'issued' | 'paid' | 'void' | 'refunded';
+
+export interface InvoiceItem {
+    id: number;
+    item_type?: string;
+    description: string;
+    quantity: number;
+    unit_price: number;
+    discount_amount: number;
+    subtotal: number;
+    vat_rate: number;
+    vat_amount: number;
+    total: number;
+    is_tax_exempt?: boolean;
 }
 
 export interface Invoice {
     id: number;
     invoice_number: string;
+    order_id?: number;
+    customer_id?: number;
+    branch_id?: number;
     customer_name: string;
+    customer_phone?: string;
+    customer_email?: string;
     subtotal: number;
+    discount_amount?: number;
+    vat_rate?: number;
     vat_amount: number;
     total: number;
-    status: 'draft' | 'issued' | 'paid' | 'cancelled';
-    issued_at?: string;
+    status: InvoiceStatus;
+    payment_status?: string;
+    issue_date?: string;
+    due_date?: string;
+    is_tax_exempt?: boolean;
+    tax_inclusive?: boolean;
+    vatin?: string;
+    cr_number?: string;
+    notes?: string;
+    items?: InvoiceItem[];
+    created_at?: string;
+}
+
+export interface TaxSettings {
+    id?: number;
+    vat_enabled: boolean;
+    vat_rate: number;
+    prices_tax_inclusive: boolean;
+    vatin?: string | null;
+    cr_number?: string | null;
+    legal_name_ar?: string | null;
+    legal_name_en?: string | null;
+    address?: string | null;
+}
+
+export interface TaxReportDetail {
+    period: string;
+    from: string;
+    to: string;
+    branch_id?: number | null;
+    summary: {
+        invoice_count: number;
+        taxable_sales: number;
+        exempt_sales: number;
+        vat_collected: number;
+        vat_on_expenses: number;
+        net_vat_due: number;
+        payments_received: number;
+    };
+    currency: string;
+}
+
+export interface TaxReportBreakdownItem {
+    date: string;
+    invoice_count: number;
+    taxable_sales: number;
+    exempt_sales: number;
+    vat_collected: number;
 }
 
 export interface PlanMeta {

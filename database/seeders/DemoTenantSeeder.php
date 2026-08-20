@@ -21,6 +21,7 @@ class DemoTenantSeeder extends IdempotentSeeder
 
         $this->call(TenantProductionSeeder::class);
         $this->call(DemoTenantUsersSeeder::class);
+        $this->call(DemoSimulationSeeder::class);
 
         $this->logResult(static::class, [
             'created' => 0,

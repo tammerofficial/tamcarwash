@@ -18,7 +18,7 @@ createRoot(rootElement).render(
             <AuthProvider>
                 <BranchProvider>
                     <AppRoutes />
-                    <Toaster position="top-left" dir="rtl" richColors />
+                    <Toaster position="top-right" dir="rtl" richColors />
                 </BranchProvider>
             </AuthProvider>
         </QueryProvider>

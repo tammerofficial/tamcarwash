@@ -24,19 +24,19 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 interface SheetContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
-    side?: 'top' | 'bottom' | 'left' | 'right';
+    side?: 'top' | 'bottom' | 'start' | 'end';
 }
 
 const SheetContent = React.forwardRef<React.ElementRef<typeof DialogPrimitive.Content>, SheetContentProps>(
-    ({ side = 'right', className, children, ...props }, ref) => (
+    ({ side = 'start', className, children, ...props }, ref) => (
         <SheetPortal>
             <SheetOverlay />
             <DialogPrimitive.Content
                 ref={ref}
                 className={cn(
                     'fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500',
-                    side === 'right' && 'inset-y-0 end-0 h-full w-3/4 border-s data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm',
-                    side === 'left' && 'inset-y-0 start-0 h-full w-3/4 border-e data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm',
+                    side === 'end' && 'inset-y-0 end-0 h-full w-3/4 border-s data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm',
+                    side === 'start' && 'inset-y-0 start-0 h-full w-3/4 border-e data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm',
                     className,
                 )}
                 {...props}

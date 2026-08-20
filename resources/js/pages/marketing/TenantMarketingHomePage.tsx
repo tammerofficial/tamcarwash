@@ -66,7 +66,7 @@ export function TenantMarketingHomePage() {
     ];
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background" dir="rtl">
             <TenantMarketingHeader profile={profile} />
 
             <main>

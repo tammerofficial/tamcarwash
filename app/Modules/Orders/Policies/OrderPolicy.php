@@ -4,9 +4,12 @@ namespace App\Modules\Orders\Policies;
 
 use App\Models\TenantUser;
 use App\Modules\Orders\Models\Order;
+use App\Modules\Shared\Policies\HasModulePermission;
 
 class OrderPolicy
 {
+    use HasModulePermission;
+
     public function viewAny(TenantUser $user): bool
     {
         return $this->hasPermission($user, 'orders.view');
@@ -19,35 +22,26 @@ class OrderPolicy
 
     public function create(TenantUser $user): bool
     {
-        return $this->hasPermission($user, 'orders.create');
+        return $this->hasPermission($user, 'orders.manage');
     }
 
     public function update(TenantUser $user, Order $order): bool
     {
-        return $this->hasPermission($user, 'orders.update');
+        return $this->hasPermission($user, 'orders.manage');
     }
 
     public function delete(TenantUser $user, Order $order): bool
     {
-        return $this->hasPermission($user, 'orders.delete');
+        return $this->hasPermission($user, 'orders.manage');
     }
 
     public function transition(TenantUser $user, Order $order): bool
     {
-        return $this->hasPermission($user, 'orders.transition');
+        return $this->hasPermission($user, 'orders.manage');
     }
 
     public function assignWorker(TenantUser $user, Order $order): bool
     {
-        return $this->hasPermission($user, 'orders.assign_worker');
-    }
-
-    protected function hasPermission(TenantUser $user, string $permission): bool
-    {
-        if (method_exists($user, 'can') && $user->can($permission)) {
-            return true;
-        }
-
-        return true;
+        return $this->hasPermission($user, 'orders.manage');
     }
 }

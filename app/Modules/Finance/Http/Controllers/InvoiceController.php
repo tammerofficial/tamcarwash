@@ -22,6 +22,8 @@ class InvoiceController extends ApiController
 
     public function index(Request $request): JsonResponse
     {
+        $this->authorize('viewAny', Invoice::class);
+
         $invoices = QueryBuilder::for(Invoice::class)
             ->allowedFilters(
                 AllowedFilter::exact('branch_id'),
@@ -38,6 +40,8 @@ class InvoiceController extends ApiController
 
     public function show(Invoice $invoice): JsonResponse
     {
+        $this->authorize('view', $invoice);
+
         $invoice->load(['items', 'payments.paymentMethod']);
 
         return $this->success(new InvoiceResource($invoice));
@@ -45,6 +49,8 @@ class InvoiceController extends ApiController
 
     public function storeFromOrder(Request $request, Order $order): JsonResponse
     {
+        $this->authorize('create', Invoice::class);
+
         $invoice = $this->invoiceService->createFromOrder($order, $request->user()?->id);
 
         return $this->success(new InvoiceResource($invoice), 'تم إنشاء الفاتورة بنجاح', 201);
@@ -52,6 +58,8 @@ class InvoiceController extends ApiController
 
     public function void(Invoice $invoice): JsonResponse
     {
+        $this->authorize('void', $invoice);
+
         if ($invoice->status->value === 'void') {
             return $this->error('الفاتورة ملغاة مسبقاً', 422, 'already_void');
         }
@@ -63,6 +71,8 @@ class InvoiceController extends ApiController
 
     public function pdf(Invoice $invoice)
     {
+        $this->authorize('view', $invoice);
+
         return $this->invoicePdfService->stream($invoice);
     }
 }

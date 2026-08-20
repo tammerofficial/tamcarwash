@@ -36,7 +36,7 @@ export function DataTable<TData, TValue>({
     });
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4" dir="rtl">
             {searchKey && (
                 <Input
                     placeholder={searchPlaceholder ?? t('common.search')}

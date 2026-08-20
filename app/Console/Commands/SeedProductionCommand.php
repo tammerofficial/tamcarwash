@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Landlord\Tenant;
 use App\Services\Tenancy\TenantConnectionManager;
 use App\Services\Tenancy\DemoUserSeedingService;
+use App\Services\Tenancy\DemoSimulationSeedingService;
 use Database\Seeders\LandlordProductionSeeder;
 use Database\Seeders\TenantProductionSeeder;
 use Illuminate\Console\Command;
@@ -19,8 +20,11 @@ class SeedProductionCommand extends Command
 
     protected $description = 'Run idempotent production seeders for landlord and optionally tenant databases (never truncates)';
 
-    public function handle(TenantConnectionManager $tenantManager, DemoUserSeedingService $demoUserSeeding): int
-    {
+    public function handle(
+        TenantConnectionManager $tenantManager,
+        DemoUserSeedingService $demoUserSeeding,
+        DemoSimulationSeedingService $demoSimulationSeeding,
+    ): int {
         $this->info('Starting production seed (safe rerun, no truncate)...');
         Log::info('[app:seed-production] started', [
             'tenants' => (bool) $this->option('tenants'),
@@ -101,6 +105,10 @@ class SeedProductionCommand extends Command
 
                 if ($demoUserSeeding->shouldSeedFor($tenant)) {
                     $demoUserSeeding->seed();
+                }
+
+                if ($demoSimulationSeeding->shouldSeedFor($tenant)) {
+                    $demoSimulationSeeding->seed();
                 }
 
                 Log::info('[app:seed-production] tenant seeded', ['tenant_id' => $tenant->id, 'slug' => $tenant->slug]);

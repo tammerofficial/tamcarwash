@@ -68,7 +68,7 @@ return [
         'worker' => [
             'dashboard.view',
             'queue.view',
-            'orders.view', 'orders.manage',
+            'orders.view',
         ],
     ],
 ];

@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Skeleton } from '@/components/ui/skeleton';
 import { t } from '@/lib/i18n';
-import type { ApiResponse, TenantSettings } from '@/types/api';
+import type { ApiResponse, TaxSettings, TenantSettings } from '@/types/api';
 import { toast } from 'sonner';
 
 const settingsSchema = z.object({
@@ -25,7 +25,19 @@ const settingsSchema = z.object({
     timezone: z.string().min(1),
 });
 
+const taxSettingsSchema = z.object({
+    vat_enabled: z.boolean(),
+    vat_rate: z.coerce.number().min(0).max(100),
+    prices_tax_inclusive: z.boolean(),
+    vatin: z.string().optional(),
+    cr_number: z.string().optional(),
+    legal_name_ar: z.string().optional(),
+    legal_name_en: z.string().optional(),
+    address: z.string().optional(),
+});
+
 type SettingsFormValues = z.infer<typeof settingsSchema>;
+type TaxSettingsFormValues = z.infer<typeof taxSettingsSchema>;
 
 export function SettingsPage() {
     const queryClient = useQueryClient();
@@ -34,6 +46,15 @@ export function SettingsPage() {
         queryKey: ['settings'],
         queryFn: async () => {
             const response = await api.get<ApiResponse<TenantSettings>>(endpoints.settings);
+            return response.data;
+        },
+        retry: false,
+    });
+
+    const { data: taxData, isLoading: taxLoading } = useQuery({
+        queryKey: ['tax-settings'],
+        queryFn: async () => {
+            const response = await api.get<ApiResponse<TaxSettings>>(endpoints.taxSettings);
             return response.data;
         },
         retry: false,
@@ -51,22 +72,68 @@ export function SettingsPage() {
         },
     });
 
+    const taxForm = useForm<TaxSettingsFormValues>({
+        resolver: zodResolver(taxSettingsSchema),
+        defaultValues: {
+            vat_enabled: true,
+            vat_rate: 5,
+            prices_tax_inclusive: false,
+            vatin: '',
+            cr_number: '',
+            legal_name_ar: '',
+            legal_name_en: '',
+            address: '',
+        },
+    });
+
     useEffect(() => {
         if (data) {
             form.reset(data);
         }
     }, [data, form]);
 
+    useEffect(() => {
+        if (taxData) {
+            taxForm.reset({
+                vat_enabled: taxData.vat_enabled,
+                vat_rate: taxData.vat_rate,
+                prices_tax_inclusive: taxData.prices_tax_inclusive,
+                vatin: taxData.vatin ?? '',
+                cr_number: taxData.cr_number ?? '',
+                legal_name_ar: taxData.legal_name_ar ?? '',
+                legal_name_en: taxData.legal_name_en ?? '',
+                address: taxData.address ?? '',
+            });
+        }
+    }, [taxData, taxForm]);
+
     const mutation = useMutation({
         mutationFn: (values: SettingsFormValues) => api.put<ApiResponse<TenantSettings>>(endpoints.settings, values),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['settings'] });
-            toast.success('تم حفظ الإعدادات');
+            toast.success(t('settings.saveSuccess'));
         },
-        onError: () => toast.error('تعذّر حفظ الإعدادات'),
+        onError: () => toast.error(t('settings.saveError')),
     });
 
-    if (isLoading) {
+    const taxMutation = useMutation({
+        mutationFn: (values: TaxSettingsFormValues) =>
+            api.put<ApiResponse<TaxSettings>>(endpoints.taxSettings, {
+                ...values,
+                vatin: values.vatin || null,
+                cr_number: values.cr_number || null,
+                legal_name_ar: values.legal_name_ar || null,
+                legal_name_en: values.legal_name_en || null,
+                address: values.address || null,
+            }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['tax-settings'] });
+            toast.success(t('settings.taxSaveSuccess'));
+        },
+        onError: () => toast.error(t('settings.taxSaveError')),
+    });
+
+    if (isLoading || taxLoading) {
         return (
             <div className="space-y-6">
                 <PageHeader title={t('settings.title')} description={t('settings.subtitle')} />
@@ -81,11 +148,14 @@ export function SettingsPage() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle>إعدادات عامة</CardTitle>
+                    <CardTitle>{t('settings.businessSettings')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit((values) => mutation.mutate(values))} className="grid gap-6 md:grid-cols-2">
+                        <form
+                            onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
+                            className="grid gap-6 md:grid-cols-2"
+                        >
                             <FormField
                                 control={form.control}
                                 name="business_name"
@@ -128,8 +198,108 @@ export function SettingsPage() {
                                 )}
                             />
 
+                            <div className="md:col-span-2">
+                                <Button type="submit" disabled={mutation.isPending}>
+                                    {mutation.isPending ? (
+                                        <>
+                                            <Loader2 className="animate-spin" />
+                                            {t('common.saving')}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Save className="h-4 w-4" />
+                                            {t('common.save')}
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>{t('settings.vatSettings')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Form {...taxForm}>
+                        <form
+                            onSubmit={taxForm.handleSubmit((values) => taxMutation.mutate(values))}
+                            className="grid gap-6 md:grid-cols-2"
+                        >
                             <FormField
-                                control={form.control}
+                                control={taxForm.control}
+                                name="vatin"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('settings.vatin')}</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} dir="ltr" placeholder="OM1234567890" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={taxForm.control}
+                                name="cr_number"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('settings.crNumber')}</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} dir="ltr" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={taxForm.control}
+                                name="legal_name_ar"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('settings.legalNameAr')}</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={taxForm.control}
+                                name="legal_name_en"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('settings.legalNameEn')}</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} dir="ltr" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={taxForm.control}
+                                name="address"
+                                render={({ field }) => (
+                                    <FormItem className="md:col-span-2">
+                                        <FormLabel>{t('settings.address')}</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={taxForm.control}
                                 name="vat_enabled"
                                 render={({ field }) => (
                                     <FormItem className="flex items-center gap-2 space-y-0 md:col-span-2">
@@ -142,7 +312,7 @@ export function SettingsPage() {
                             />
 
                             <FormField
-                                control={form.control}
+                                control={taxForm.control}
                                 name="vat_rate"
                                 render={({ field }) => (
                                     <FormItem>
@@ -156,8 +326,8 @@ export function SettingsPage() {
                             />
 
                             <FormField
-                                control={form.control}
-                                name="vat_inclusive"
+                                control={taxForm.control}
+                                name="prices_tax_inclusive"
                                 render={({ field }) => (
                                     <FormItem className="flex items-center gap-2 space-y-0">
                                         <FormControl>
@@ -169,16 +339,16 @@ export function SettingsPage() {
                             />
 
                             <div className="md:col-span-2">
-                                <Button type="submit" disabled={mutation.isPending}>
-                                    {mutation.isPending ? (
+                                <Button type="submit" disabled={taxMutation.isPending}>
+                                    {taxMutation.isPending ? (
                                         <>
                                             <Loader2 className="animate-spin" />
-                                            جاري الحفظ...
+                                            {t('common.saving')}
                                         </>
                                     ) : (
                                         <>
                                             <Save className="h-4 w-4" />
-                                            {t('common.save')}
+                                            {t('settings.saveVat')}
                                         </>
                                     )}
                                 </Button>
