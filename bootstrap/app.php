@@ -20,6 +20,12 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
+            Route::get('/ping', fn () => response()->json([
+                'ok' => true,
+                'central_domains' => config('tenancy.central_domains'),
+                'session_driver' => config('session.driver'),
+            ]));
+
             Route::middleware(['api', 'landlord'])
                 ->prefix('api/landlord/v1')
                 ->group(base_path('routes/landlord.php'));

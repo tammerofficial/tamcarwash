@@ -12,10 +12,14 @@ return [
 
     'tenant_connection' => env('TENANT_DB_CONNECTION', 'tenant'),
 
-    'central_domains' => array_filter(array_map(
-        'trim',
-        explode(',', env('TENANCY_CENTRAL_DOMAINS', 'localhost,127.0.0.1,tamcarwash.test,tamcarwash.on-forge.com'))
-    )),
+    'central_domains' => array_values(array_unique(array_filter(array_merge(
+        array_map('trim', explode(',', env(
+            'TENANCY_CENTRAL_DOMAINS',
+            'localhost,127.0.0.1,tamcarwash.test,tamcarwash.on-forge.com',
+        ))),
+        // Always treat the Forge site host as central even if .env is stale.
+        ['tamcarwash.on-forge.com', 'localhost', '127.0.0.1'],
+    )))),
 
     'platform_domain' => env('PLATFORM_DOMAIN', env('TENANCY_PLATFORM_DOMAIN', 'tamcarwash.test')),
 

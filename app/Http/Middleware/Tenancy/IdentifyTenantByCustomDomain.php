@@ -22,7 +22,16 @@ class IdentifyTenantByCustomDomain
             return $next($request);
         }
 
-        $this->connectionManager->connectByDomain($host);
+        // Laravel Forge default domains are platform-central, never tenant custom domains.
+        if (str_ends_with($host, '.on-forge.com')) {
+            return $next($request);
+        }
+
+        try {
+            $this->connectionManager->connectByDomain($host);
+        } catch (\Throwable) {
+            return $next($request);
+        }
 
         return $next($request);
     }
