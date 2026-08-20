@@ -78,6 +78,11 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217 33% 17%;
     --sidebar-ring: 199 89% 48%;
+
+    /* Design Tokens for Admin Shell */
+    --admin-sidebar-bg: 222 47% 11%;
+    --admin-sidebar-active: 199 89% 38%;
+    --admin-sidebar-active-foreground: 0 0% 100%;
 }
 
 .dark {
@@ -121,5 +126,71 @@
 
     body {
         @apply bg-background text-foreground font-sans antialiased;
+    }
+}
+
+@layer utilities {
+    /* ── Admin sidebar ── */
+    .admin-sidebar {
+        @apply sticky top-0 z-20 overflow-hidden h-screen bg-[#0f172a] text-white;
+        background-image: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    }
+
+    .admin-sidebar--collapsed {
+        @apply w-[4.75rem];
+    }
+
+    .admin-sidebar-nav {
+        @apply relative z-20 flex-1 overflow-y-auto px-3 pb-20 pt-2;
+        scrollbar-width: none;
+    }
+
+    .admin-sidebar-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .admin-sidebar-nav-item--active {
+        @apply bg-primary text-primary-foreground shadow-lg scale-[1.02];
+        background-image: linear-gradient(90deg, hsl(var(--primary)) 0%, #0ea5e9 100%);
+    }
+
+    [dir='rtl'] .admin-sidebar-nav-item--active {
+        background-image: linear-gradient(270deg, hsl(var(--primary)) 0%, #0ea5e9 100%);
+    }
+
+    .admin-sidebar-nav-item--inactive {
+        @apply bg-transparent text-white/70;
+    }
+
+    .admin-sidebar-nav-item--inactive:hover {
+        @apply bg-white/10 text-white;
+    }
+
+    .admin-sidebar-brand {
+        @apply relative z-30 flex-shrink-0 p-6 pt-8;
+    }
+
+    .admin-sidebar-brand--compact {
+        @apply p-4 pt-8;
+    }
+
+    .admin-sidebar-brand-title {
+        @apply text-lg font-black tracking-tight text-center text-white;
+    }
+
+    .admin-sidebar-brand-subtitle {
+        @apply text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] text-center;
+    }
+
+    .admin-sidebar-brand-sultanate {
+        @apply text-[9px] font-black text-white/30 uppercase tracking-[0.2em] text-center;
+    }
+
+    .admin-sidebar-section-label {
+        @apply text-[10px] font-black uppercase tracking-widest text-white/40 mb-4 px-4;
+    }
+
+    .admin-sidebar-mobile-backdrop {
+        @apply bg-black/50 backdrop-blur-sm;
     }
 }

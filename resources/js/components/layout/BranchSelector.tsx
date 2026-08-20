@@ -16,9 +16,9 @@ export function BranchSelector() {
             value={selectedBranchId ? String(selectedBranchId) : undefined}
             onValueChange={(value) => setSelectedBranchId(Number(value))}
         >
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-56 h-11 rounded-xl border-border/60 bg-white font-bold transition-all hover:bg-muted/30">
                 <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4 text-muted-foreground" />
+                    <Building2 className="h-4 w-4 text-primary" />
                     <SelectValue placeholder={t('common.branch')} />
                 </div>
             </SelectTrigger>
