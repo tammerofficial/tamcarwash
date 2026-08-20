@@ -360,25 +360,39 @@ class DemoSimulationSeeder extends IdempotentSeeder
         ];
 
         foreach ($specs as $spec) {
-            $entry = QueueEntry::query()->updateOrCreate(
-                [
+            $entry = QueueEntry::query()
+                ->where('branch_id', $branch->id)
+                ->whereDate('queue_date', $today)
+                ->where('queue_number', $spec['number'])
+                ->first();
+
+            $payload = [
+                'source' => QueueSource::WalkIn,
+                'customer_id' => $customers[$spec['customer_index']]->id,
+                'vehicle_id' => $vehicles[$spec['vehicle_index']]->id,
+                'status' => QueueEntryStatus::Waiting,
+                'estimated_wait_minutes' => 25,
+                'priority' => 0,
+                'notes' => $spec['notes'],
+            ];
+
+            if ($entry) {
+                $entry->update($payload);
+                $updated++;
+            } else {
+                QueueEntry::query()->create($payload + [
                     'branch_id' => $branch->id,
                     'queue_date' => $today,
                     'queue_number' => $spec['number'],
-                ],
-                [
-                    'source' => QueueSource::WalkIn,
-                    'customer_id' => $customers[$spec['customer_index']]->id,
-                    'vehicle_id' => $vehicles[$spec['vehicle_index']]->id,
-                    'status' => QueueEntryStatus::Waiting,
-                    'estimated_wait_minutes' => 25,
-                    'priority' => 0,
-                    'notes' => $spec['notes'],
-                ]
-            );
+                ]);
+                $created++;
+            }
 
-            $entry->wasRecentlyCreated ? $created++ : $updated++;
-            $entries[] = $entry;
+            $entries[] = $entry ?? QueueEntry::query()
+                ->where('branch_id', $branch->id)
+                ->whereDate('queue_date', $today)
+                ->where('queue_number', $spec['number'])
+                ->first();
         }
 
         return $entries;
@@ -399,24 +413,34 @@ class DemoSimulationSeeder extends IdempotentSeeder
         int &$created,
         int &$updated,
     ): Order {
-        $queueEntry = QueueEntry::query()->updateOrCreate(
-            [
+        $queueEntry = QueueEntry::query()
+            ->where('branch_id', $branch->id)
+            ->whereDate('queue_date', $today)
+            ->where('queue_number', 903)
+            ->first();
+
+        $queuePayload = [
+            'source' => QueueSource::WalkIn,
+            'customer_id' => $customers[0]->id,
+            'vehicle_id' => $vehicles[1]->id,
+            'status' => QueueEntryStatus::InService,
+            'estimated_wait_minutes' => 0,
+            'priority' => 5,
+            'in_service_at' => now()->subMinutes(15),
+            'notes' => 'قيد الغسيل الآن — Bay 2',
+        ];
+
+        if ($queueEntry) {
+            $queueEntry->update($queuePayload);
+            $updated++;
+        } else {
+            $queueEntry = QueueEntry::query()->create($queuePayload + [
                 'branch_id' => $branch->id,
                 'queue_date' => $today,
                 'queue_number' => 903,
-            ],
-            [
-                'source' => QueueSource::WalkIn,
-                'customer_id' => $customers[0]->id,
-                'vehicle_id' => $vehicles[1]->id,
-                'status' => QueueEntryStatus::InService,
-                'estimated_wait_minutes' => 0,
-                'priority' => 5,
-                'in_service_at' => now()->subMinutes(15),
-                'notes' => 'قيد الغسيل الآن — Bay 2',
-            ]
-        );
-        $queueEntry->wasRecentlyCreated ? $created++ : $updated++;
+            ]);
+            $created++;
+        }
 
         $order = Order::query()->updateOrCreate(
             ['order_number' => self::DEMO_PREFIX.'ORD-INSERVICE'],

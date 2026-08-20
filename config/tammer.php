@@ -63,7 +63,7 @@ return [
             'queue.view', 'queue.manage',
             'orders.view', 'orders.manage',
             'invoices.view', 'invoices.manage',
-            'payments.view',
+            'payments.view', 'payments.manage',
         ],
         'worker' => [
             'dashboard.view',

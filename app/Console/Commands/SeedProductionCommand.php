@@ -32,7 +32,7 @@ class SeedProductionCommand extends Command
         ]);
 
         $this->seedLandlord($tenantManager);
-        $this->seedTenants($tenantManager);
+        $this->seedTenants($tenantManager, $demoUserSeeding, $demoSimulationSeeding);
 
         $this->info('Production seed completed.');
         Log::info('[app:seed-production] completed');
@@ -53,8 +53,11 @@ class SeedProductionCommand extends Command
         $this->info('Landlord seed finished.');
     }
 
-    protected function seedTenants(TenantConnectionManager $tenantManager): void
-    {
+    protected function seedTenants(
+        TenantConnectionManager $tenantManager,
+        DemoUserSeedingService $demoUserSeeding,
+        DemoSimulationSeedingService $demoSimulationSeeding,
+    ): void {
         if (! $this->option('tenants') && ! $this->option('tenant')) {
             $this->comment('Skipping tenants. Use --tenants or --tenant=slug to seed tenant databases.');
 

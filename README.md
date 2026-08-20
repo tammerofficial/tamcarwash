@@ -213,6 +213,76 @@ If quick login fails after provisioning, rerun:
 php artisan app:seed-production --tenant=demo
 ```
 
+### Demo Simulation (مغسلة الوادي)
+
+The `DemoSimulationSeeder` seeds a full Omani car wash business day for tenant **`demo`**. It runs automatically with:
+
+```bash
+php artisan app:seed-production --tenant=demo
+```
+
+**Scenario:** مغسلة الوادي — morning bookings, walk-in queue, one bay in service, VAT invoices at 5%.
+
+| Entity | Count | Notes |
+|--------|-------|-------|
+| Customers | 5 | Omani names (سالم الهنائي، فاطمة المعمرية، …) |
+| Vehicles | 8 | Plates B/M/A/D series |
+| Bookings (today) | 3 | confirmed, pending, completed |
+| Queue (waiting) | 2 | Walk-in entries #901–902 |
+| Orders (in_service) | 1 | Linked to queue #903 |
+| Invoices | 2 | `DEMO-INV-PAID` (paid), `DEMO-INV-UNPAID` (5% VAT) |
+| Role users | 4 | owner, manager, cashier, worker @demo.test |
+
+**Verify seed + role permissions:**
+
+```bash
+php artisan app:demo-simulation-test --tenant=demo --policy-only
+```
+
+**Full HTTP flow** (requires `php artisan serve`):
+
+```bash
+# 1. Login as cashier
+curl -s -X POST http://127.0.0.1:8000/api/v1/auth/login \
+  -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'X-Tenant-Slug: demo' \
+  -d '{"email":"cashier@demo.test","password":"password"}'
+
+# 2. Use token — cashier can access queue/orders/invoices, not bookings/reports
+curl -s http://127.0.0.1:8000/api/v1/queue/entries -H "Authorization: Bearer TOKEN" -H 'X-Tenant-Slug: demo'
+curl -s http://127.0.0.1:8000/api/v1/bookings -H "Authorization: Bearer TOKEN" -H 'X-Tenant-Slug: demo'  # → 403
+
+# 3. Booking → order → complete → invoice → payment (as manager/owner)
+curl -s -X POST http://127.0.0.1:8000/api/v1/bookings/{id}/convert-to-order \
+  -H "Authorization: Bearer TOKEN" -H 'X-Tenant-Slug: demo'
+curl -s -X POST http://127.0.0.1:8000/api/v1/orders/{id}/transition \
+  -H "Authorization: Bearer TOKEN" -H 'Content-Type: application/json' -H 'X-Tenant-Slug: demo' \
+  -d '{"status":"completed"}'
+curl -s -X POST http://127.0.0.1:8000/api/v1/orders/{id}/invoice \
+  -H "Authorization: Bearer TOKEN" -H 'X-Tenant-Slug: demo'
+curl -s -X POST http://127.0.0.1:8000/api/v1/payments \
+  -H "Authorization: Bearer TOKEN" -H 'Content-Type: application/json' -H 'X-Tenant-Slug: demo' \
+  -d '{"invoice_id":1,"payment_method_id":1,"branch_id":1,"amount":2.625}'
+
+# 4. Walk-in queue
+curl -s -X POST http://127.0.0.1:8000/api/v1/queue/entries/walk-in \
+  -H "Authorization: Bearer TOKEN" -H 'Content-Type: application/json' -H 'X-Tenant-Slug: demo' \
+  -d '{"branch_id":1,"customer_id":1,"vehicle_id":1}'
+```
+
+**Role access matrix:**
+
+| Area | Owner | Manager | Cashier | Worker |
+|------|-------|---------|---------|--------|
+| Dashboard | ✓ | ✓ | ✓ | ✓ |
+| Branches / settings / users | ✓ | view/settings | — | — |
+| Bookings | ✓ | ✓ | — | — |
+| Queue | ✓ | ✓ | ✓ | view only |
+| Orders | ✓ | ✓ | ✓ | view only |
+| Invoices / payments | ✓ | ✓ (no payments.manage) | ✓ | — |
+| Reports | ✓ | ✓ | — | — |
+
+All demo users use password **`password`**.
+
 ### 7. Development servers
 
 ```bash
@@ -359,6 +429,7 @@ The same jobs are registered in `routes/console.php` via Laravel's scheduler (re
 | `tenants:health-check` | Verify tenant DB connectivity |
 | `landlord:report-subscriptions` | Platform subscription summary for monitoring |
 | `app:seed-production` | Idempotent landlord + optional tenant seeders |
+| `app:demo-simulation-test` | Verify demo seed counts and role permissions |
 
 All seeders use `updateOrCreate` / `firstOrCreate` — safe to rerun, never truncates.
 
