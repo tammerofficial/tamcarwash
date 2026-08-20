@@ -113,3 +113,53 @@ export function tenantPath(path: string): string {
 export function isTenantContext(): boolean {
     return ! isLandlordContext() && resolveTenantSlug() !== null;
 }
+
+export const SESSION_TENANT_SLUG_KEY = 'tammer_tenant_slug';
+
+/** Tenant slug from routing, sessionStorage, or boot config (for navigation). */
+export function resolveActiveTenantSlug(): string | null {
+    const fromRouting = resolveTenantSlug();
+    if (fromRouting) {
+        return fromRouting;
+    }
+
+    try {
+        const stored = sessionStorage.getItem(SESSION_TENANT_SLUG_KEY);
+        if (stored) {
+            return stored;
+        }
+    } catch {
+        // sessionStorage may be unavailable
+    }
+
+    return readConfig().tenant?.slug ?? null;
+}
+
+/**
+ * Browser path to the tenant's public marketing home.
+ * Subdomain tenants: `/`. Subdirectory tenants: `/{slug}`.
+ */
+export function getTenantPublicHomeHref(): string {
+    if (detectTenantSlugFromSubdomain()) {
+        return '/';
+    }
+
+    const slug = resolveActiveTenantSlug();
+    const config = readConfig();
+
+    if (slug && config.subdirectoryEnabled) {
+        return `/${slug}`;
+    }
+
+    return '/';
+}
+
+/** Alias for getTenantPublicHomeHref — full path to tenant public home. */
+export function getTenantPublicUrl(): string {
+    return getTenantPublicHomeHref();
+}
+
+/** Use React Router Link when basename already scopes routes to the tenant. */
+export function shouldUseTenantHomeRouterLink(): boolean {
+    return getRouterBasename() != null || getTenantPublicHomeHref() === '/';
+}

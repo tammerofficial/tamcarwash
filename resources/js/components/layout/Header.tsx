@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { t } from '@/lib/i18n';
 import { api, appConfig, endpoints } from '@/lib/api';
+import { getTenantPublicHomeHref, shouldUseTenantHomeRouterLink } from '@/lib/tenancy';
 import type { ApiResponse, TenantSettings } from '@/types/api';
 
 interface HeaderProps {
@@ -36,6 +37,8 @@ export function Header({ onMenuClick }: HeaderProps) {
     });
 
     const businessName = settings?.business_name ?? appConfig.tenant?.name ?? 'مغسلة تجريبية';
+    const tenantHomeHref = getTenantPublicHomeHref();
+    const tenantHomeUsesRouterLink = shouldUseTenantHomeRouterLink();
 
     return (
         <header className="sticky top-0 z-40 flex h-20 items-center justify-between border-b border-border/40 bg-white/80 backdrop-blur-md px-4 lg:px-8">
@@ -78,9 +81,15 @@ export function Header({ onMenuClick }: HeaderProps) {
                         className="h-10 w-10 rounded-xl text-muted-foreground hover:bg-primary/5 hover:text-primary transition-all hidden sm:flex"
                         title={t('common.backHome') || 'الرئيسية'}
                     >
-                        <Link to="/">
-                            <Home className="h-5 w-5" />
-                        </Link>
+                        {tenantHomeUsesRouterLink ? (
+                            <Link to="/">
+                                <Home className="h-5 w-5" />
+                            </Link>
+                        ) : (
+                            <a href={tenantHomeHref}>
+                                <Home className="h-5 w-5" />
+                            </a>
+                        )}
                     </Button>
 
                     <DropdownMenu>

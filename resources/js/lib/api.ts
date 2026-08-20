@@ -1,7 +1,11 @@
 import type { ApiError } from '@/types/api';
-import { isLandlordContext, resolveTenantSlug } from '@/lib/tenancy';
+import {
+    isLandlordContext,
+    resolveActiveTenantSlug,
+    SESSION_TENANT_SLUG_KEY,
+} from '@/lib/tenancy';
 
-export const SESSION_TENANT_SLUG_KEY = 'tammer_tenant_slug';
+export { SESSION_TENANT_SLUG_KEY };
 
 function readXsrfTokenFromCookie(): string {
     const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]*)/);
@@ -50,22 +54,7 @@ function readTammerConfig() {
 }
 
 export function getActiveTenantSlug(): string | null {
-    const fromRouting = resolveTenantSlug();
-    if (fromRouting) {
-        return fromRouting;
-    }
-
-    const stored = sessionStorage.getItem(SESSION_TENANT_SLUG_KEY);
-    if (stored) {
-        return stored;
-    }
-
-    const config = readTammerConfig();
-    if (config.tenant?.slug) {
-        return config.tenant.slug;
-    }
-
-    return null;
+    return resolveActiveTenantSlug();
 }
 
 export function setActiveTenantSlug(slug: string): void {
