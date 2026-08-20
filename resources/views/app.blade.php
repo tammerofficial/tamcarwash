@@ -106,7 +106,7 @@
                 apiBaseUrl: @json(url('/api/v1')),
                 landlordApiBaseUrl: @json(url('/api/landlord/v1')),
                 sanctumUrl: @json(url('/sanctum/csrf-cookie')),
-                csrfToken: @json(csrf_token()),
+                csrfToken: @json(rescue(fn () => csrf_token(), '')),
                 isLandlord: @json($isLandlord),
                 tenant: @json($tenantPayload),
                 tenancyMode: @json($tenancyMode),
