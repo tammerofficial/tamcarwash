@@ -19,41 +19,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/health', function () {
-    $checks = [
-        'status' => 'ok',
-        'context' => 'landlord',
-        'env' => app()->environment(),
-        'debug' => (bool) config('app.debug'),
-        'config_cached' => app()->configurationIsCached(),
-        'app_key_present' => filled(config('app.key')),
-        'session_driver' => config('session.driver'),
-        'cache_store' => config('cache.default'),
-        'queue_connection' => config('queue.default'),
-        'php' => PHP_VERSION,
-    ];
-
-    try {
-        \Illuminate\Support\Facades\DB::connection('landlord')->select('select 1');
-        $checks['db_landlord'] = 'ok';
-    } catch (\Throwable $e) {
-        $checks['db_landlord'] = 'fail';
-        $checks['db_landlord_error'] = $e->getMessage();
-        $checks['status'] = 'degraded';
-    }
-
-    try {
-        $checks['session_handler'] = get_class(app('session')->driver());
-    } catch (\Throwable $e) {
-        $checks['session_handler'] = 'fail: '.$e->getMessage();
-        $checks['status'] = 'degraded';
-    }
-
-    $checks['sessions_dir_writable'] = is_writable(storage_path('framework/sessions'));
-    $checks['logs_writable'] = is_writable(storage_path('logs'));
-
-    return response()->json($checks, $checks['status'] === 'ok' ? 200 : 500);
-});
+Route::get('/health', fn () => response()->json([
+    'status' => 'ok',
+    'context' => 'landlord',
+]));
 
 Route::post('/tenants/register', [TenantRegistrationController::class, 'register'])
     ->middleware('throttle:5,1');
