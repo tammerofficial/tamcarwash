@@ -43,13 +43,16 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->statefulApi();
+        // Avoid session boot on API when production env/session storage is misconfigured.
+        if (env('APP_ENV') !== 'production') {
+            $middleware->statefulApi();
 
-        $middleware->replaceInGroup(
-            'api',
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            EnsureFrontendRequestsAreStateful::class,
-        );
+            $middleware->replaceInGroup(
+                'api',
+                \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+                EnsureFrontendRequestsAreStateful::class,
+            );
+        }
 
         $middleware->alias([
             'landlord' => EnsureLandlordContext::class,
