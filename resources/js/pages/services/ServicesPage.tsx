@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { ColumnDef } from '@tanstack/react-table';
 import { Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -55,7 +56,7 @@ export function ServicesPage() {
     const [editingService, setEditingService] = useState<Service | null>(null);
     const [deletingService, setDeletingService] = useState<Service | null>(null);
 
-    const { data: categories, isLoading: categoriesLoading } = useQuery({
+    const { data: categories, isLoading: categoriesLoading } = useAuthenticatedQuery({
         queryKey: ['service-categories'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<ServiceCategory>>(endpoints.serviceCategories, {
@@ -66,7 +67,7 @@ export function ServicesPage() {
         retry: false,
     });
 
-    const { data: services, isLoading: servicesLoading } = useQuery({
+    const { data: services, isLoading: servicesLoading } = useAuthenticatedQuery({
         queryKey: ['services'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Service>>(endpoints.services, { per_page: 50 });

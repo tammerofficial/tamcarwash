@@ -3,6 +3,32 @@ import { isLandlordContext, resolveTenantSlug } from '@/lib/tenancy';
 
 export const SESSION_TENANT_SLUG_KEY = 'tammer_tenant_slug';
 
+function readXsrfTokenFromCookie(): string {
+    const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]*)/);
+    if (!match?.[1]) {
+        return '';
+    }
+
+    try {
+        return decodeURIComponent(match[1]);
+    } catch {
+        return match[1];
+    }
+}
+
+function resolveCsrfToken(): string {
+    const fromCookie = readXsrfTokenFromCookie();
+    if (fromCookie) {
+        return fromCookie;
+    }
+
+    return (
+        document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ??
+        readTammerConfig().csrfToken ??
+        ''
+    );
+}
+
 function readTammerConfig() {
     return (
         window.__TAMMER__ ?? {
@@ -10,7 +36,7 @@ function readTammerConfig() {
             apiBaseUrl: '/api/v1',
             landlordApiBaseUrl: '/api/landlord/v1',
             sanctumUrl: '/sanctum/csrf-cookie',
-            csrfToken: document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '',
+            csrfToken: '',
             isLandlord: false,
             platformDomain: 'tamcarwash.com',
             tenant: null,
@@ -148,7 +174,11 @@ class ApiClient {
     }
 
     private get csrfToken(): string {
-        return readTammerConfig().csrfToken;
+        return resolveCsrfToken();
+    }
+
+    private requestCredentials(): RequestCredentials {
+        return 'include';
     }
 
     private headers(extra: HeadersInit = {}, tenantSlugOverride?: string | null): HeadersInit {
@@ -173,7 +203,7 @@ class ApiClient {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
-            ...(this.csrfToken ? { 'X-CSRF-TOKEN': this.csrfToken } : {}),
+            ...(this.csrfToken ? { 'X-XSRF-TOKEN': this.csrfToken } : {}),
             ...tenantHeaders,
             ...extra,
         };
@@ -226,7 +256,7 @@ class ApiClient {
         const response = await fetch(this.buildUrl(endpoint, params), {
             method: 'GET',
             headers: this.headers({}, options?.tenantSlug),
-            credentials: 'same-origin',
+            credentials: this.requestCredentials(),
         });
 
         if (!response.ok) {
@@ -257,7 +287,7 @@ class ApiClient {
         const response = await fetch(url.toString(), {
             method: 'POST',
             headers: this.headers({}, options?.tenantSlug),
-            credentials: 'same-origin',
+            credentials: this.requestCredentials(),
             body: body !== undefined ? JSON.stringify(body) : undefined,
         });
 
@@ -272,7 +302,7 @@ class ApiClient {
         const response = await fetch(this.buildUrl(endpoint), {
             method: 'PATCH',
             headers: this.headers(),
-            credentials: 'same-origin',
+            credentials: this.requestCredentials(),
             body: body !== undefined ? JSON.stringify(body) : undefined,
         });
 
@@ -287,7 +317,7 @@ class ApiClient {
         const response = await fetch(this.buildUrl(endpoint), {
             method: 'PUT',
             headers: this.headers(),
-            credentials: 'same-origin',
+            credentials: this.requestCredentials(),
             body: body !== undefined ? JSON.stringify(body) : undefined,
         });
 
@@ -302,7 +332,7 @@ class ApiClient {
         const response = await fetch(this.buildUrl(endpoint), {
             method: 'DELETE',
             headers: this.headers(),
-            credentials: 'same-origin',
+            credentials: this.requestCredentials(),
         });
 
         if (!response.ok) {
@@ -316,7 +346,7 @@ class ApiClient {
         const { sanctumUrl } = readTammerConfig();
         await fetch(sanctumUrl, {
             method: 'GET',
-            credentials: 'same-origin',
+            credentials: this.requestCredentials(),
         });
     }
 }

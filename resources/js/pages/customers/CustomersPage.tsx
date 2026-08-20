@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { ColumnDef } from '@tanstack/react-table';
 import { Ban, Loader2, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -61,7 +62,7 @@ function CustomerFormDialog({
     const isEdit = Boolean(customer);
     const [noteText, setNoteText] = useState('');
 
-    const { data: customerDetail, isLoading: detailLoading } = useQuery({
+    const { data: customerDetail, isLoading: detailLoading } = useAuthenticatedQuery({
         queryKey: ['customers', customer?.id],
         queryFn: async () => {
             const response = await api.get<ApiResponse<Customer>>(`${endpoints.customers}/${customer!.id}`);
@@ -335,7 +336,7 @@ export function CustomersPage() {
     const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<Customer | null>(null);
 
-    const { data, isLoading, isError, error } = useQuery({
+    const { data, isLoading, isError, error } = useAuthenticatedQuery({
         queryKey: ['customers'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Customer>>(endpoints.customers, { per_page: 50 });

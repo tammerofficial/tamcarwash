@@ -23,7 +23,7 @@ interface HeaderProps {
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
-    const { user, logout, isLandlord, isAuthenticated } = useAuth();
+    const { user, logout, isLandlord, isAuthenticated, isLoading: authLoading } = useAuth();
 
     const { data: settings } = useQuery({
         queryKey: ['settings'],
@@ -31,7 +31,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             const response = await api.get<ApiResponse<TenantSettings>>(endpoints.settings);
             return response.data;
         },
-        enabled: isAuthenticated && !isLandlord,
+        enabled: isAuthenticated && !isLandlord && !authLoading,
         retry: false,
     });
 

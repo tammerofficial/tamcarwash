@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { ColumnDef } from '@tanstack/react-table';
 import { CheckCircle2, Loader2, Plus, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
@@ -83,7 +84,7 @@ export function PricingPage() {
     const [validateResult, setValidateResult] = useState<Coupon | null>(null);
     const [validateError, setValidateError] = useState<string | null>(null);
 
-    const { data: rules, isLoading: rulesLoading } = useQuery({
+    const { data: rules, isLoading: rulesLoading } = useAuthenticatedQuery({
         queryKey: ['pricing-rules'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<PriceRule>>(endpoints.pricing.rules, { per_page: 50 });
@@ -92,7 +93,7 @@ export function PricingPage() {
         retry: false,
     });
 
-    const { data: coupons, isLoading: couponsLoading } = useQuery({
+    const { data: coupons, isLoading: couponsLoading } = useAuthenticatedQuery({
         queryKey: ['pricing-coupons'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Coupon>>(endpoints.pricing.coupons, { per_page: 50 });
@@ -101,7 +102,7 @@ export function PricingPage() {
         retry: false,
     });
 
-    const { data: discounts } = useQuery({
+    const { data: discounts } = useAuthenticatedQuery({
         queryKey: ['pricing-discounts'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Discount>>(endpoints.pricing.discounts, { per_page: 50 });
@@ -110,7 +111,7 @@ export function PricingPage() {
         retry: false,
     });
 
-    const { data: branches } = useQuery({
+    const { data: branches } = useAuthenticatedQuery({
         queryKey: ['branches'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Branch>>(endpoints.branches, { per_page: 50 });
@@ -119,7 +120,7 @@ export function PricingPage() {
         retry: false,
     });
 
-    const { data: services } = useQuery({
+    const { data: services } = useAuthenticatedQuery({
         queryKey: ['services'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Service>>(endpoints.services, { per_page: 50 });

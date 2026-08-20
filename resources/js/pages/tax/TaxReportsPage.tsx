@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { Download } from 'lucide-react';
 import {
     Bar,
@@ -36,7 +36,7 @@ export function TaxReportsPage() {
     const [period, setPeriod] = useState<Period>('monthly');
     const branchParams = useBranchQueryParams();
 
-    const { data: report, isLoading } = useQuery({
+    const { data: report, isLoading } = useAuthenticatedQuery({
         queryKey: ['tax-reports', period, branchParams],
         queryFn: async () => {
             const response = await api.get<ApiResponse<TaxReportDetail>>(PERIOD_ENDPOINTS[period], branchParams);
@@ -45,7 +45,7 @@ export function TaxReportsPage() {
         retry: false,
     });
 
-    const { data: breakdown = [], isLoading: breakdownLoading } = useQuery({
+    const { data: breakdown = [], isLoading: breakdownLoading } = useAuthenticatedQuery({
         queryKey: ['tax-reports-breakdown', report?.from, report?.to, branchParams],
         queryFn: async () => {
             const response = await api.get<ApiResponse<{ items: TaxReportBreakdownItem[] }>>(

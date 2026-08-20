@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
@@ -78,7 +79,7 @@ export function OrdersPage() {
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
     const [workerId, setWorkerId] = useState('');
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading } = useAuthenticatedQuery({
         queryKey: ['orders', branchParams],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Order>>(endpoints.orders, {
@@ -90,7 +91,7 @@ export function OrdersPage() {
         retry: false,
     });
 
-    const { data: customers = [] } = useQuery({
+    const { data: customers = [] } = useAuthenticatedQuery({
         queryKey: ['customers', 'select'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Customer>>(endpoints.customers, { per_page: 100 });
@@ -99,7 +100,7 @@ export function OrdersPage() {
         retry: false,
     });
 
-    const { data: vehicles = [] } = useQuery({
+    const { data: vehicles = [] } = useAuthenticatedQuery({
         queryKey: ['vehicles', 'select'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Vehicle>>(endpoints.vehicles, { per_page: 100 });
@@ -108,7 +109,7 @@ export function OrdersPage() {
         retry: false,
     });
 
-    const { data: services = [] } = useQuery({
+    const { data: services = [] } = useAuthenticatedQuery({
         queryKey: ['services', 'select'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Service>>(endpoints.services, { per_page: 100 });
@@ -117,7 +118,7 @@ export function OrdersPage() {
         retry: false,
     });
 
-    const { data: selectedOrder, isLoading: detailLoading } = useQuery({
+    const { data: selectedOrder, isLoading: detailLoading } = useAuthenticatedQuery({
         queryKey: ['orders', selectedOrderId],
         queryFn: async () => {
             const response = await api.get<ApiResponse<Order>>(endpoints.order(selectedOrderId!));

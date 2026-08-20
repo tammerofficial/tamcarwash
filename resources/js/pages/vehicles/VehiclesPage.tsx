@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { ColumnDef } from '@tanstack/react-table';
 import { Loader2, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -64,7 +65,7 @@ function VehicleFormDialog({
     const queryClient = useQueryClient();
     const isEdit = Boolean(vehicle);
 
-    const { data: customers = [] } = useQuery({
+    const { data: customers = [] } = useAuthenticatedQuery({
         queryKey: ['customers'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Customer>>(endpoints.customers, { per_page: 100 });
@@ -265,7 +266,7 @@ export function VehiclesPage() {
     const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<Vehicle | null>(null);
 
-    const { data, isLoading, isError, error } = useQuery({
+    const { data, isLoading, isError, error } = useAuthenticatedQuery({
         queryKey: ['vehicles'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Vehicle>>(endpoints.vehicles, { per_page: 50 });

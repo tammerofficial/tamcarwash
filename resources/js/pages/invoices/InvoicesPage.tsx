@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
@@ -38,7 +39,7 @@ export function InvoicesPage() {
     const branchParams = useBranchQueryParams();
     const [selectedInvoiceId, setSelectedInvoiceId] = useState<number | null>(null);
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading } = useAuthenticatedQuery({
         queryKey: ['invoices', branchParams],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Invoice>>(endpoints.invoices, {
@@ -50,7 +51,7 @@ export function InvoicesPage() {
         retry: false,
     });
 
-    const { data: selectedInvoice, isLoading: detailLoading } = useQuery({
+    const { data: selectedInvoice, isLoading: detailLoading } = useAuthenticatedQuery({
         queryKey: ['invoices', selectedInvoiceId],
         queryFn: async () => {
             const response = await api.get<ApiResponse<Invoice>>(endpoints.invoice(selectedInvoiceId!));

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { ColumnDef } from '@tanstack/react-table';
 import { Clock, Loader2, Megaphone, Plus, RefreshCw } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -66,7 +67,7 @@ export function QueuePage() {
     const [walkInOpen, setWalkInOpen] = useState(false);
     const [selectedEntryId, setSelectedEntryId] = useState<number | null>(null);
 
-    const { data, isLoading, refetch, isFetching } = useQuery({
+    const { data, isLoading, refetch, isFetching } = useAuthenticatedQuery({
         queryKey: ['queue', branchParams],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<QueueEntry>>(endpoints.queue.entries, {
@@ -79,7 +80,7 @@ export function QueuePage() {
         refetchInterval: 15_000,
     });
 
-    const { data: estimatedWait } = useQuery({
+    const { data: estimatedWait } = useAuthenticatedQuery({
         queryKey: ['queue-estimated-wait', branchParams],
         queryFn: async () => {
             const response = await api.get<ApiResponse<{ estimated_wait_minutes: number }>>(
@@ -93,7 +94,7 @@ export function QueuePage() {
         refetchInterval: 15_000,
     });
 
-    const { data: customers = [] } = useQuery({
+    const { data: customers = [] } = useAuthenticatedQuery({
         queryKey: ['customers', 'select'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Customer>>(endpoints.customers, { per_page: 100 });
@@ -102,7 +103,7 @@ export function QueuePage() {
         retry: false,
     });
 
-    const { data: vehicles = [] } = useQuery({
+    const { data: vehicles = [] } = useAuthenticatedQuery({
         queryKey: ['vehicles', 'select'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Vehicle>>(endpoints.vehicles, { per_page: 100 });

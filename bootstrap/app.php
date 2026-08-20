@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use App\Http\Middleware\Tenancy\EnsureLandlordContext;
 use App\Http\Middleware\Tenancy\EnsureTenantContext;
 use App\Http\Middleware\Tenancy\IdentifyTenantByCustomDomain;
@@ -37,6 +38,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
+
+        $middleware->replaceInGroup(
+            'api',
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            EnsureFrontendRequestsAreStateful::class,
+        );
 
         $middleware->alias([
             'landlord' => EnsureLandlordContext::class,

@@ -69,6 +69,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             undefined,
             payload.tenantSlug ? { tenantSlug: payload.tenantSlug } : undefined,
         );
+
+        // Session is regenerated on login — refresh CSRF before follow-up requests.
+        await api.ensureCsrfCookie();
         setUser(response.data.user);
     }, []);
 

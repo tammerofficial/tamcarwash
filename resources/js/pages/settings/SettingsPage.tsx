@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { Loader2, Save } from 'lucide-react';
 import { api, endpoints } from '@/lib/api';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -42,7 +43,7 @@ type TaxSettingsFormValues = z.infer<typeof taxSettingsSchema>;
 export function SettingsPage() {
     const queryClient = useQueryClient();
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading } = useAuthenticatedQuery({
         queryKey: ['settings'],
         queryFn: async () => {
             const response = await api.get<ApiResponse<TenantSettings>>(endpoints.settings);
@@ -51,7 +52,7 @@ export function SettingsPage() {
         retry: false,
     });
 
-    const { data: taxData, isLoading: taxLoading } = useQuery({
+    const { data: taxData, isLoading: taxLoading } = useAuthenticatedQuery({
         queryKey: ['tax-settings'],
         queryFn: async () => {
             const response = await api.get<ApiResponse<TaxSettings>>(endpoints.taxSettings);

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { Clock } from 'lucide-react';
@@ -21,7 +21,7 @@ const STATUS_LABELS: Record<string, string> = {
 export function QueueScreenPage() {
     const branchParams = useBranchQueryParams();
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading } = useAuthenticatedQuery({
         queryKey: ['queue-screen', branchParams],
         queryFn: async () => {
             const response = await api.get<ApiResponse<QueueScreenData>>(endpoints.queue.screen, branchParams);

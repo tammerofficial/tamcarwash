@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { 
     CalendarDays, 
     ClipboardList, 
@@ -30,6 +30,7 @@ import {
     YAxis,
 } from 'recharts';
 import { api, endpoints } from '@/lib/api';
+import { useAuth } from '@/providers/AuthProvider';
 import { useBranchQueryParams } from '@/providers/BranchProvider';
 import { StatsCard } from '@/components/common/StatsCard';
 import { Badge } from '@/components/ui/badge';
@@ -78,14 +79,16 @@ function formatDate(iso?: string | null): string {
 }
 
 export function DashboardPage() {
+    const { isAuthenticated, isLoading: authLoading, isLandlord } = useAuth();
     const branchParams = useBranchQueryParams();
 
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading, isError } = useAuthenticatedQuery({
         queryKey: ['dashboard', branchParams],
         queryFn: async () => {
             const response = await api.get<ApiResponse<DashboardStats>>(endpoints.dashboard.stats, branchParams);
             return response.data;
         },
+        enabled: isAuthenticated && !isLandlord && !authLoading,
         retry: false,
     });
 

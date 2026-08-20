@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { ColumnDef } from '@tanstack/react-table';
 import { Clock, Loader2, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -389,7 +390,7 @@ export function BranchesPage() {
     const [deleteTarget, setDeleteTarget] = useState<Branch | null>(null);
     const [hoursBranch, setHoursBranch] = useState<Branch | null>(null);
 
-    const { data, isLoading, isError, error } = useQuery({
+    const { data, isLoading, isError, error } = useAuthenticatedQuery({
         queryKey: ['branches'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Branch>>(endpoints.branches, { per_page: 50 });

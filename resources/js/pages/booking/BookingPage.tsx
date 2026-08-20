@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
@@ -94,7 +95,7 @@ export function BookingPage() {
         ...(filterDate ? { date: filterDate } : {}),
     };
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading } = useAuthenticatedQuery({
         queryKey: ['bookings', listParams],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Booking>>(endpoints.bookings, listParams);
@@ -103,7 +104,7 @@ export function BookingPage() {
         retry: false,
     });
 
-    const { data: customers = [] } = useQuery({
+    const { data: customers = [] } = useAuthenticatedQuery({
         queryKey: ['customers', 'select'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Customer>>(endpoints.customers, { per_page: 100 });
@@ -112,7 +113,7 @@ export function BookingPage() {
         retry: false,
     });
 
-    const { data: vehicles = [] } = useQuery({
+    const { data: vehicles = [] } = useAuthenticatedQuery({
         queryKey: ['vehicles', 'select'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Vehicle>>(endpoints.vehicles, { per_page: 100 });
@@ -121,7 +122,7 @@ export function BookingPage() {
         retry: false,
     });
 
-    const { data: services = [] } = useQuery({
+    const { data: services = [] } = useAuthenticatedQuery({
         queryKey: ['services', 'select'],
         queryFn: async () => {
             const response = await api.get<PaginatedResponse<Service>>(endpoints.services, { per_page: 100 });
@@ -130,7 +131,7 @@ export function BookingPage() {
         retry: false,
     });
 
-    const { data: timeSlots = [], isLoading: slotsLoading } = useQuery({
+    const { data: timeSlots = [], isLoading: slotsLoading } = useAuthenticatedQuery({
         queryKey: ['time-slots', selectedBranchId, scheduleDate],
         queryFn: async () => {
             const response = await api.get<ApiResponse<TimeSlot[]>>(endpoints.timeSlots.available, {
@@ -143,7 +144,7 @@ export function BookingPage() {
         retry: false,
     });
 
-    const { data: rescheduleSlots = [], isLoading: rescheduleSlotsLoading } = useQuery({
+    const { data: rescheduleSlots = [], isLoading: rescheduleSlotsLoading } = useAuthenticatedQuery({
         queryKey: ['time-slots', selectedBranchId, rescheduleDate],
         queryFn: async () => {
             const response = await api.get<ApiResponse<TimeSlot[]>>(endpoints.timeSlots.available, {
@@ -156,7 +157,7 @@ export function BookingPage() {
         retry: false,
     });
 
-    const { data: selectedBooking, isLoading: detailLoading } = useQuery({
+    const { data: selectedBooking, isLoading: detailLoading } = useAuthenticatedQuery({
         queryKey: ['bookings', selectedBookingId],
         queryFn: async () => {
             const response = await api.get<ApiResponse<Booking>>(endpoints.booking(selectedBookingId!));
