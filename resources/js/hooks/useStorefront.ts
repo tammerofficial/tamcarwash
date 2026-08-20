@@ -5,6 +5,7 @@ import type {
     StorefrontBranch,
     StorefrontProfile,
     StorefrontService,
+    TenantBrandingPayload,
 } from '@/types/api';
 
 export const DEFAULT_CONTACT = {
@@ -43,6 +44,18 @@ export function useStorefrontProfile() {
     });
 }
 
+export function useStorefrontBranding() {
+    return useQuery({
+        queryKey: ['storefront', 'branding'],
+        queryFn: async () => {
+            const response = await api.get<ApiResponse<TenantBrandingPayload>>(endpoints.storefront.branding);
+            return response.data;
+        },
+        retry: false,
+        staleTime: 300_000,
+    });
+}
+
 export function useStorefrontServices(limit = 12) {
     return useQuery({
         queryKey: ['storefront', 'services', limit],
@@ -69,18 +82,8 @@ export function useStorefrontBranches() {
     });
 }
 
-export function getTenantBranding(profile?: StorefrontProfile | null) {
-    const embedded = appConfig.tenant?.branding;
-    const fromApi = profile?.branding;
-
-    return {
-        logoUrl: fromApi?.logo_url ?? embedded?.logo_url ?? null,
-        primaryColor: fromApi?.primary_color ?? embedded?.primary_color ?? '#0ea5e9',
-        tagline: fromApi?.tagline ?? embedded?.tagline ?? null,
-        about: fromApi?.about ?? embedded?.about ?? null,
-        social: fromApi?.social ?? embedded?.social ?? {},
-    };
-}
+export { getTenantBranding, applyBrandingCssVariables, applyTenantBrandingPayload, brandingPayloadToResolved, DEFAULT_BRAND_PRIMARY, DEFAULT_BRAND_SECONDARY } from '@/lib/branding';
+export type { ResolvedTenantBranding } from '@/lib/branding';
 
 export function getTenantDisplayName(profile?: StorefrontProfile | null): string {
     return profile?.business_name ?? appConfig.tenant?.name ?? 'مغسلة سيارات';

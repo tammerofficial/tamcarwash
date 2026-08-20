@@ -81,8 +81,13 @@
 
     /* Design Tokens for Admin Shell */
     --admin-sidebar-bg: 222 47% 11%;
-    --admin-sidebar-active: 199 89% 38%;
+    --admin-sidebar-active: 180 100% 15%;
     --admin-sidebar-active-foreground: 0 0% 100%;
+
+    /* Tenant storefront branding (homepage/marketing) */
+    --brand-primary: #004d4d;
+    --brand-secondary: #14b8a6;
+    --brand-primary-dark: #002d2d;
 }
 
 .dark {
@@ -166,7 +171,7 @@
 
     .admin-sidebar-nav-item--active {
         @apply bg-primary text-primary-foreground shadow-lg scale-[1.02];
-        background-image: linear-gradient(270deg, hsl(var(--primary)) 0%, #0ea5e9 100%);
+        background-image: linear-gradient(270deg, hsl(var(--primary)) 0%, var(--brand-secondary) 100%);
     }
 
     .admin-sidebar-nav-item--inactive {
@@ -203,5 +208,87 @@
 
     .admin-sidebar-mobile-backdrop {
         @apply bg-black/50 backdrop-blur-sm;
+    }
+
+    .bg-brand-primary {
+        background-color: var(--brand-primary);
+    }
+
+    .bg-brand-primary-dark {
+        background-color: var(--brand-primary-dark);
+    }
+
+    .bg-brand-secondary {
+        background-color: var(--brand-secondary);
+    }
+
+    .text-brand-primary {
+        color: var(--brand-primary);
+    }
+
+    .text-brand-secondary {
+        color: var(--brand-secondary);
+    }
+
+    .border-brand-secondary {
+        border-color: color-mix(in srgb, var(--brand-secondary) 20%, transparent);
+    }
+
+    .hover\:text-brand-secondary:hover {
+        color: var(--brand-secondary);
+    }
+
+    .hover\:bg-brand-secondary:hover {
+        background-color: var(--brand-secondary);
+    }
+
+    .bg-brand-primary-20 {
+        background-color: color-mix(in srgb, var(--brand-primary) 20%, transparent);
+    }
+
+    .bg-brand-secondary-10 {
+        background-color: color-mix(in srgb, var(--brand-secondary) 10%, transparent);
+    }
+
+    .bg-brand-secondary-20 {
+        background-color: color-mix(in srgb, var(--brand-secondary) 20%, transparent);
+    }
+
+    .border-brand-secondary-20 {
+        border-color: color-mix(in srgb, var(--brand-secondary) 20%, transparent);
+    }
+
+    .text-brand-secondary-60 {
+        color: color-mix(in srgb, var(--brand-secondary) 60%, transparent);
+    }
+
+    .hover\:bg-brand-secondary-10:hover {
+        background-color: color-mix(in srgb, var(--brand-secondary) 10%, transparent);
+    }
+
+    .hover\:bg-brand-secondary-20:hover {
+        background-color: color-mix(in srgb, var(--brand-secondary) 20%, transparent);
+    }
+
+    .hover\:border-brand-secondary:hover {
+        border-color: var(--brand-secondary);
+    }
+
+    .group:hover .group-hover\:text-brand-secondary {
+        color: var(--brand-secondary);
+    }
+
+    .border-brand-primary-20 {
+        border-color: color-mix(in srgb, var(--brand-primary) 20%, transparent);
+    }
+
+    .from-brand-primary {
+        --tw-gradient-from: var(--brand-primary) var(--tw-gradient-from-position);
+        --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position);
+        --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+    }
+
+    .to-brand-primary-dark {
+        --tw-gradient-to: var(--brand-primary-dark) var(--tw-gradient-to-position);
     }
 }

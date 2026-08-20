@@ -8,6 +8,7 @@ use App\Modules\Finance\Http\Controllers\CashDrawerController;
 use App\Modules\Finance\Http\Controllers\ExpenseController;
 use App\Modules\Finance\Http\Controllers\InvoiceController;
 use App\Modules\Finance\Http\Controllers\PaymentController;
+use App\Modules\Finance\Http\Controllers\PaymentMethodController;
 use App\Modules\Finance\Http\Controllers\SettingsController;
 use App\Modules\Finance\Http\Controllers\TaxReportController;
 use App\Modules\Finance\Http\Controllers\TaxSettingsController;
@@ -52,10 +53,13 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-Route::get('queue/screen/public', [QueueController::class, 'screen']);
+Route::get('queue/screen/public', [QueueController::class, 'publicScreen']);
+
+Route::get('branding.json', [StorefrontController::class, 'brandingJson']);
 
 Route::prefix('storefront')->group(function () {
     Route::get('/', [StorefrontController::class, 'show']);
+    Route::get('branding', [StorefrontController::class, 'branding']);
     Route::get('services', [StorefrontController::class, 'services']);
     Route::get('branches', [StorefrontController::class, 'branches']);
     Route::get('time-slots/available', [StorefrontController::class, 'availableTimeSlots']);
@@ -142,6 +146,7 @@ Route::middleware('auth:tenant')->group(function () {
 
     Route::get('payments', [PaymentController::class, 'index']);
     Route::post('payments', [PaymentController::class, 'store']);
+    Route::get('payment-methods', [PaymentMethodController::class, 'index']);
 
     Route::get('expenses', [ExpenseController::class, 'index']);
     Route::post('expenses', [ExpenseController::class, 'store']);

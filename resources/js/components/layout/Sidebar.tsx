@@ -18,27 +18,34 @@ import {
     ChevronLeft,
     ChevronRight,
     X,
+    Banknote,
+    Wrench,
+    Palette,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { t } from '@/lib/i18n';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { appConfig } from '@/lib/api';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/providers/AuthProvider';
 
 const navItems = [
-    { to: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard, end: true },
-    { to: '/branches', label: t('nav.branches'), icon: Building2 },
-    { to: '/customers', label: t('nav.customers'), icon: Users },
-    { to: '/vehicles', label: t('nav.vehicles'), icon: CarFront },
-    { to: '/services', label: t('nav.services'), icon: Droplets },
-    { to: '/pricing', label: t('nav.pricing'), icon: Tags },
-    { to: '/booking', label: t('nav.booking'), icon: CalendarDays },
-    { to: '/queue', label: t('nav.queue'), icon: ListOrdered },
-    { to: '/queue/screen', label: t('nav.queueScreen'), icon: Monitor },
-    { to: '/orders', label: t('nav.orders'), icon: ClipboardList },
-    { to: '/invoices', label: t('nav.invoices'), icon: Receipt },
-    { to: '/tax-reports', label: t('nav.taxReports'), icon: CreditCard },
-    { to: '/settings', label: t('nav.settings'), icon: Settings },
+    { to: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard, end: true, roles: ['owner', 'manager', 'cashier', 'worker'] },
+    { to: '/cashier', label: t('nav.cashier'), icon: Banknote, roles: ['owner', 'manager', 'cashier'] },
+    { to: '/worker', label: t('nav.worker'), icon: Wrench, roles: ['owner', 'manager', 'worker'] },
+    { to: '/branches', label: t('nav.branches'), icon: Building2, roles: ['owner', 'manager'] },
+    { to: '/customers', label: t('nav.customers'), icon: Users, roles: ['owner', 'manager', 'cashier'] },
+    { to: '/vehicles', label: t('nav.vehicles'), icon: CarFront, roles: ['owner', 'manager', 'cashier'] },
+    { to: '/services', label: t('nav.services'), icon: Droplets, roles: ['owner', 'manager'] },
+    { to: '/pricing', label: t('nav.pricing'), icon: Tags, roles: ['owner', 'manager'] },
+    { to: '/booking', label: t('nav.booking'), icon: CalendarDays, roles: ['owner', 'manager'] },
+    { to: '/queue', label: t('nav.queue'), icon: ListOrdered, roles: ['owner', 'manager', 'cashier', 'worker'] },
+    { to: '/queue/screen', label: t('nav.queueScreen'), icon: Monitor, roles: ['owner', 'manager', 'cashier'] },
+    { to: '/orders', label: t('nav.orders'), icon: ClipboardList, roles: ['owner', 'manager', 'cashier', 'worker'] },
+    { to: '/invoices', label: t('nav.invoices'), icon: Receipt, roles: ['owner', 'manager', 'cashier'] },
+    { to: '/tax-reports', label: t('nav.taxReports'), icon: CreditCard, roles: ['owner', 'manager'] },
+    { to: '/appearance', label: t('nav.appearance'), icon: Palette, roles: ['owner', 'manager'] },
+    { to: '/settings', label: t('nav.settings'), icon: Settings, roles: ['owner', 'manager'] },
 ];
 
 interface SidebarProps {
@@ -58,6 +65,12 @@ export function Sidebar({
     onNavigate,
     className 
 }: SidebarProps) {
+    const { user } = useAuth();
+    const userRoles = user?.roles ?? [];
+    const visibleNavItems = navItems.filter(
+        (item) => !item.roles || item.roles.some((role) => userRoles.includes(role)),
+    );
+
     return (
         <aside
             className={cn(
@@ -76,7 +89,7 @@ export function Sidebar({
                             collapsed ? 'h-7 w-7' : 'h-8 w-8',
                         )}
                         onClick={onToggleCollapse}
-                        aria-label={t('admin.sidebarCollapse') || 'طي القائمة'}
+                        aria-label={t('admin.sidebarCollapse')}
                     >
                         {collapsed ? (
                             <ChevronLeft className="h-4 w-4" />
@@ -92,7 +105,7 @@ export function Sidebar({
                         size="icon"
                         className="absolute end-2 top-2 z-20 h-8 w-8 shrink-0 text-white/60 hover:bg-white/10 hover:text-white lg:hidden"
                         onClick={onMobileClose}
-                        aria-label={t('public.closeMenu') || 'إغلاق القائمة'}
+                        aria-label={t('public.closeMenu')}
                     >
                         <X className="h-4 w-4" />
                     </Button>
@@ -109,7 +122,7 @@ export function Sidebar({
                         <div className="space-y-1 animate-in fade-in duration-500">
                             <p className="admin-sidebar-brand-title text-xl font-black">{appConfig.appName}</p>
                             <p className="admin-sidebar-brand-subtitle">{t('app.tagline')}</p>
-                            <p className="admin-sidebar-brand-sultanate">Sultanate of Oman</p>
+                            <p className="admin-sidebar-brand-sultanate">{t('app.sultanate')}</p>
                         </div>
                     )}
                 </Link>
@@ -120,10 +133,10 @@ export function Sidebar({
                     <div className="space-y-1">
                         {!collapsed && (
                             <p className="admin-sidebar-section-label">
-                                {t('nav.main') || 'القائمة الرئيسية'}
+                                {t('nav.main')}
                             </p>
                         )}
-                        {navItems.map((item) => (
+                        {visibleNavItems.map((item) => (
                             <NavLink
                                 key={item.to}
                                 to={item.to}
@@ -156,7 +169,7 @@ export function Sidebar({
                                 <ShieldCheck className="h-4 w-4" />
                             </div>
                             <p className="text-[10px] text-white/50 font-bold leading-relaxed">
-                                {t('app.secureAccess') || 'وصول آمن ومشفر'}
+                                {t('app.secureAccess')}
                             </p>
                         </div>
                     </div>

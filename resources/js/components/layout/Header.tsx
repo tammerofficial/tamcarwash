@@ -37,6 +37,7 @@ export function Header({ onMenuClick }: HeaderProps) {
     });
 
     const businessName = settings?.business_name ?? appConfig.tenant?.name ?? 'مغسلة تجريبية';
+    const logoUrl = settings?.logo_url;
     const tenantHomeHref = getTenantPublicHomeHref();
     const tenantHomeUsesRouterLink = shouldUseTenantHomeRouterLink();
 
@@ -47,19 +48,26 @@ export function Header({ onMenuClick }: HeaderProps) {
                     <Menu className="h-5 w-5" />
                 </Button>
 
-                <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-0.5 opacity-70">
-                        {isLandlord ? t('auth.landlordPortal') || 'بوابة الإدارة المركزية' : t('dashboard.welcome') || 'أهلاً بك في'}
-                    </p>
-                    <div className="flex items-center gap-2">
-                        <p className="text-lg font-black text-foreground leading-none">
-                            {isLandlord ? t('auth.landlordLogin') : businessName}
+                <div className="flex items-center gap-3">
+                    {logoUrl && !isLandlord && (
+                        <div className="h-10 w-10 overflow-hidden rounded-lg bg-muted p-1 hidden sm:block">
+                            <img src={logoUrl} alt={businessName} className="h-full w-full object-contain" />
+                        </div>
+                    )}
+                    <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-0.5 opacity-70">
+                            {isLandlord ? t('auth.landlordPortal') || 'بوابة الإدارة المركزية' : t('dashboard.welcome') || 'أهلاً بك في'}
                         </p>
-                        {!isLandlord && (
-                            <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/10 rounded-lg px-2 py-0.5 text-[10px] font-bold">
-                                {t('app.active') || 'نشط'}
-                            </Badge>
-                        )}
+                        <div className="flex items-center gap-2">
+                            <p className="text-lg font-black text-foreground leading-none">
+                                {isLandlord ? t('auth.landlordLogin') : businessName}
+                            </p>
+                            {!isLandlord && (
+                                <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/10 rounded-lg px-2 py-0.5 text-[10px] font-bold">
+                                    {t('app.active') || 'نشط'}
+                                </Badge>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

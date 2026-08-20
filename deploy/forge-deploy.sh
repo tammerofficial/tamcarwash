@@ -39,28 +39,37 @@ set_env_if_missing() {
     fi
 }
 
+read_env_var() {
+    local key="$1"
+    grep -E "^${key}=" .env 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"' || true
+}
+
 # App (always sync)
 set_env APP_ENV production
 set_env APP_DEBUG false
 set_env APP_URL "https://tamcarwash.on-forge.com"
 set_env LOG_LEVEL error
 
-# Database — preserve Forge credentials; only fill missing keys / upgrade sqlite → mysql
+# Database — NEVER overwrite Forge credentials (DB_USERNAME, DB_PASSWORD, DB_DATABASE)
 set_env DB_CONNECTION landlord
 set_env_if_missing DB_HOST 127.0.0.1
 set_env_if_missing DB_PORT 3306
 set_env_if_missing DB_USERNAME forge
 
+FORGE_DB_NAME=$(read_env_var DB_DATABASE)
+
 if grep -qE '^LANDLORD_DB_DRIVER=sqlite' .env || ! grep -qE '^LANDLORD_DB_DRIVER=' .env; then
     set_env LANDLORD_DB_DRIVER mysql
     set_env LANDLORD_DB_CONNECTION landlord
-    set_env LANDLORD_DB_DATABASE tamcarwash_landlord
+    # Prefer Forge-linked database name; fallback to dedicated landlord DB name
+    set_env LANDLORD_DB_DATABASE "${FORGE_DB_NAME:-tamcarwash_landlord}"
     set_env TENANT_DB_DRIVER mysql
     set_env TENANT_DB_CONNECTION tenant
     # Drop local sqlite paths that break production MySQL
     sed -i.bak '/^TENANT_SQLITE_DIRECTORY=/d;/^LANDLORD_DB_DATABASE=.*\.sqlite/d' .env && rm -f .env.bak
 fi
 
+set_env_if_missing LANDLORD_DB_DATABASE "${FORGE_DB_NAME:-tamcarwash_landlord}"
 set_env_if_missing TENANT_DB_PREFIX tamcarwash_tenant_
 
 # Tenancy domains
@@ -87,23 +96,83 @@ if ! grep -qE '^APP_KEY=base64:.+' .env; then
 fi
 
 # ---------------------------------------------------------------------------
-# 2. Storage + landlord database
+# 2. Storage + landlord database (create + grants for site MySQL user)
 # ---------------------------------------------------------------------------
 mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache/data storage/logs bootstrap/cache
 chmod -R ug+rwX storage bootstrap/cache
 
-DB_USER=$(grep -E '^DB_USERNAME=' .env | head -1 | cut -d= -f2- | tr -d '"' || true)
-DB_PASS=$(grep -E '^DB_PASSWORD=' .env | head -1 | cut -d= -f2- | tr -d '"' || true)
-DB_NAME=$(grep -E '^LANDLORD_DB_DATABASE=' .env | head -1 | cut -d= -f2- | tr -d '"' || echo "tamcarwash_landlord")
+DB_USER=$(read_env_var DB_USERNAME)
+DB_PASS=$(read_env_var DB_PASSWORD)
+FORGE_DB_NAME=$(read_env_var DB_DATABASE)
+DB_NAME=$(read_env_var LANDLORD_DB_DATABASE)
+DB_NAME=${DB_NAME:-${FORGE_DB_NAME:-tamcarwash_landlord}}
+TENANT_PREFIX=$(read_env_var TENANT_DB_PREFIX)
+TENANT_PREFIX=${TENANT_PREFIX:-tamcarwash_tenant_}
 
-if [ -n "${DB_USER:-}" ] && [ -n "${DB_PASS:-}" ]; then
-    MYSQL_PWD="${DB_PASS}" mysql -h 127.0.0.1 -P 3306 -u "$DB_USER" \
-        -e "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" \
-        && echo "Landlord database ensured: ${DB_NAME}" \
-        || echo "WARNING: could not create landlord database."
-else
-    echo "WARNING: DB_PASSWORD empty — set it in Forge → Site → Environment."
+mysql_exec() {
+    local user="$1" pass="$2"
+    shift 2
+    if [ -n "${pass}" ]; then
+        MYSQL_PWD="${pass}" mysql -h 127.0.0.1 -P 3306 -u "${user}" "$@"
+    else
+        mysql -h 127.0.0.1 -P 3306 -u "${user}" "$@"
+    fi
+}
+
+mysql_can_use_db() {
+    local user="$1" pass="$2" db="$3"
+    mysql_exec "${user}" "${pass}" -e "USE \`${db}\`;" >/dev/null 2>&1
+}
+
+# If LANDLORD points at a DB the Forge user cannot access, align with Forge DB_DATABASE
+if [ -n "${DB_USER}" ] && [ -n "${DB_PASS}" ] && [ -n "${FORGE_DB_NAME}" ]; then
+    if [ "${DB_NAME}" != "${FORGE_DB_NAME}" ] && ! mysql_can_use_db "${DB_USER}" "${DB_PASS}" "${DB_NAME}"; then
+        if mysql_can_use_db "${DB_USER}" "${DB_PASS}" "${FORGE_DB_NAME}"; then
+            echo "Aligning LANDLORD_DB_DATABASE to Forge database: ${FORGE_DB_NAME}"
+            set_env LANDLORD_DB_DATABASE "${FORGE_DB_NAME}"
+            DB_NAME="${FORGE_DB_NAME}"
+        fi
+    fi
 fi
+
+ensure_landlord_database() {
+    local create_sql="CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    local grant_sql="GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'%';
+GRANT ALL PRIVILEGES ON \`${TENANT_PREFIX}%\`.* TO '${DB_USER}'@'%';
+FLUSH PRIVILEGES;"
+
+    if [ -z "${DB_USER:-}" ] || [ -z "${DB_PASS:-}" ]; then
+        echo "WARNING: DB_USERNAME or DB_PASSWORD empty — set them in Forge → Site → Environment."
+        return 1
+    fi
+
+    if mysql_exec "${DB_USER}" "${DB_PASS}" -e "${create_sql}" 2>/dev/null; then
+        echo "Landlord database ensured: ${DB_NAME} (as ${DB_USER})"
+        return 0
+    fi
+
+    echo "Site user cannot CREATE DATABASE — trying Forge admin (forge/root)..."
+
+    for admin_user in forge root; do
+        if mysql_exec "${admin_user}" "" -e "${create_sql}" 2>/dev/null; then
+            mysql_exec "${admin_user}" "" -e "${grant_sql}" 2>/dev/null \
+                && echo "Landlord database ensured: ${DB_NAME} (created by ${admin_user}, granted to ${DB_USER})" \
+                && return 0
+            echo "WARNING: created ${DB_NAME} but could not GRANT to ${DB_USER} — grant manually in Forge."
+            return 0
+        fi
+    done
+
+    if mysql_can_use_db "${DB_USER}" "${DB_PASS}" "${DB_NAME}"; then
+        echo "Landlord database reachable: ${DB_NAME} (existing privileges)"
+        return 0
+    fi
+
+    echo "WARNING: could not create or access landlord database '${DB_NAME}' for user '${DB_USER}'."
+    return 1
+}
+
+ensure_landlord_database || true
 
 # ---------------------------------------------------------------------------
 # 3. Frontend build
@@ -127,7 +196,14 @@ php artisan event:cache
 # ---------------------------------------------------------------------------
 php artisan migrate --database=landlord --path=database/migrations/landlord --force
 php artisan tenants:migrate
-php artisan app:seed-production --tenants --force \
-    || echo "WARNING: production seeding failed — check storage/logs/laravel.log"
+
+SEED_EXIT=0
+php artisan app:seed-production --tenants --force || SEED_EXIT=$?
+
+if [ "${SEED_EXIT}" -ne 0 ]; then
+    echo "WARNING: production seeding failed (exit ${SEED_EXIT}) — check storage/logs/laravel.log"
+    echo "  Verify LANDLORD_DB_DATABASE matches a database this user can access:"
+    echo "    DB_USERNAME=${DB_USER:-?} LANDLORD_DB_DATABASE=${DB_NAME:-?} DB_DATABASE=${FORGE_DB_NAME:-?}"
+fi
 
 echo "Deploy finished OK."

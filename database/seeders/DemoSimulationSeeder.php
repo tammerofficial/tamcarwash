@@ -112,7 +112,7 @@ class DemoSimulationSeeder extends IdempotentSeeder
         $branch = Branch::query()->updateOrCreate(
             ['code' => 'main'],
             [
-                'name' => 'مغسلة الوادي',
+                'name' => 'فرع الخوير',
                 'address' => 'الخوير، مسقط، سلطنة عمان',
                 'city' => 'مسقط',
                 'phone' => '+96824567890',
@@ -355,8 +355,16 @@ class DemoSimulationSeeder extends IdempotentSeeder
         $entries = [];
 
         $specs = [
-            ['number' => 901, 'customer_index' => 3, 'vehicle_index' => 5, 'notes' => 'زبون حضوري — ينتظر دوره'],
-            ['number' => 902, 'customer_index' => 4, 'vehicle_index' => 6, 'notes' => 'زبون حضوري — غسيل سريع'],
+            ['number' => 901, 'customer_index' => 0, 'vehicle_index' => 0, 'source' => QueueSource::Booked, 'notes' => 'حجز — غسيل كامل'],
+            ['number' => 902, 'customer_index' => 1, 'vehicle_index' => 2, 'source' => QueueSource::WalkIn, 'notes' => 'حضور مباشر — غسيل أساسي'],
+            ['number' => 903, 'customer_index' => 2, 'vehicle_index' => 3, 'source' => QueueSource::WalkIn, 'notes' => 'اشتراك شهري — SUV'],
+            ['number' => 904, 'customer_index' => 3, 'vehicle_index' => 5, 'source' => QueueSource::Booked, 'notes' => 'حجز أونلاين — غسيل مميز'],
+            ['number' => 905, 'customer_index' => 4, 'vehicle_index' => 6, 'source' => QueueSource::WalkIn, 'notes' => 'شركة — أسطول مركبات'],
+            ['number' => 906, 'customer_index' => 0, 'vehicle_index' => 1, 'source' => QueueSource::WalkIn, 'notes' => 'حضور مباشر — غسيل داخلي'],
+            ['number' => 907, 'customer_index' => 1, 'vehicle_index' => 2, 'source' => QueueSource::Booked, 'notes' => 'حجز — غسيل كامل'],
+            ['number' => 908, 'customer_index' => 2, 'vehicle_index' => 4, 'source' => QueueSource::WalkIn, 'notes' => 'اشتراك — بيك أب'],
+            ['number' => 909, 'customer_index' => 3, 'vehicle_index' => 5, 'source' => QueueSource::WalkIn, 'notes' => 'شركة — عقد سنوي'],
+            ['number' => 910, 'customer_index' => 4, 'vehicle_index' => 7, 'source' => QueueSource::Booked, 'notes' => 'حجز — Land Cruiser'],
         ];
 
         foreach ($specs as $spec) {
@@ -367,12 +375,12 @@ class DemoSimulationSeeder extends IdempotentSeeder
                 ->first();
 
             $payload = [
-                'source' => QueueSource::WalkIn,
+                'source' => $spec['source'],
                 'customer_id' => $customers[$spec['customer_index']]->id,
                 'vehicle_id' => $vehicles[$spec['vehicle_index']]->id,
                 'status' => QueueEntryStatus::Waiting,
-                'estimated_wait_minutes' => 25,
-                'priority' => 0,
+                'estimated_wait_minutes' => 15 + ($spec['number'] - 901) * 5,
+                'priority' => $spec['source'] === QueueSource::Booked ? 10 : 0,
                 'notes' => $spec['notes'],
             ];
 
@@ -416,7 +424,7 @@ class DemoSimulationSeeder extends IdempotentSeeder
         $queueEntry = QueueEntry::query()
             ->where('branch_id', $branch->id)
             ->whereDate('queue_date', $today)
-            ->where('queue_number', 903)
+            ->where('queue_number', 911)
             ->first();
 
         $queuePayload = [
@@ -437,7 +445,7 @@ class DemoSimulationSeeder extends IdempotentSeeder
             $queueEntry = QueueEntry::query()->create($queuePayload + [
                 'branch_id' => $branch->id,
                 'queue_date' => $today,
-                'queue_number' => 903,
+                'queue_number' => 911,
             ]);
             $created++;
         }

@@ -27,7 +27,7 @@ return [
 
     'reserved_paths' => array_values(array_unique(array_filter(array_map(
         'strtolower',
-        array_map('trim', explode(',', env('TENANCY_RESERVED_PATHS', 'api,login,register,sanctum,up,landlord,build,storage,dashboard')))
+        array_map('trim', explode(',', env('TENANCY_RESERVED_PATHS', 'api,login,register,sanctum,up,landlord,build,storage,dashboard,settings,appearance,branches,customers,vehicles,services,pricing,booking,queue,cashier,worker,orders,invoices,tax-reports')))
     )))),
 
     'local_default_tenant_slug' => env('TENANCY_LOCAL_DEFAULT_TENANT_SLUG', 'demo'),

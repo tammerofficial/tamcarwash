@@ -31,10 +31,12 @@ export function StatsCard({ title, value, icon: Icon, format = 'number', loading
                     <p className="text-4xl font-black text-foreground mb-1 ps-1">
                         {format === 'currency' ? formatCurrency(value) : formatNumber(value)}
                     </p>
-                    <div className="flex items-center gap-2 text-xs font-bold text-primary ps-1 mt-1">
-                        <Activity className="h-3.5 w-3.5" />
-                        <span>{trend || 'نشاط مستقر'}</span>
-                    </div>
+                    {trend && (
+                        <div className="flex items-center gap-2 text-xs font-bold text-primary ps-1 mt-1">
+                            <Activity className="h-3.5 w-3.5" />
+                            <span>{trend}</span>
+                        </div>
+                    )}
                 </>
             )}
             

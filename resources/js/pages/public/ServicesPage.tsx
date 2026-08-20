@@ -15,11 +15,11 @@ export function ServicesPage() {
             <main className="pt-48 pb-24">
                 <div className="mx-auto max-w-7xl px-4 lg:px-8">
                     <div className="mb-20 text-center space-y-5 max-w-2xl mx-auto">
-                        <Badge className="bg-teal-50 text-teal-700 border-none font-bold text-[10px] px-4 py-1 tracking-widest uppercase">
+                        <Badge className="bg-brand-secondary-10 text-brand-primary border-none font-bold text-[10px] px-4 py-1 tracking-widest uppercase">
                             Premium Selection
                         </Badge>
-                        <h1 className="text-4xl md:text-5xl font-bold text-[#004d4d]">
-                            كافة <span className="text-teal-600">الخدمات</span>
+                        <h1 className="text-4xl md:text-5xl font-bold text-brand-primary">
+                            كافة <span className="text-brand-secondary">الخدمات</span>
                         </h1>
                         <p className="text-gray-500 text-lg leading-relaxed opacity-80">
                             اختر من بين باقاتنا المتنوعة المصممة خصيصاً لتلبي احتياجات سيارتك وتحمي قيمتها.

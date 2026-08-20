@@ -10,6 +10,20 @@ const DEFAULT_RESERVED_PATHS = [
     'build',
     'storage',
     'dashboard',
+    'settings',
+    'appearance',
+    'branches',
+    'customers',
+    'vehicles',
+    'services',
+    'pricing',
+    'booking',
+    'queue',
+    'cashier',
+    'worker',
+    'orders',
+    'invoices',
+    'tax-reports',
 ];
 
 function readConfig(): TammerAppConfig {
@@ -77,26 +91,43 @@ export function detectTenantSlugFromPathname(pathname = window.location.pathname
 }
 
 export function resolveTenantSlug(): string | null {
+    const config = readConfig();
+
     return (
         detectTenantSlugFromSubdomain() ??
+        (config.subdirectorySlug ? config.subdirectorySlug.toLowerCase() : null) ??
         detectTenantSlugFromPathname() ??
-        readConfig().tenant?.slug ??
+        config.tenant?.slug ??
         null
     );
 }
 
+function readSessionTenantSlug(): string | null {
+    try {
+        return sessionStorage.getItem(SESSION_TENANT_SLUG_KEY);
+    } catch {
+        return null;
+    }
+}
+
 export function getRouterBasename(): string | undefined {
-    if (isLandlordContext()) {
+    if (isLandlordContext() || ! readConfig().subdirectoryEnabled) {
         return undefined;
     }
 
-    const slug = detectTenantSlugFromPathname();
-
-    if (slug && readConfig().subdirectoryEnabled) {
-        return `/${slug}`;
+    if (detectTenantSlugFromSubdomain()) {
+        return undefined;
     }
 
-    return undefined;
+    const config = readConfig();
+
+    if (config.subdirectorySlug) {
+        return `/${config.subdirectorySlug.toLowerCase()}`;
+    }
+
+    const fromPath = detectTenantSlugFromPathname();
+
+    return fromPath ? `/${fromPath}` : undefined;
 }
 
 export function tenantPath(path: string): string {
@@ -116,23 +147,29 @@ export function isTenantContext(): boolean {
 
 export const SESSION_TENANT_SLUG_KEY = 'tammer_tenant_slug';
 
-/** Tenant slug from routing, sessionStorage, or boot config (for navigation). */
+/** Tenant slug for API requests — prefers login/session over app route segments. */
 export function resolveActiveTenantSlug(): string | null {
-    const fromRouting = resolveTenantSlug();
-    if (fromRouting) {
-        return fromRouting;
+    const config = readConfig();
+
+    const fromSubdomain = detectTenantSlugFromSubdomain();
+    if (fromSubdomain) {
+        return fromSubdomain;
     }
 
-    try {
-        const stored = sessionStorage.getItem(SESSION_TENANT_SLUG_KEY);
-        if (stored) {
-            return stored;
-        }
-    } catch {
-        // sessionStorage may be unavailable
+    if (config.subdirectorySlug) {
+        return config.subdirectorySlug.toLowerCase();
     }
 
-    return readConfig().tenant?.slug ?? null;
+    const fromSession = readSessionTenantSlug();
+    if (fromSession) {
+        return fromSession.toLowerCase();
+    }
+
+    if (config.tenant?.slug) {
+        return config.tenant.slug.toLowerCase();
+    }
+
+    return detectTenantSlugFromPathname();
 }
 
 /**

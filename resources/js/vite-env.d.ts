@@ -3,6 +3,7 @@
 export interface TenantBranding {
     logo_url?: string | null;
     primary_color?: string;
+    secondary_color?: string;
     tagline?: string | null;
     about?: string | null;
     social?: Record<string, string>;

@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { t } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
+import { EmptyState } from '@/components/common/EmptyState';
 import type { PaginatedResponse } from '@/types/api';
 
 interface LandlordTenantRow {
@@ -39,12 +40,12 @@ export function LandlordTenantsPage() {
                     <div className="flex items-center gap-2 mb-2">
                         <Badge variant="outline" className="rounded-lg border-primary/20 bg-primary/5 text-primary font-black px-3 py-0.5 text-[10px] uppercase tracking-widest">
                             <Building2 className="h-3 w-3 me-1.5" />
-                            {t('nav.tenants') || 'إدارة المستأجرين'}
+                            {t('nav.tenants')}
                         </Badge>
                     </div>
-                    <h1 className="text-4xl font-black text-foreground tracking-tight mb-2">المستأجرون</h1>
+                    <h1 className="text-4xl font-black text-foreground tracking-tight mb-2">{t('landlord.tenants.title')}</h1>
                     <p className="text-muted-foreground font-bold flex items-center gap-2">
-                        جميع مغاسل السيارات المسجلة على المنصة
+                        {t('landlord.tenants.subtitle')}
                     </p>
                 </div>
                 
@@ -53,13 +54,13 @@ export function LandlordTenantsPage() {
                         <Search className="absolute inset-y-0 start-3 my-auto h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <input 
                             type="text" 
-                            placeholder={t('common.search') || 'بحث عن مستأجر...'}
+                            placeholder={t('landlord.tenants.searchPlaceholder')}
                             className="h-11 w-64 rounded-xl border border-border/40 bg-white ps-10 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all outline-none shadow-sm" 
                         />
                     </div>
                     <Button variant="outline" className="h-11 px-5 rounded-xl border-border/60 font-bold hover:bg-muted/30 shadow-sm bg-white">
                         <Filter className="me-2 h-4 w-4" />
-                        {t('common.filter') || 'تصفية'}
+                        {t('common.filter')}
                     </Button>
                 </div>
             </div>
@@ -67,8 +68,8 @@ export function LandlordTenantsPage() {
             <Card className="rounded-[2.5rem] border border-border/50 shadow-sm bg-white overflow-hidden group hover:shadow-xl transition-all duration-500">
                 <CardHeader className="p-10 pb-4 flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle className="text-xl font-black tracking-tight">قائمة المستأجرين</CardTitle>
-                        <CardDescription className="text-xs font-bold text-muted-foreground mt-1">إدارة بيانات المشتركين والوصول إلى لوحات تحكمهم</CardDescription>
+                        <CardTitle className="text-xl font-black tracking-tight">{t('landlord.tenants.listTitle')}</CardTitle>
+                        <CardDescription className="text-xs font-bold text-muted-foreground mt-1">{t('landlord.tenants.listHint')}</CardDescription>
                     </div>
                 </CardHeader>
                 <CardContent className="p-10 pt-6">
@@ -78,17 +79,23 @@ export function LandlordTenantsPage() {
                                 <Skeleton key={i} className="h-16 w-full rounded-2xl" />
                             ))}
                         </div>
+                    ) : (data?.data ?? []).length === 0 ? (
+                        <EmptyState
+                            icon={Building2}
+                            title={t('landlord.tenants.emptyTitle')}
+                            description={t('landlord.tenants.emptyHint')}
+                        />
                     ) : (
                         <div className="rounded-2xl border border-border/40 overflow-hidden shadow-sm">
                             <Table>
                                 <TableHeader className="bg-muted/30">
                                     <TableRow className="hover:bg-transparent border-border/40">
-                                        <TableHead className="text-[10px] font-black uppercase tracking-widest py-4">الاسم</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-widest py-4">{t('landlord.tenants.name')}</TableHead>
                                         <TableHead className="text-[10px] font-black uppercase tracking-widest py-4">Slug</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-widest py-4">الباقة</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-widest py-4 text-center">الحالة</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-widest py-4">الاشتراك</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase tracking-widest py-4 text-left">لوحة المستأجر</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-widest py-4">{t('landlord.tenants.plan')}</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-widest py-4 text-center">{t('landlord.tenants.status')}</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-widest py-4">{t('landlord.tenants.subscription')}</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase tracking-widest py-4 text-left">{t('landlord.tenants.dashboardLink')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -114,7 +121,7 @@ export function LandlordTenantsPage() {
                                                     <span className="text-sm font-bold">{tenant.subscription_status ?? '—'}</span>
                                                     {tenant.subscription_ends_at && (
                                                         <span className="text-[9px] font-bold text-muted-foreground/50 uppercase tracking-wider">
-                                                            تنتهي في: {new Date(tenant.subscription_ends_at).toLocaleDateString('ar-OM')}
+                                                            {t('landlord.tenants.expiresAt')}: {new Date(tenant.subscription_ends_at).toLocaleDateString('ar-OM')}
                                                         </span>
                                                     )}
                                                 </div>
@@ -129,7 +136,7 @@ export function LandlordTenantsPage() {
                                                     >
                                                         <a href={tenant.dashboard_url} target="_blank" rel="noopener noreferrer">
                                                             <ExternalLink className="h-4 w-4" />
-                                                            فتح اللوحة
+                                                            {t('landlord.tenants.openDashboard')}
                                                         </a>
                                                     </Button>
                                                 ) : (

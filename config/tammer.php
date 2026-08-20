@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'branding' => [
+        'primary_color' => '#004d4d',
+        'secondary_color' => '#14b8a6',
+    ],
+
     'contact' => [
         'phone' => env('TAMMER_DEFAULT_PHONE', '+965 18XXXXXX'),
         'address' => env('TAMMER_DEFAULT_ADDRESS', 'العاصمة ، الكويت'),
@@ -58,6 +63,7 @@ return [
         ],
         'cashier' => [
             'dashboard.view',
+            'bookings.view', 'bookings.manage',
             'customers.view', 'customers.manage',
             'vehicles.view', 'vehicles.manage',
             'queue.view', 'queue.manage',
@@ -68,7 +74,7 @@ return [
         'worker' => [
             'dashboard.view',
             'queue.view',
-            'orders.view',
+            'orders.view', 'orders.manage',
         ],
     ],
 ];

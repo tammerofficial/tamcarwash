@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
-import { Download } from 'lucide-react';
+import { Download, DollarSign, Receipt, TrendingDown, TrendingUp } from 'lucide-react';
 import {
     Bar,
     BarChart,
@@ -22,7 +22,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { formatCurrency } from '@/lib/utils';
 import { t } from '@/lib/i18n';
 import type { ApiResponse, TaxReportBreakdownItem, TaxReportDetail } from '@/types/api';
-import { DollarSign, Receipt, TrendingDown, TrendingUp } from 'lucide-react';
+import { EmptyState } from '@/components/common/EmptyState';
 
 type Period = 'daily' | 'monthly' | 'quarterly';
 
@@ -160,9 +160,13 @@ export function TaxReportsPage() {
                             {isLoading || breakdownLoading ? (
                                 <Skeleton className="h-full w-full" />
                             ) : chartData.length === 0 ? (
-                                <p className="flex h-full items-center justify-center text-sm text-muted-foreground">
-                                    {t('common.noData')}
-                                </p>
+                                <EmptyState
+                                    icon={Receipt}
+                                    title={t('taxReports.emptyTitle')}
+                                    description={t('taxReports.emptyHint')}
+                                    actionLabel={t('taxReports.emptyCta')}
+                                    actionTo="/invoices"
+                                />
                             ) : (
                                 <ResponsiveContainer width="100%" height="100%">
                                     <BarChart data={chartData}>

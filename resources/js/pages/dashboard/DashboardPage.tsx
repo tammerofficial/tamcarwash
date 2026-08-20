@@ -33,13 +33,14 @@ import { api, endpoints } from '@/lib/api';
 import { useAuth } from '@/providers/AuthProvider';
 import { useBranchQueryParams } from '@/providers/BranchProvider';
 import { StatsCard } from '@/components/common/StatsCard';
+import { EmptyState } from '@/components/common/EmptyState';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { t } from '@/lib/i18n';
 import type { ApiResponse, DashboardStats } from '@/types/api';
-import { formatCurrency, cn } from '@/lib/utils';
+import { formatCurrency, cn, formatNumber } from '@/lib/utils';
 
 const PLAN_DISPLAY_NAMES: Record<string, string> = {
     starter: 'Starter',
@@ -116,7 +117,7 @@ export function DashboardPage() {
                     <div className="flex items-center gap-2 mb-2">
                         <Badge variant="outline" className="rounded-lg border-primary/20 bg-primary/5 text-primary font-black px-3 py-0.5 text-[10px] uppercase tracking-widest">
                             <Activity className="h-3 w-3 me-1.5" />
-                            {t('dashboard.realtimeStats') || 'إحصائيات مباشرة'}
+                            {t('dashboard.realtimeStats')}
                         </Badge>
                     </div>
                     <h1 className="text-4xl font-black text-foreground tracking-tight mb-2">{t('dashboard.title')}</h1>
@@ -129,7 +130,7 @@ export function DashboardPage() {
                     {plan && (
                         <Badge variant="secondary" className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl text-primary bg-primary/5 border border-primary/10 font-bold shadow-sm">
                             <Sparkles className="size-4" />
-                            <span className="text-[11px] uppercase tracking-wider">{t('dashboard.plan') || 'الباقة'}:</span>
+                            <span className="text-[11px] uppercase tracking-wider">{t('dashboard.plan')}:</span>
                             <span className="text-sm">{formatPlanLabel(plan.plan_slug, plan.plan_name)}</span>
                         </Badge>
                     )}
@@ -151,7 +152,7 @@ export function DashboardPage() {
             {isError && (
                 <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 flex items-center gap-3 animate-in slide-in-from-top-4 duration-500">
                     <Activity className="h-5 w-5 text-amber-500" />
-                    {t('dashboard.error') || 'تعذّر تحميل بيانات لوحة التحكم — سيتم عرض البيانات عند توفر الـ API.'}
+                    {t('dashboard.error')}
                 </div>
             )}
 
@@ -236,7 +237,6 @@ export function DashboardPage() {
                     value={stats.today_orders} 
                     icon={ClipboardList} 
                     loading={isLoading} 
-                    trend="+12% من أمس"
                 />
                 <StatsCard 
                     title={t('dashboard.todayRevenue')} 
@@ -244,21 +244,18 @@ export function DashboardPage() {
                     icon={DollarSign} 
                     format="currency" 
                     loading={isLoading} 
-                    trend="+5% هذا الأسبوع"
                 />
                 <StatsCard 
                     title={t('dashboard.queueWaiting')} 
                     value={stats.queue_waiting} 
                     icon={Users} 
                     loading={isLoading} 
-                    trend="معدل انتظار 15 د"
                 />
                 <StatsCard 
                     title={t('dashboard.activeBookings')} 
                     value={stats.active_bookings} 
                     icon={CalendarDays} 
                     loading={isLoading} 
-                    trend="4 مواعيد قادمة"
                 />
             </div>
 
@@ -272,8 +269,8 @@ export function DashboardPage() {
                                     <PlusCircle className="h-7 w-7" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-2xl font-black tracking-tight">{t('dashboard.quickActions') || 'إجراءات سريعة'}</CardTitle>
-                                    <CardDescription className="text-white/40 font-bold text-sm">{t('dashboard.actionHint') || 'اختصارات للمهام الأكثر تكراراً لتوفير الوقت'}</CardDescription>
+                                    <CardTitle className="text-2xl font-black tracking-tight">{t('dashboard.quickActions')}</CardTitle>
+                                    <CardDescription className="text-white/40 font-bold text-sm">{t('dashboard.actionHint')}</CardDescription>
                                 </div>
                             </div>
                         </CardHeader>
@@ -313,7 +310,7 @@ export function DashboardPage() {
                             <CardHeader className="p-0 pb-8 flex flex-row items-center justify-between">
                                 <div>
                                     <CardTitle className="text-xl font-black tracking-tight">{t('dashboard.revenueTrend')}</CardTitle>
-                                    <CardDescription className="text-xs font-bold text-muted-foreground mt-1">آخر 7 أيام عمل</CardDescription>
+                                    <CardDescription className="text-xs font-bold text-muted-foreground mt-1">{t('dashboard.revenueTrendHint')}</CardDescription>
                                 </div>
                                 <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-muted group-hover:bg-primary group-hover:text-white transition-all">
                                     <ArrowUpRight className="h-4 w-4" />
@@ -350,7 +347,7 @@ export function DashboardPage() {
                             <CardHeader className="p-0 pb-8 flex flex-row items-center justify-between">
                                 <div>
                                     <CardTitle className="text-xl font-black tracking-tight">{t('dashboard.ordersByStatus')}</CardTitle>
-                                    <CardDescription className="text-xs font-bold text-muted-foreground mt-1">توزيع الطلبات حسب الحالة</CardDescription>
+                                    <CardDescription className="text-xs font-bold text-muted-foreground mt-1">{t('dashboard.ordersByStatusHint')}</CardDescription>
                                 </div>
                                 <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-muted group-hover:bg-primary group-hover:text-white transition-all">
                                     <ArrowUpRight className="h-4 w-4" />
@@ -383,14 +380,29 @@ export function DashboardPage() {
                                 <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                                     <Activity className="h-6 w-6" />
                                 </div>
-                                <CardTitle className="text-xl font-black leading-none tracking-tight">{t('dashboard.platformActivity') || 'نشاط المنصة'}</CardTitle>
+                                <CardTitle className="text-xl font-black leading-none tracking-tight">{t('dashboard.platformActivity')}</CardTitle>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-10 space-y-8">
-                            <DashboardChartBar label={t('nav.orders')} value={75} color="bg-primary" />
-                            <DashboardChartBar label={t('nav.invoices')} value={45} color="bg-emerald-500" />
-                            <DashboardChartBar label={t('nav.customers')} value={90} color="bg-orange-500" />
-                            <DashboardChartBar label={t('nav.services')} value={60} color="bg-indigo-500" />
+                        <CardContent className="p-10 space-y-6">
+                            {stats.today_orders === 0 &&
+                            stats.queue_waiting === 0 &&
+                            stats.active_bookings === 0 &&
+                            stats.today_revenue === 0 ? (
+                                <EmptyState
+                                    icon={Activity}
+                                    title={t('dashboard.platformActivityEmpty')}
+                                    description={t('dashboard.platformActivityHint')}
+                                    actionLabel={t('orders.createWalkIn')}
+                                    actionTo="/orders"
+                                />
+                            ) : (
+                                <>
+                                    <DashboardMetricRow label={t('dashboard.todayOrders')} value={formatNumber(stats.today_orders)} />
+                                    <DashboardMetricRow label={t('dashboard.todayRevenue')} value={formatCurrency(stats.today_revenue)} />
+                                    <DashboardMetricRow label={t('dashboard.queueWaiting')} value={formatNumber(stats.queue_waiting)} />
+                                    <DashboardMetricRow label={t('dashboard.activeBookings')} value={formatNumber(stats.active_bookings)} />
+                                </>
+                            )}
                         </CardContent>
                     </Card>
 
@@ -418,7 +430,13 @@ export function DashboardPage() {
                                     ))}
                                 </div>
                             ) : stats.top_services.length === 0 ? (
-                                <p className="text-sm font-bold text-muted-foreground text-center py-12 italic opacity-60">{t('common.noData')}</p>
+                                <EmptyState
+                                    icon={Droplets}
+                                    title={t('dashboard.topServicesEmpty')}
+                                    description={t('dashboard.topServicesEmptyHint')}
+                                    actionLabel={t('dashboard.topServicesCta')}
+                                    actionTo="/services"
+                                />
                             ) : (
                                 <div className="space-y-5">
                                     {stats.top_services.map((service) => (
@@ -429,7 +447,7 @@ export function DashboardPage() {
                                                 </div>
                                                 <div>
                                                     <p className="font-black text-foreground group-hover:text-primary transition-colors">{service.name}</p>
-                                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-0.5">{service.count} {t('dashboard.ordersCount') || 'طلبات'}</p>
+                                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-0.5">{service.count} {t('dashboard.ordersCount')}</p>
                                                 </div>
                                             </div>
                                             <p className="text-sm font-black text-primary">{formatCurrency(service.revenue)}</p>
@@ -459,19 +477,11 @@ function DashboardQuickAction({ icon: Icon, label, to, className }: { icon: any;
     );
 }
 
-function DashboardChartBar({ label, value, color }: { label: string; value: number; color: string }) {
+function DashboardMetricRow({ label, value }: { label: string; value: string }) {
     return (
-        <div className="space-y-3">
-            <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground opacity-70">
-                <span>{label}</span>
-                <span className="text-foreground">{value}%</span>
-            </div>
-            <div className="h-3.5 w-full rounded-full bg-muted/30 overflow-hidden border border-border/20 shadow-inner p-[3px]">
-                <div 
-                    className={cn("h-full rounded-full transition-all duration-1000 ease-out shadow-sm", color)} 
-                    style={{ width: `${value}%` }}
-                />
-            </div>
+        <div className="flex items-center justify-between rounded-2xl border border-border/30 bg-muted/20 px-5 py-4">
+            <span className="text-sm font-bold text-muted-foreground">{label}</span>
+            <span className="text-lg font-black text-foreground">{value}</span>
         </div>
     );
 }

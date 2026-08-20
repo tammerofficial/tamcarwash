@@ -1,104 +1,97 @@
+@php
+    use App\Models\Landlord\Tenant;
+    use App\Services\Landlord\PlatformSettingsService;
+    use App\Support\BrandingHelper;
+
+    $host = request()->getHost();
+    $path = trim(request()->path(), '/');
+    $firstSegment = str($path)->before('/')->toString();
+    $reservedPaths = config('tenancy.reserved_paths', []);
+    $platformDomain = config('tenancy.platform_domain');
+    $centralDomains = config('tenancy.central_domains', []);
+
+    $isLandlord = str_starts_with($path, 'landlord')
+        || str_starts_with($host, 'admin.')
+        || str_starts_with($host, 'platform.')
+        || str_starts_with($host, 'landlord.');
+
+    $tenant = null;
+    $subdirectorySlug = null;
+
+    if (! $isLandlord) {
+        try {
+            if (str_ends_with($host, ".{$platformDomain}")) {
+                $subdomain = str_replace(".{$platformDomain}", '', $host);
+
+                if (filled($subdomain) && ! in_array($subdomain, ['www', 'api', 'admin', 'landlord', 'platform'], true)) {
+                    $tenant = Tenant::query()
+                        ->where('slug', $subdomain)
+                        ->first(['id', 'name', 'slug', 'email', 'phone', 'settings', 'metadata']);
+                }
+            }
+
+            if (
+                ! $tenant
+                && config('tenancy.subdirectory_enabled', false)
+                && in_array($host, $centralDomains, true)
+                && filled($firstSegment)
+                && ! in_array(strtolower($firstSegment), $reservedPaths, true)
+            ) {
+                $subdirectorySlug = strtolower($firstSegment);
+                $tenant = Tenant::query()
+                    ->where('slug', $subdirectorySlug)
+                    ->first(['id', 'name', 'slug', 'email', 'phone', 'settings', 'metadata']);
+            }
+        } catch (\Throwable) {
+            // Landlord DB may be unavailable during local setup.
+        }
+    }
+
+    if (! $isLandlord && ! $tenant && in_array($host, $centralDomains, true) && blank($path)) {
+        $isLandlord = true;
+    }
+
+    $tenancyMode = 'subdirectory';
+
+    try {
+        $tenancyMode = app(PlatformSettingsService::class)->tenancyMode();
+    } catch (\Throwable) {
+        $tenancyMode = config('tenancy.subdirectory_enabled', false) ? 'subdirectory' : 'subdomain';
+    }
+
+    $tenantBranding = null;
+
+    if ($tenant) {
+        $tenantSettings = is_array($tenant->settings ?? null) ? $tenant->settings : [];
+        $tenantMetadata = is_array($tenant->metadata ?? null) ? $tenant->metadata : [];
+        $tenantBranding = BrandingHelper::resolve($tenantSettings, $tenantMetadata);
+    }
+
+    $tenantPayload = $tenant ? [
+        'id' => $tenant->id,
+        'name' => $tenant->name,
+        'slug' => $tenant->slug,
+        'email' => $tenant->email,
+        'phone' => $tenant->phone ?: config('tammer.contact.phone', '+965 18XXXXXX'),
+        'branding' => $tenantBranding,
+    ] : null;
+
+    $defaultContact = [
+        'phone' => config('tammer.contact.phone', '+965 18XXXXXX'),
+        'address' => config('tammer.contact.address', 'العاصمة ، الكويت'),
+    ];
+@endphp
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl"@if($tenant) data-tenant="{{ $tenant->slug }}"@endif>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="csrf-token" content="{{ rescue(fn () => csrf_token(), '') }}">
 
         <title>{{ config('app.name', 'Tammer Wash') }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=ibm-plex-sans-arabic:400,500,600,700" rel="stylesheet" />
-
-        @php
-            use App\Models\Landlord\Tenant;
-            use App\Services\Landlord\PlatformSettingsService;
-
-            $host = request()->getHost();
-            $path = trim(request()->path(), '/');
-            $firstSegment = str($path)->before('/')->toString();
-            $reservedPaths = config('tenancy.reserved_paths', []);
-            $platformDomain = config('tenancy.platform_domain');
-            $centralDomains = config('tenancy.central_domains', []);
-
-            $isLandlord = str_starts_with($path, 'landlord')
-                || str_starts_with($host, 'admin.')
-                || str_starts_with($host, 'platform.')
-                || str_starts_with($host, 'landlord.');
-
-            $tenant = null;
-            $subdirectorySlug = null;
-
-            if (! $isLandlord) {
-                try {
-                    if (str_ends_with($host, ".{$platformDomain}")) {
-                        $subdomain = str_replace(".{$platformDomain}", '', $host);
-
-                        if (filled($subdomain) && ! in_array($subdomain, ['www', 'api', 'admin', 'landlord', 'platform'], true)) {
-                            $tenant = Tenant::query()
-                                ->where('slug', $subdomain)
-                                ->first(['id', 'name', 'slug', 'email', 'phone', 'settings', 'metadata']);
-                        }
-                    }
-
-                    if (
-                        ! $tenant
-                        && config('tenancy.subdirectory_enabled', false)
-                        && in_array($host, $centralDomains, true)
-                        && filled($firstSegment)
-                        && ! in_array(strtolower($firstSegment), $reservedPaths, true)
-                    ) {
-                        $subdirectorySlug = strtolower($firstSegment);
-                        $tenant = Tenant::query()
-                            ->where('slug', $subdirectorySlug)
-                            ->first(['id', 'name', 'slug', 'email', 'phone', 'settings', 'metadata']);
-                    }
-                } catch (\Throwable) {
-                    // Landlord DB may be unavailable during local setup.
-                }
-            }
-
-            if (! $isLandlord && ! $tenant && in_array($host, $centralDomains, true) && blank($path)) {
-                $isLandlord = true;
-            }
-
-            $tenancyMode = 'subdirectory';
-
-            try {
-                $tenancyMode = app(PlatformSettingsService::class)->tenancyMode();
-            } catch (\Throwable) {
-                $tenancyMode = config('tenancy.subdirectory_enabled', false) ? 'subdirectory' : 'subdomain';
-            }
-
-            $tenantBranding = null;
-
-            if ($tenant) {
-                $tenantSettings = is_array($tenant->settings ?? null) ? $tenant->settings : [];
-                $tenantMetadata = is_array($tenant->metadata ?? null) ? $tenant->metadata : [];
-
-                $tenantBranding = [
-                    'logo_url' => $tenantSettings['logo_url'] ?? $tenantMetadata['logo_url'] ?? null,
-                    'primary_color' => $tenantSettings['primary_color'] ?? $tenantMetadata['primary_color'] ?? '#0ea5e9',
-                    'tagline' => $tenantSettings['tagline'] ?? $tenantMetadata['tagline'] ?? null,
-                    'about' => $tenantSettings['about'] ?? $tenantMetadata['about'] ?? null,
-                    'social' => $tenantSettings['social'] ?? $tenantMetadata['social'] ?? [],
-                ];
-            }
-
-            $tenantPayload = $tenant ? [
-                'id' => $tenant->id,
-                'name' => $tenant->name,
-                'slug' => $tenant->slug,
-                'email' => $tenant->email,
-                'phone' => $tenant->phone ?: config('tammer.contact.phone', '+965 18XXXXXX'),
-                'branding' => $tenantBranding,
-            ] : null;
-
-            $defaultContact = [
-                'phone' => config('tammer.contact.phone', '+965 18XXXXXX'),
-                'address' => config('tammer.contact.address', 'العاصمة ، الكويت'),
-            ];
-        @endphp
 
         <script>
             window.__TAMMER__ = {
@@ -120,6 +113,14 @@
         </script>
 
         @vite(['resources/css/app.css', 'resources/js/app.tsx'])
+
+        @if(isset($tenantPayload['branding']))
+            <style>
+                html[data-tenant] {
+                    {!! BrandingHelper::cssVariables($tenantPayload['branding']) !!}
+                }
+            </style>
+        @endif
     </head>
     <body class="antialiased">
         <div id="app"></div>

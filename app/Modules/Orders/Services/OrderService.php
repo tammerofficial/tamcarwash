@@ -10,10 +10,12 @@ use App\Modules\Orders\Events\OrderCreated;
 use App\Modules\Orders\Events\OrderStatusChanged;
 use App\Modules\Orders\Events\OrderWorkerAssigned;
 use App\Modules\Orders\Jobs\SendOrderStatusNotificationJob;
+use App\Modules\Finance\Models\TaxSetting;
 use App\Modules\Orders\Models\Order;
 use App\Modules\Orders\Models\OrderItem;
 use App\Modules\Queue\Enums\QueueEntryStatus;
 use App\Modules\Queue\Models\QueueEntry;
+use App\Modules\Services\Models\Service;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -35,6 +37,10 @@ class OrderService
      */
     public function createFromBooking(Booking $booking, array $orderData = []): Order
     {
+        if (empty($orderData['items'])) {
+            $orderData['items'] = $this->buildItemsFromBooking($booking);
+        }
+
         return $this->create(array_merge([
             'branch_id' => $booking->branch_id,
             'customer_id' => $booking->customer_id,
@@ -43,6 +49,40 @@ class OrderService
             'source' => OrderSource::Booking,
             'notes' => $booking->notes,
         ], $orderData));
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function buildItemsFromBooking(Booking $booking): array
+    {
+        $serviceIds = $booking->service_ids ?? [];
+
+        if ($serviceIds === []) {
+            return [];
+        }
+
+        $taxSettings = TaxSetting::query()->first();
+        $vatRate = (float) ($taxSettings?->vat_rate ?? config('tammer.vat.default_rate', 5));
+        $vatEnabled = (bool) ($taxSettings?->vat_enabled ?? true);
+        $items = [];
+
+        foreach (Service::query()->whereIn('id', $serviceIds)->get() as $service) {
+            $unitPrice = (float) $service->base_price;
+            $taxAmount = $vatEnabled ? round($unitPrice * ($vatRate / 100), 3) : 0.0;
+
+            $items[] = [
+                'item_type' => OrderItemType::Service,
+                'name' => $service->name_ar ?: $service->name,
+                'service_id' => $service->id,
+                'quantity' => 1,
+                'unit_price' => $unitPrice,
+                'discount_amount' => 0,
+                'tax_amount' => $taxAmount,
+            ];
+        }
+
+        return $items;
     }
 
     /**

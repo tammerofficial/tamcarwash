@@ -17,11 +17,11 @@ export function TrustStrip() {
                         { icon: Award, label: 'خبرة واسعة', sub: 'Over 10 Years Experience' },
                     ].map((item, i) => (
                         <div key={i} className="flex flex-col items-center md:flex-row md:items-start gap-5 text-center md:text-start group">
-                            <div className="h-14 w-14 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600 transition-all duration-500 group-hover:bg-teal-600 group-hover:text-white group-hover:shadow-lg group-hover:shadow-teal-900/20 border border-teal-100/50">
+                            <div className="h-14 w-14 rounded-xl bg-brand-secondary-10 flex items-center justify-center text-brand-secondary transition-all duration-500 group-hover:bg-brand-secondary group-hover:text-white group-hover:shadow-lg border border-brand-secondary-20">
                                 <item.icon className="h-6 w-6" />
                             </div>
                             <div>
-                                <h4 className="font-bold text-gray-900 text-base mb-1 group-hover:text-teal-600 transition-colors">{item.label}</h4>
+                                <h4 className="font-bold text-gray-900 text-base mb-1 group-hover:text-brand-secondary transition-colors">{item.label}</h4>
                                 <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em]">{item.sub}</p>
                             </div>
                         </div>

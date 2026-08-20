@@ -55,8 +55,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const login = useCallback(async (payload: LoginPayload) => {
         await api.ensureCsrfCookie();
 
-        if (payload.tenantSlug) {
-            setActiveTenantSlug(payload.tenantSlug);
+        const tenantSlug = payload.tenantSlug ?? appConfig.tenant?.slug;
+        if (tenantSlug) {
+            setActiveTenantSlug(tenantSlug);
         }
 
         const response = await api.post<ApiResponse<LoginResponse>>(

@@ -17,12 +17,13 @@ import {
 import { Link } from 'react-router-dom';
 import { api, endpoints } from '@/lib/api';
 import { StatsCard } from '@/components/common/StatsCard';
+import { EmptyState } from '@/components/common/EmptyState';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { t } from '@/lib/i18n';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import type { ApiResponse } from '@/types/api';
 
 interface LandlordDashboardStats {
@@ -59,12 +60,12 @@ export function LandlordDashboardPage() {
                     <div className="flex items-center gap-2 mb-2">
                         <Badge variant="outline" className="rounded-lg border-primary/20 bg-primary/5 text-primary font-black px-3 py-0.5 text-[10px] uppercase tracking-widest">
                             <Activity className="h-3 w-3 me-1.5" />
-                            {t('dashboard.centralOverview') || 'نظرة عامة على المنصة'}
+                            {t('dashboard.centralOverview')}
                         </Badge>
                     </div>
-                    <h1 className="text-4xl font-black text-foreground tracking-tight mb-2">لوحة إدارة المنصة</h1>
+                    <h1 className="text-4xl font-black text-foreground tracking-tight mb-2">{t('dashboard.landlordTitle')}</h1>
                     <p className="text-muted-foreground font-bold flex items-center gap-2">
-                        {t('dashboard.welcomeLandlord') || 'أهلاً بك في وحدة التحكم المركزية لـ Tammer Wash'}
+                        {t('dashboard.welcomeLandlord')}
                     </p>
                 </div>
                 
@@ -87,33 +88,29 @@ export function LandlordDashboardPage() {
             {/* Stats Grid */}
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                 <StatsCard 
-                    title="إجمالي المستأجرين" 
+                    title={t('dashboard.tenantsTotal')} 
                     value={stats?.tenants_total ?? 0} 
                     icon={Users} 
                     loading={isLoading}
-                    trend="+5 هذا الشهر"
                 />
                 <StatsCard 
-                    title="المستأجرون النشطون" 
+                    title={t('dashboard.tenantsActive')} 
                     value={stats?.tenants_active ?? 0} 
                     icon={Building2} 
                     loading={isLoading}
-                    trend="85% من الإجمالي"
                 />
                 <StatsCard 
-                    title="فترات تجريبية" 
+                    title={t('dashboard.tenantsTrial')} 
                     value={stats?.tenants_trial ?? 0} 
                     icon={Zap} 
                     loading={isLoading}
-                    trend="تتطلب متابعة"
                 />
                 <StatsCard
-                    title="MRR (الإيرادات الشهرية)"
+                    title={t('dashboard.mrr')}
                     value={stats?.mrr ?? 0}
                     icon={DollarSign}
                     format="currency"
                     loading={isLoading}
-                    trend="+12% نمو"
                 />
             </div>
 
@@ -127,8 +124,8 @@ export function LandlordDashboardPage() {
                                     <PlusCircle className="h-7 w-7" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-2xl font-black tracking-tight">إجراءات سريعة</CardTitle>
-                                    <CardDescription className="text-white/40 font-bold text-sm">إدارة المستأجرين والخطط والمنصة بفعالية</CardDescription>
+                                    <CardTitle className="text-2xl font-black tracking-tight">{t('dashboard.quickActions')}</CardTitle>
+                                    <CardDescription className="text-white/40 font-bold text-sm">{t('dashboard.landlordQuickActionsHint')}</CardDescription>
                                 </div>
                             </div>
                         </CardHeader>
@@ -136,25 +133,25 @@ export function LandlordDashboardPage() {
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-10">
                                 <DashboardQuickAction 
                                     icon={Building2} 
-                                    label="إضافة مستأجر" 
+                                    label={t('dashboard.addTenant')} 
                                     to="/landlord/tenants" 
                                     className="bg-primary/5 text-primary hover:bg-primary hover:text-white"
                                 />
                                 <DashboardQuickAction 
                                     icon={CreditCard} 
-                                    label="الاشتراكات" 
+                                    label={t('dashboard.subscriptions')} 
                                     to="/landlord/subscriptions" 
                                     className="bg-emerald-500/5 text-emerald-500 hover:bg-emerald-500 hover:text-white"
                                 />
                                 <DashboardQuickAction 
                                     icon={Briefcase} 
-                                    label="الباقات" 
+                                    label={t('dashboard.plans')} 
                                     to="/landlord/plans" 
                                     className="bg-orange-500/5 text-orange-500 hover:bg-orange-500 hover:text-white"
                                 />
                                 <DashboardQuickAction 
                                     icon={Settings} 
-                                    label="الإعدادات" 
+                                    label={t('landlord.nav.settings')} 
                                     to="/landlord/settings" 
                                     className="bg-indigo-500/5 text-indigo-500 hover:bg-indigo-500 hover:text-white"
                                 />
@@ -170,13 +167,13 @@ export function LandlordDashboardPage() {
                                     <LayoutGrid className="h-6 w-6" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-xl font-black tracking-tight">توزيع الباقات</CardTitle>
-                                    <CardDescription className="text-xs font-bold text-muted-foreground mt-1">توزيع المستأجرين حسب باقات الاشتراك</CardDescription>
+                                    <CardTitle className="text-xl font-black tracking-tight">{t('dashboard.plansBreakdown')}</CardTitle>
+                                    <CardDescription className="text-xs font-bold text-muted-foreground mt-1">{t('dashboard.plansBreakdownHint')}</CardDescription>
                                 </div>
                             </div>
                             <Button variant="ghost" size="sm" asChild className="font-black text-primary hover:bg-primary/5 rounded-xl px-4">
                                 <Link to="/landlord/plans" className="flex items-center gap-1.5">
-                                    {t('common.viewAll') || 'عرض الكل'}
+                                    {t('common.viewAll')}
                                     <ChevronLeft className="h-4 w-4" />
                                 </Link>
                             </Button>
@@ -188,6 +185,14 @@ export function LandlordDashboardPage() {
                                         <Skeleton key={i} className="h-16 w-full rounded-2xl" />
                                     ))}
                                 </div>
+                            ) : (stats?.plans_breakdown ?? []).length === 0 ? (
+                                <EmptyState
+                                    icon={LayoutGrid}
+                                    title={t('landlord.plans.emptyTitle')}
+                                    description={t('landlord.plans.emptyHint')}
+                                    actionLabel={t('landlord.nav.plans')}
+                                    actionTo="/landlord/plans"
+                                />
                             ) : (
                                 <div className="space-y-5">
                                     {(stats?.plans_breakdown ?? []).map((plan) => (
@@ -198,11 +203,13 @@ export function LandlordDashboardPage() {
                                                 </div>
                                                 <div>
                                                     <p className="font-black text-foreground group-hover:text-primary transition-colors">{plan.name}</p>
-                                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-0.5">{plan.slug} • {plan.price_monthly} OMR/شهر</p>
+                                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-0.5">
+                                                        {plan.slug} • {formatCurrency(plan.price_monthly)} {t('dashboard.perMonth')}
+                                                    </p>
                                                 </div>
                                             </div>
                                             <div className="text-left">
-                                                <p className="text-sm font-black text-primary">{plan.tenants_count} مستأجر</p>
+                                                <p className="text-sm font-black text-primary">{plan.tenants_count} {t('dashboard.tenantCount')}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -220,14 +227,36 @@ export function LandlordDashboardPage() {
                                 <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                                     <Activity className="h-6 w-6" />
                                 </div>
-                                <CardTitle className="text-xl font-black leading-none tracking-tight">نشاط المنصة</CardTitle>
+                                <CardTitle className="text-xl font-black leading-none tracking-tight">{t('dashboard.platformActivity')}</CardTitle>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-10 space-y-8">
-                            <DashboardChartBar label="المستأجرون النشطون" value={85} color="bg-primary" />
-                            <DashboardChartBar label="استخدام الـ API" value={62} color="bg-emerald-500" />
-                            <DashboardChartBar label="حمل النظام" value={18} color="bg-orange-500" />
-                            <DashboardChartBar label="الاشتراكات الجديدة" value={45} color="bg-indigo-500" />
+                        <CardContent className="p-10 space-y-6">
+                            {stats ? (
+                                <>
+                                    <LandlordMetricRow
+                                        label={t('dashboard.tenantsActive')}
+                                        value={`${stats.tenants_active} / ${stats.tenants_total}`}
+                                    />
+                                    <LandlordMetricRow
+                                        label={t('dashboard.subscriptions')}
+                                        value={`${stats.subscriptions_active} ${t('common.active').toLowerCase()}`}
+                                    />
+                                    <LandlordMetricRow
+                                        label={t('dashboard.tenantsTrial')}
+                                        value={String(stats.tenants_trial)}
+                                    />
+                                    <LandlordMetricRow
+                                        label={t('dashboard.mrr')}
+                                        value={formatCurrency(stats.mrr, stats.currency)}
+                                    />
+                                </>
+                            ) : (
+                                <EmptyState
+                                    icon={Activity}
+                                    title={t('common.noData')}
+                                    description={t('common.noDataHint')}
+                                />
+                            )}
                         </CardContent>
                     </Card>
 
@@ -238,19 +267,17 @@ export function LandlordDashboardPage() {
                                 <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                                     <Building2 className="h-6 w-6" />
                                 </div>
-                                <CardTitle className="text-xl font-black leading-none tracking-tight">آخر المستأجرين</CardTitle>
+                                <CardTitle className="text-xl font-black leading-none tracking-tight">{t('dashboard.recentTenants')}</CardTitle>
                             </div>
                         </CardHeader>
                         <CardContent className="p-10 pt-6">
-                            <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
-                                <div className="h-20 w-20 rounded-full bg-muted/50 flex items-center justify-center text-muted-foreground/30 border-2 border-dashed border-border">
-                                    <Users className="h-10 w-10" />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold text-muted-foreground">لا توجد بيانات متاحة حالياً</p>
-                                    <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest mt-1">سيتم عرض قائمة المستأجرين الجدد هنا</p>
-                                </div>
-                            </div>
+                            <EmptyState
+                                icon={Users}
+                                title={t('dashboard.recentTenantsEmpty')}
+                                description={t('dashboard.recentTenantsEmptyHint')}
+                                actionLabel={t('landlord.nav.tenants')}
+                                actionTo="/landlord/tenants"
+                            />
                         </CardContent>
                     </Card>
                 </div>
@@ -273,19 +300,11 @@ function DashboardQuickAction({ icon: Icon, label, to, className }: { icon: any;
     );
 }
 
-function DashboardChartBar({ label, value, color }: { label: string; value: number; color: string }) {
+function LandlordMetricRow({ label, value }: { label: string; value: string }) {
     return (
-        <div className="space-y-3">
-            <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground opacity-70">
-                <span>{label}</span>
-                <span className="text-foreground">{value}%</span>
-            </div>
-            <div className="h-3.5 w-full rounded-full bg-muted/30 overflow-hidden border border-border/20 shadow-inner p-[3px]">
-                <div 
-                    className={cn("h-full rounded-full transition-all duration-1000 ease-out shadow-sm", color)} 
-                    style={{ width: `${value}%` }}
-                />
-            </div>
+        <div className="flex items-center justify-between rounded-2xl border border-border/30 bg-muted/20 px-5 py-4">
+            <span className="text-sm font-bold text-muted-foreground">{label}</span>
+            <span className="text-lg font-black text-foreground">{value}</span>
         </div>
     );
 }

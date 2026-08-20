@@ -200,6 +200,7 @@ export interface Booking {
     service_ids?: number[];
     customer_name?: string;
     vehicle_plate?: string;
+    order_id?: number | null;
     time_slot?: TimeSlot;
     created_at?: string;
 }
@@ -328,7 +329,8 @@ export interface Invoice {
     tax_inclusive?: boolean;
     vatin?: string;
     cr_number?: string;
-    notes?: string;
+    notes?: string | null;
+    qr_payload?: string | null;
     items?: InvoiceItem[];
     created_at?: string;
 }
@@ -470,15 +472,32 @@ export interface TenantSettings {
     vat_inclusive: boolean;
     currency: string;
     timezone: string;
+    primary_color?: string;
+    secondary_color?: string;
+    logo_url?: string | null;
     plan?: PlanMeta | null;
 }
 
 export interface StorefrontBranding {
     logo_url?: string | null;
     primary_color?: string;
+    secondary_color?: string;
     tagline?: string | null;
     about?: string | null;
     social?: Record<string, string>;
+}
+
+/** Flat branding payload from GET /api/v1/storefront/branding or /api/v1/branding.json */
+export interface TenantBrandingPayload {
+    tenant_slug: string;
+    business_name: string;
+    primary_color: string;
+    secondary_color: string;
+    primary_color_dark: string;
+    logo_url: string | null;
+    tagline: string | null;
+    about: string | null;
+    social: Record<string, string>;
 }
 
 export interface StorefrontProfile {
@@ -541,6 +560,35 @@ export interface StorefrontTimeSlot {
     end_time: string;
     remaining_capacity: number;
     is_available: boolean;
+}
+
+export interface PublicBookingConfirmation {
+    booking_number: string;
+    branch_id: number;
+    scheduled_date: string;
+    scheduled_start_time: string;
+    scheduled_end_time?: string | null;
+    service_ids?: number[];
+    estimated_wait_minutes?: number;
+    pricing?: {
+        subtotal: number;
+        vat_rate: number;
+        vat_amount: number;
+        total: number;
+        currency: string;
+    };
+    branch?: { id: number; name: string; city?: string };
+    customer_name?: string;
+    vehicle_plate?: string;
+}
+
+export interface PaymentMethodOption {
+    id: number;
+    code: string;
+    name_ar: string;
+    name_en: string;
+    requires_reference: boolean;
+    sort_order: number;
 }
 
 export interface PublicBookingPayload {

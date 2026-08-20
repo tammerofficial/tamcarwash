@@ -45,7 +45,7 @@ class WashServicesSeeder extends IdempotentSeeder
             ['slug' => 'basic-wash', 'category' => 'exterior', 'name' => 'Basic Wash', 'name_ar' => 'غسيل أساسي', 'duration_minutes' => 15, 'base_price' => 2.500],
             ['slug' => 'premium-wash', 'category' => 'exterior', 'name' => 'Premium Wash', 'name_ar' => 'غسيل مميز', 'duration_minutes' => 25, 'base_price' => 4.500],
             ['slug' => 'interior-clean', 'category' => 'interior', 'name' => 'Interior Clean', 'name_ar' => 'تنظيف داخلي', 'duration_minutes' => 30, 'base_price' => 3.000],
-            ['slug' => 'full-detail', 'category' => 'full', 'name' => 'Full Detail', 'name_ar' => 'غسيل وتلميع شامل', 'duration_minutes' => 60, 'base_price' => 8.000],
+            ['slug' => 'full-detail', 'category' => 'full', 'name' => 'Full Detail', 'name_ar' => 'غسيل كامل', 'duration_minutes' => 60, 'base_price' => 8.000],
         ];
 
         foreach ($services as $service) {

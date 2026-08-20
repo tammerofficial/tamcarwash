@@ -11,6 +11,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { t } from '@/lib/i18n';
+import { EmptyState } from '@/components/common/EmptyState';
+import { Inbox } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -84,8 +86,12 @@ export function DataTable<TData, TValue>({
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
-                                    {t('common.noData')}
+                                <TableCell colSpan={columns.length} className="h-auto p-0">
+                                    <EmptyState
+                                        icon={Inbox}
+                                        title={t('common.noData')}
+                                        description={t('common.noDataHint')}
+                                    />
                                 </TableCell>
                             </TableRow>
                         )}
@@ -95,7 +101,7 @@ export function DataTable<TData, TValue>({
 
             <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">
-                    {formatNumber(table.getFilteredRowModel().rows.length)} سجل
+                    {formatNumber(table.getFilteredRowModel().rows.length)} {t('common.records')}
                 </p>
                 <div className="flex items-center gap-2">
                     <Button
@@ -104,7 +110,7 @@ export function DataTable<TData, TValue>({
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
                     >
-                        السابق
+                        {t('common.previous')}
                     </Button>
                     <Button
                         variant="outline"
@@ -112,7 +118,7 @@ export function DataTable<TData, TValue>({
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
                     >
-                        التالي
+                        {t('common.next')}
                     </Button>
                 </div>
             </div>

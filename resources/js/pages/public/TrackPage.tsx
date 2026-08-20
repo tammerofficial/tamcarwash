@@ -28,10 +28,10 @@ export function TrackPage() {
             <main className="pt-48 pb-24">
                 <div className="mx-auto max-w-3xl px-4 lg:px-8">
                     <div className="text-center mb-16 space-y-5 max-w-2xl mx-auto">
-                        <Badge className="bg-teal-50 text-teal-700 border-none font-bold text-[10px] px-4 py-1 tracking-widest uppercase">
+                        <Badge className="bg-brand-secondary-10 text-brand-primary border-none font-bold text-[10px] px-4 py-1 tracking-widest uppercase">
                             Track Status
                         </Badge>
-                        <h1 className="text-4xl md:text-5xl font-bold text-[#004d4d]">تتبع <span className="text-teal-600 font-black">طلبك</span></h1>
+                        <h1 className="text-4xl md:text-5xl font-bold text-brand-primary">تتبع <span className="text-brand-secondary font-black">طلبك</span></h1>
                         <p className="text-gray-500 text-lg opacity-80 leading-relaxed">أدخل رقم الفاتورة لمتابعة حالة سيارتك مباشرة عبر نظامنا التقني المتكامل.</p>
                     </div>
 
@@ -40,14 +40,14 @@ export function TrackPage() {
                             <div className="relative flex-1">
                                 <Receipt className="absolute right-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                 <Input 
-                                    className="h-16 pr-14 pl-6 rounded-xl border-none bg-gray-50/50 text-lg font-bold placeholder:text-gray-400 focus-visible:ring-teal-600" 
+                                    className="h-16 pr-14 pl-6 rounded-xl border-none bg-gray-50/50 text-lg font-bold placeholder:text-gray-400 focus-visible:ring-brand-secondary" 
                                     placeholder="رقم الفاتورة (مثال: INV-1234)"
                                     value={invoiceNumber}
                                     onChange={(e) => setInvoiceNumber(e.target.value)}
                                 />
                             </div>
                             <Button 
-                                className="h-16 px-10 rounded-xl font-bold text-lg bg-[#004d4d] hover:bg-teal-900 shadow-xl shadow-teal-900/20 transition-all active:scale-[0.98]"
+                                className="h-16 px-10 rounded-xl font-bold text-lg bg-brand-primary hover:opacity-90 shadow-xl transition-all active:scale-[0.98]"
                                 onClick={() => setIsSearching(true)}
                             >
                                 <Search className="me-2 h-5 w-5" />
@@ -60,7 +60,7 @@ export function TrackPage() {
                         <Card className="p-10 rounded-2xl border border-gray-100 shadow-2xl shadow-gray-200/50 bg-white animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-12 pb-10 border-b border-gray-100">
                                 <div className="flex items-center gap-5">
-                                    <div className="h-16 w-16 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600 border border-teal-100/50">
+                                    <div className="h-16 w-16 rounded-xl bg-brand-secondary-10 flex items-center justify-center text-brand-secondary border border-brand-secondary-20">
                                         <Car className="h-8 w-8" />
                                     </div>
                                     <div>
@@ -68,7 +68,7 @@ export function TrackPage() {
                                         <p className="text-2xl font-bold text-gray-900 text-start tracking-wider">أ ب 1234</p>
                                     </div>
                                 </div>
-                                <Badge className="bg-teal-50 text-teal-700 border border-teal-100 font-bold text-[10px] px-5 py-2 rounded-lg uppercase tracking-widest">
+                                <Badge className="bg-brand-secondary-10 text-brand-primary border border-brand-secondary-20 font-bold text-[10px] px-5 py-2 rounded-lg uppercase tracking-widest">
                                     In Progress
                                 </Badge>
                             </div>
@@ -85,8 +85,8 @@ export function TrackPage() {
                                     <div key={i} className="relative flex items-center gap-8 group">
                                         <div className={cn(
                                             "h-12 w-12 rounded-xl border-4 border-white flex items-center justify-center z-10 shadow-sm transition-all duration-500",
-                                            step.status === 'completed' ? "bg-teal-500 text-white" : 
-                                            step.status === 'current' ? "bg-teal-700 text-white animate-pulse" : 
+                                            step.status === 'completed' ? "bg-brand-secondary text-white" : 
+                                            step.status === 'current' ? "bg-brand-primary text-white animate-pulse" : 
                                             "bg-gray-100 text-gray-400"
                                         )}>
                                             {step.status === 'completed' ? <CheckCircle2 className="h-5 w-5" /> : 

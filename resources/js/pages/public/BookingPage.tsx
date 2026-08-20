@@ -17,12 +17,12 @@ export function BookingPage() {
                     <div className="grid lg:grid-cols-3 gap-16 items-start">
                         <div className="lg:col-span-1 space-y-10 lg:sticky lg:top-40">
                             <div className="space-y-6">
-                                <Badge className="bg-teal-50 text-teal-700 border-none font-bold text-[10px] px-4 py-1 uppercase tracking-[0.2em]">
+                                <Badge className="bg-brand-secondary-10 text-brand-primary border-none font-bold text-[10px] px-4 py-1 uppercase tracking-[0.2em]">
                                     Direct Booking
                                 </Badge>
-                                <h1 className="text-4xl md:text-5xl font-bold text-[#004d4d] leading-[1.2]">
+                                <h1 className="text-4xl md:text-5xl font-bold text-brand-primary leading-[1.2]">
                                     احجز موعد <br />
-                                    <span className="text-teal-600 font-black">تألق سيارتك</span>
+                                    <span className="text-brand-secondary font-black">تألق سيارتك</span>
                                 </h1>
                                 <p className="text-gray-500 text-lg leading-relaxed opacity-80">
                                     نظام الحجز الذكي يضمن لك الأولوية في الخدمة وتوفير وقتك الثمين.
@@ -35,7 +35,7 @@ export function BookingPage() {
                                     { icon: Info, title: 'تعديل مرن', desc: 'يمكنك تعديل أو إلغاء حجزك قبل 3 ساعات.' },
                                 ].map((item, i) => (
                                     <div key={i} className="flex gap-5 p-6 rounded-2xl bg-white shadow-sm border border-gray-100 transition-all hover:shadow-md">
-                                        <div className="h-12 w-12 rounded-xl bg-teal-50 flex items-center justify-center shrink-0 text-teal-600">
+                                        <div className="h-12 w-12 rounded-xl bg-brand-secondary-10 flex items-center justify-center shrink-0 text-brand-secondary">
                                             <item.icon className="h-6 w-6" />
                                         </div>
                                         <div>

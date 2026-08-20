@@ -53,8 +53,6 @@ export function BookingWidget() {
         },
     });
 
-    const primaryColor = '#006666';
-
     const steps = [
         { id: 1, label: 'الخدمة', icon: Car },
         { id: 2, label: 'البيانات', icon: Calendar },
@@ -70,14 +68,13 @@ export function BookingWidget() {
     if (isSubmitted) {
         return (
             <Card className="p-16 text-center rounded-2xl border border-gray-100 shadow-2xl bg-white">
-                <div className="h-20 w-20 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mx-auto mb-8 shadow-sm">
+                <div className="h-20 w-20 rounded-2xl bg-brand-secondary-10 text-brand-secondary flex items-center justify-center mx-auto mb-8 shadow-sm">
                     <CheckCircle2 className="h-10 w-10" />
                 </div>
-                <h3 className="text-3xl font-bold text-[#004d4d] mb-4">تم استلام طلبك!</h3>
+                <h3 className="text-3xl font-bold text-brand-primary mb-4">تم استلام طلبك!</h3>
                 <p className="text-gray-500 mb-10 max-w-sm mx-auto">سنتواصل معك قريباً لتأكيد الموعد النهائي وتفاصيل الخدمة.</p>
                 <Button 
-                    className="h-14 px-10 rounded-xl font-bold transition-all shadow-lg shadow-teal-900/10"
-                    style={{ backgroundColor: primaryColor }}
+                    className="h-14 px-10 rounded-xl font-bold transition-all shadow-lg bg-brand-secondary text-white hover:opacity-90"
                     onClick={() => setIsSubmitted(false)}
                 >
                     حجز موعد آخر
@@ -88,16 +85,16 @@ export function BookingWidget() {
 
     return (
         <Card className="relative overflow-hidden rounded-2xl border border-gray-100 shadow-2xl bg-white" dir="rtl">
-            <div className="bg-[#004d4d] p-10 text-white relative">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+            <div className="bg-brand-primary p-10 text-white relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-brand-secondary-10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
                 
                 <div className="relative flex items-center justify-between mb-10">
                     <div>
                         <h3 className="text-2xl font-bold mb-1">حجز موعد سريع</h3>
-                        <p className="text-teal-100/60 text-[10px] font-bold uppercase tracking-[0.2em]">Secure Online Booking</p>
+                        <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.2em]">Secure Online Booking</p>
                     </div>
                     <div className="h-12 w-12 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/10">
-                        <Calendar className="h-6 w-6 text-teal-400" />
+                        <Calendar className="h-6 w-6 text-brand-secondary" />
                     </div>
                 </div>
 
@@ -109,15 +106,15 @@ export function BookingWidget() {
                                 className={cn(
                                     "h-10 w-10 rounded-xl flex items-center justify-center transition-all duration-500 border",
                                     step >= s.id 
-                                        ? "bg-teal-500 border-teal-500 text-white shadow-lg shadow-teal-900/20" 
-                                        : "bg-[#004d4d] border-white/20 text-white/40"
+                                        ? "bg-brand-secondary border-brand-secondary text-white shadow-lg" 
+                                        : "bg-brand-primary border-white/20 text-white/40"
                                 )}
                             >
                                 <s.icon className="h-5 w-5" />
                             </div>
                             <span className={cn(
                                 "text-[10px] font-bold uppercase tracking-widest",
-                                step >= s.id ? "text-teal-400" : "text-white/40"
+                                step >= s.id ? "text-brand-secondary" : "text-white/40"
                             )}>
                                 {s.label}
                             </span>
@@ -145,15 +142,15 @@ export function BookingWidget() {
                                                     className={cn(
                                                         "p-5 rounded-xl border-2 transition-all text-start group relative overflow-hidden",
                                                         field.value === String(branch.id) 
-                                                            ? "border-teal-600 bg-teal-50/50" 
-                                                            : "border-gray-50 hover:border-teal-200 bg-gray-50/30"
+                                                            ? "border-brand-secondary bg-brand-secondary-10" 
+                                                            : "border-gray-50 hover:border-brand-secondary-20 bg-gray-50/30"
                                                     )}
                                                 >
                                                     <p className="font-bold text-gray-900 mb-0.5">{branch.name}</p>
                                                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{branch.city}</p>
                                                     {field.value === String(branch.id) && (
                                                         <div className="absolute top-2 left-2">
-                                                            <CheckCircle2 className="h-4 w-4 text-teal-600" />
+                                                            <CheckCircle2 className="h-4 w-4 text-brand-secondary" />
                                                         </div>
                                                     )}
                                                 </button>
@@ -179,15 +176,15 @@ export function BookingWidget() {
                                                     className={cn(
                                                         "p-5 rounded-xl border-2 transition-all text-start group relative overflow-hidden",
                                                         field.value === String(service.id) 
-                                                            ? "border-teal-600 bg-teal-50/50" 
-                                                            : "border-gray-50 hover:border-teal-200 bg-gray-50/30"
+                                                            ? "border-brand-secondary bg-brand-secondary-10" 
+                                                            : "border-gray-50 hover:border-brand-secondary-20 bg-gray-50/30"
                                                     )}
                                                 >
                                                     <p className="font-bold text-gray-900 mb-0.5">{service.name_ar || service.name}</p>
-                                                    <p className="text-[10px] text-teal-600 font-bold uppercase tracking-wider">{service.base_price} ر.ع</p>
+                                                    <p className="text-[10px] text-brand-secondary font-bold uppercase tracking-wider">{service.base_price} ر.ع</p>
                                                     {field.value === String(service.id) && (
                                                         <div className="absolute top-2 left-2">
-                                                            <CheckCircle2 className="h-4 w-4 text-teal-600" />
+                                                            <CheckCircle2 className="h-4 w-4 text-brand-secondary" />
                                                         </div>
                                                     )}
                                                 </button>
@@ -216,8 +213,8 @@ export function BookingWidget() {
                                                     className={cn(
                                                         "p-5 rounded-xl border-2 transition-all text-center",
                                                         field.value === type.id 
-                                                            ? "border-teal-600 bg-teal-50/50" 
-                                                            : "border-gray-50 hover:border-teal-200 bg-gray-50/30"
+                                                            ? "border-brand-secondary bg-brand-secondary-10" 
+                                                            : "border-gray-50 hover:border-brand-secondary-20 bg-gray-50/30"
                                                     )}
                                                 >
                                                     <span className="font-bold text-gray-900">{type.label}</span>
@@ -240,7 +237,7 @@ export function BookingWidget() {
                                     <FormItem>
                                         <FormLabel className="text-xs font-bold text-gray-900 mb-2 block">الاسم الثلاثي</FormLabel>
                                         <FormControl>
-                                            <Input className="h-14 rounded-xl bg-gray-50/50 border-gray-100 focus:bg-white focus:border-teal-500 transition-all font-medium" placeholder="أدخل اسمك الكامل" {...field} />
+                                            <Input className="h-14 rounded-xl bg-gray-50/50 border-gray-100 focus:bg-white focus:border-brand-secondary transition-all font-medium" placeholder="أدخل اسمك الكامل" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -254,7 +251,7 @@ export function BookingWidget() {
                                         <FormItem>
                                             <FormLabel className="text-xs font-bold text-gray-900 mb-2 block">رقم الهاتف</FormLabel>
                                             <FormControl>
-                                                <Input className="h-14 rounded-xl bg-gray-50/50 border-gray-100 focus:bg-white focus:border-teal-500 transition-all font-medium" placeholder="9xxxxxxx" {...field} />
+                                                <Input className="h-14 rounded-xl bg-gray-50/50 border-gray-100 focus:bg-white focus:border-brand-secondary transition-all font-medium" placeholder="9xxxxxxx" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -267,7 +264,7 @@ export function BookingWidget() {
                                         <FormItem>
                                             <FormLabel className="text-xs font-bold text-gray-900 mb-2 block">رقم اللوحة</FormLabel>
                                             <FormControl>
-                                                <Input className="h-14 rounded-xl bg-gray-50/50 border-gray-100 focus:bg-white focus:border-teal-500 transition-all font-medium text-center tracking-widest" placeholder="أ ب 1234" {...field} />
+                                                <Input className="h-14 rounded-xl bg-gray-50/50 border-gray-100 focus:bg-white focus:border-brand-secondary transition-all font-medium text-center tracking-widest" placeholder="أ ب 1234" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -293,8 +290,7 @@ export function BookingWidget() {
                         {step < 2 ? (
                             <Button 
                                 type="button"
-                                className="flex-[2] h-14 rounded-xl font-bold text-lg shadow-lg shadow-teal-900/10 transition-all"
-                                style={{ backgroundColor: primaryColor }}
+                                className="flex-[2] h-14 rounded-xl font-bold text-lg shadow-lg bg-brand-secondary text-white hover:opacity-90 transition-all"
                                 onClick={() => setStep(2)}
                                 disabled={!form.getValues('branch_id') || !form.getValues('service_id')}
                             >
@@ -304,8 +300,7 @@ export function BookingWidget() {
                         ) : (
                             <Button 
                                 type="submit"
-                                className="flex-[2] h-14 rounded-xl font-bold text-lg shadow-lg shadow-teal-900/10 transition-all"
-                                style={{ backgroundColor: primaryColor }}
+                                className="flex-[2] h-14 rounded-xl font-bold text-lg shadow-lg bg-brand-secondary text-white hover:opacity-90 transition-all"
                                 disabled={form.formState.isSubmitting}
                             >
                                 {form.formState.isSubmitting ? (

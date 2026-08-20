@@ -148,6 +148,16 @@ class QueueController extends ApiController
     {
         $this->authorize('viewScreen', QueueEntry::class);
 
+        return $this->screenResponse($request);
+    }
+
+    public function publicScreen(Request $request): JsonResponse
+    {
+        return $this->screenResponse($request);
+    }
+
+    protected function screenResponse(Request $request): JsonResponse
+    {
         $request->validate([
             'branch_id' => ['required', 'integer', 'exists:branches,id'],
             'date' => ['nullable', 'date'],

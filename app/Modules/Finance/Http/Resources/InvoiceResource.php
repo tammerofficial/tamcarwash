@@ -32,6 +32,7 @@ class InvoiceResource extends JsonResource
             'customer_phone' => $this->customer_phone,
             'customer_email' => $this->customer_email,
             'notes' => $this->notes,
+            'qr_payload' => $this->qr_payload,
             'items' => InvoiceItemResource::collection($this->whenLoaded('items')),
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),
             'created_at' => $this->created_at?->toIso8601String(),

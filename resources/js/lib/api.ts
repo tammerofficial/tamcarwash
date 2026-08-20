@@ -114,6 +114,7 @@ export const endpoints = {
     bookingConfirm: (id: number) => `bookings/${id}/confirm`,
     bookingCancel: (id: number) => `bookings/${id}/cancel`,
     bookingReschedule: (id: number) => `bookings/${id}/reschedule`,
+    bookingConvert: (id: number) => `bookings/${id}/convert-to-order`,
     timeSlots: {
         available: 'time-slots/available',
     },
@@ -125,7 +126,10 @@ export const endpoints = {
         callNext: 'queue/call-next',
         estimatedWait: 'queue/estimated-wait',
         screen: 'queue/screen',
+        screenPublic: 'queue/screen/public',
     },
+    payments: 'payments',
+    paymentMethods: 'payment-methods',
     orders: 'orders',
     order: (id: number) => `orders/${id}`,
     orderTransition: (id: number) => `orders/${id}/transition`,
@@ -145,6 +149,8 @@ export const endpoints = {
     taxSettings: 'tax-settings',
     storefront: {
         profile: 'storefront',
+        branding: 'storefront/branding',
+        brandingJson: 'branding.json',
         services: 'storefront/services',
         branches: 'storefront/branches',
         timeSlots: 'storefront/time-slots/available',
@@ -170,7 +176,7 @@ class ApiClient {
         return 'include';
     }
 
-    private headers(extra: HeadersInit = {}, tenantSlugOverride?: string | null): HeadersInit {
+    private headers(extra: HeadersInit = {}, tenantSlugOverride?: string | null, isFormData = false): HeadersInit {
         const config = readTammerConfig();
         const tenantHeaders: Record<string, string> = {};
 
@@ -188,12 +194,19 @@ class ApiClient {
             }
         }
 
-        return {
+        const baseHeaders: Record<string, string> = {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
             ...(this.csrfToken ? { 'X-XSRF-TOKEN': this.csrfToken } : {}),
             ...tenantHeaders,
+        };
+
+        if (!isFormData) {
+            baseHeaders['Content-Type'] = 'application/json';
+        }
+
+        return {
+            ...baseHeaders,
             ...extra,
         };
     }
@@ -259,7 +272,7 @@ class ApiClient {
         endpoint: string,
         body?: unknown,
         params?: Record<string, string | number | boolean | undefined>,
-        options?: { tenantSlug?: string | null; baseUrl?: 'tenant' | 'landlord' },
+        options?: { tenantSlug?: string | null; baseUrl?: 'tenant' | 'landlord'; headers?: HeadersInit },
     ): Promise<T> {
         const base = options?.baseUrl === 'landlord' ? this.getLandlordBaseUrl() : this.baseUrl;
         const normalized = endpoint.replace(/^\//, '');
@@ -273,11 +286,13 @@ class ApiClient {
             });
         }
 
+        const isFormData = body instanceof FormData;
+
         const response = await fetch(url.toString(), {
             method: 'POST',
-            headers: this.headers({}, options?.tenantSlug),
+            headers: this.headers(options?.headers ?? {}, options?.tenantSlug, isFormData),
             credentials: this.requestCredentials(),
-            body: body !== undefined ? JSON.stringify(body) : undefined,
+            body: isFormData ? body : (body !== undefined ? JSON.stringify(body) : undefined),
         });
 
         if (!response.ok) {

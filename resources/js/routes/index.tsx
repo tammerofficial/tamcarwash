@@ -7,7 +7,7 @@ import { LandlordAuthProvider } from '@/providers/LandlordAuthProvider';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterTenantPage } from '@/pages/auth/RegisterTenantPage';
 import { MarketingHomePage } from '@/pages/marketing/MarketingHomePage';
-import { TenantMarketingHomePage } from '@/pages/marketing/TenantMarketingHomePage';
+import { HomePage } from '@/pages/public/HomePage';
 import { PublicBookingPage } from '@/pages/booking/PublicBookingPage';
 import { DashboardPage } from '@/pages/dashboard/DashboardPage';
 import { BranchesPage } from '@/pages/branches/BranchesPage';
@@ -18,10 +18,14 @@ import { PricingPage } from '@/pages/pricing/PricingPage';
 import { BookingPage } from '@/pages/booking/BookingPage';
 import { QueuePage } from '@/pages/queue/QueuePage';
 import { QueueScreenPage } from '@/pages/queue/QueueScreenPage';
+import { QueueDisplayPage } from '@/pages/queue/QueueDisplayPage';
+import { CashierPage } from '@/pages/cashier/CashierPage';
+import { WorkerPage } from '@/pages/worker/WorkerPage';
 import { OrdersPage } from '@/pages/orders/OrdersPage';
 import { InvoicesPage } from '@/pages/invoices/InvoicesPage';
 import { TaxReportsPage } from '@/pages/tax/TaxReportsPage';
 import { SettingsPage } from '@/pages/settings/SettingsPage';
+import { AppearancePage } from '@/pages/settings/AppearancePage';
 import { LandlordLoginPage } from '@/pages/landlord/LandlordLoginPage';
 import { LandlordDashboardPage } from '@/pages/landlord/LandlordDashboardPage';
 import { LandlordTenantsPage } from '@/pages/landlord/LandlordTenantsPage';
@@ -36,8 +40,9 @@ function TenantRoutes() {
     return (
         <Routes>
             <Route element={<MarketingRoute />}>
-                <Route index element={tenantPublic ? <TenantMarketingHomePage /> : <MarketingHomePage />} />
+                <Route index element={tenantPublic ? <HomePage /> : <MarketingHomePage />} />
                 <Route path="/booking" element={<PublicBookingPage />} />
+                <Route path="/queue/display" element={<QueueDisplayPage />} />
             </Route>
 
             <Route element={<GuestRoute />}>
@@ -56,9 +61,12 @@ function TenantRoutes() {
                     <Route path="booking" element={<BookingPage />} />
                     <Route path="queue" element={<QueuePage />} />
                     <Route path="queue/screen" element={<QueueScreenPage />} />
+                    <Route path="cashier" element={<CashierPage />} />
+                    <Route path="worker" element={<WorkerPage />} />
                     <Route path="orders" element={<OrdersPage />} />
                     <Route path="invoices" element={<InvoicesPage />} />
                     <Route path="tax-reports" element={<TaxReportsPage />} />
+                    <Route path="appearance" element={<AppearancePage />} />
                     <Route path="settings" element={<SettingsPage />} />
                 </Route>
             </Route>

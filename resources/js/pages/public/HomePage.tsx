@@ -31,11 +31,11 @@ export function HomePage() {
                 <section id="services" className="py-24 bg-gray-50/30">
                     <div className="mx-auto max-w-7xl px-4 lg:px-8">
                         <div className="mb-20 text-center max-w-3xl mx-auto space-y-5">
-                            <Badge className="bg-teal-50 text-teal-700 hover:bg-teal-100 border-none font-bold text-[10px] px-4 py-1 tracking-widest uppercase">
+                            <Badge className="bg-brand-secondary-10 text-brand-secondary hover:bg-brand-secondary-20 border-none font-bold text-[10px] px-4 py-1 tracking-widest uppercase">
                                 Our Services
                             </Badge>
-                            <h2 className="text-4xl md:text-5xl font-bold text-[#004d4d]">
-                                خدماتنا <span className="text-teal-600">المتميزة</span>
+                            <h2 className="text-4xl md:text-5xl font-bold text-brand-primary">
+                                خدماتنا <span className="text-brand-secondary">المتميزة</span>
                             </h2>
                             <p className="text-gray-500 text-lg leading-relaxed opacity-80">
                                 نقدم باقة متكاملة من خدمات غسيل وتلميع السيارات بأعلى معايير الجودة والاحترافية.
@@ -70,11 +70,11 @@ export function HomePage() {
                 <section className="py-32 bg-white" dir="rtl">
                     <div className="mx-auto max-w-7xl px-4 lg:px-8 text-center">
                         <div className="mb-24 space-y-5">
-                            <Badge className="bg-teal-50 text-teal-700 border-none font-bold text-[10px] px-4 py-1 uppercase tracking-widest">
+                            <Badge className="bg-brand-secondary-10 text-brand-secondary border-none font-bold text-[10px] px-4 py-1 uppercase tracking-widest">
                                 The Experience
                             </Badge>
-                            <h2 className="text-4xl md:text-5xl font-bold text-[#004d4d]">
-                                خطوات بسيطة لسيارة <span className="text-teal-600">كالجديدة</span>
+                            <h2 className="text-4xl md:text-5xl font-bold text-brand-primary">
+                                خطوات بسيطة لسيارة <span className="text-brand-secondary">كالجديدة</span>
                             </h2>
                         </div>
 
@@ -89,7 +89,7 @@ export function HomePage() {
                                 { step: '04', title: 'استلمها لامعة', desc: 'استلم سيارتك نظيفة ومحمية بأفضل المواد.' },
                             ].map((item, i) => (
                                 <div key={i} className="relative z-10 space-y-8 group">
-                                    <div className="h-20 w-20 rounded-2xl bg-white border border-gray-100 flex items-center justify-center mx-auto text-2xl font-bold text-teal-600 transition-all duration-500 group-hover:bg-teal-600 group-hover:text-white group-hover:shadow-xl group-hover:shadow-teal-900/10">
+                                    <div className="h-20 w-20 rounded-2xl bg-white border border-gray-100 flex items-center justify-center mx-auto text-2xl font-bold text-brand-secondary transition-all duration-500 group-hover:bg-brand-secondary group-hover:text-white group-hover:shadow-xl">
                                         {item.step}
                                     </div>
                                     <div className="space-y-3">

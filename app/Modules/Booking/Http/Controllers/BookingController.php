@@ -44,6 +44,20 @@ class BookingController extends ApiController
             $query->where('customer_id', $request->integer('customer_id'));
         }
 
+        if ($request->filled('search')) {
+            $search = $request->string('search');
+            $query->where(function ($builder) use ($search) {
+                $builder->where('booking_number', 'like', "%{$search}%")
+                    ->orWhereHas('customer', function ($customerQuery) use ($search) {
+                        $customerQuery->where('phone', 'like', "%{$search}%")
+                            ->orWhere('name', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('vehicle', function ($vehicleQuery) use ($search) {
+                        $vehicleQuery->where('plate_number', 'like', "%{$search}%");
+                    });
+            });
+        }
+
         $bookings = $query->paginate($request->integer('per_page', 20));
 
         return $this->paginatedList($bookings, BookingResource::class);

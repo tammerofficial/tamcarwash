@@ -31,11 +31,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 const navItems = [
-    { to: '/landlord/dashboard', label: 'لوحة التحكم', icon: LayoutDashboard },
-    { to: '/landlord/tenants', label: 'المستأجرون', icon: Users },
-    { to: '/landlord/subscriptions', label: 'الاشتراكات', icon: CreditCard },
-    { to: '/landlord/plans', label: 'الباقات', icon: Building2 },
-    { to: '/landlord/settings', label: 'الإعدادات', icon: Settings },
+    { to: '/landlord/dashboard', label: t('landlord.nav.dashboard'), icon: LayoutDashboard },
+    { to: '/landlord/tenants', label: t('landlord.nav.tenants'), icon: Users },
+    { to: '/landlord/subscriptions', label: t('landlord.nav.subscriptions'), icon: CreditCard },
+    { to: '/landlord/plans', label: t('landlord.nav.plans'), icon: Building2 },
+    { to: '/landlord/settings', label: t('landlord.nav.settings'), icon: Settings },
 ];
 
 export function LandlordShell({ children }: { children?: ReactNode }) {
@@ -97,8 +97,8 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
                         {!collapsed && (
                             <div className="space-y-1 animate-in fade-in duration-500 text-center">
                                 <p className="admin-sidebar-brand-title text-xl font-black">Tammer Wash</p>
-                                <p className="admin-sidebar-brand-subtitle">Platform Admin</p>
-                                <p className="admin-sidebar-brand-sultanate">Sultanate of Oman</p>
+                                <p className="admin-sidebar-brand-subtitle">{t('auth.landlordPortal')}</p>
+                                <p className="admin-sidebar-brand-sultanate">{t('app.sultanate')}</p>
                             </div>
                         )}
                     </Link>
@@ -108,7 +108,7 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
                     <nav className="space-y-1">
                         {!collapsed && (
                             <p className="admin-sidebar-section-label">
-                                {t('nav.main') || 'إدارة المنصة'}
+                                {t('nav.main')}
                             </p>
                         )}
                         {navItems.map((item) => {
@@ -142,7 +142,7 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
                                     <ShieldCheck className="h-4 w-4" />
                                 </div>
                                 <p className="text-[10px] text-white/50 font-bold leading-relaxed">
-                                    {t('app.secureAccess') || 'وصول آمن ومشفر'}
+                                    {t('app.secureAccess')}
                                 </p>
                             </div>
                         </div>

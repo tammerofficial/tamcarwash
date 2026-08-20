@@ -2,6 +2,7 @@
 
 namespace App\Modules\Shared\Http\Controllers;
 
+use App\Models\Landlord\Tenant;
 use App\Modules\Booking\Enums\BookingSource;
 use App\Modules\Booking\Http\Resources\BookingResource;
 use App\Modules\Booking\Http\Resources\TimeSlotResource;
@@ -11,16 +12,20 @@ use App\Modules\Branches\Http\Resources\BranchResource;
 use App\Modules\Branches\Models\Branch;
 use App\Modules\Customers\Models\Customer;
 use App\Modules\Finance\Models\TaxSetting;
+use App\Modules\Finance\Services\VatCalculatorService;
+use App\Modules\Queue\Services\QueueService;
 use App\Modules\Services\Http\Resources\ServiceResource;
 use App\Modules\Services\Models\Service;
 use App\Modules\Shared\Http\Requests\StorePublicBookingRequest;
 use App\Modules\Vehicles\Models\Vehicle;
+use App\Support\BrandingHelper;
 use App\Support\DefaultContact;
 use App\Services\Tenancy\TenantContext;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use RuntimeException;
+use Symfony\Component\HttpFoundation\Response;
 
 class StorefrontController extends ApiController
 {
@@ -28,14 +33,16 @@ class StorefrontController extends ApiController
         protected TenantContext $tenantContext,
         protected BookingService $bookingService,
         protected TimeSlotService $timeSlotService,
+        protected QueueService $queueService,
+        protected VatCalculatorService $vatCalculator,
     ) {}
 
     public function show(): JsonResponse
     {
-        $tenant = $this->tenantContext->get();
+        $tenant = $this->requireTenant();
 
-        if (! $tenant) {
-            return $this->error('Tenant context not found.', 404, 'tenant_not_found');
+        if ($tenant instanceof JsonResponse) {
+            return $tenant;
         }
 
         $settings = $tenant->settings ?? [];
@@ -53,18 +60,38 @@ class StorefrontController extends ApiController
             'timezone' => $tenant->timezone ?? config('app.timezone', 'Asia/Muscat'),
             'currency' => config('tammer.vat.currency', 'OMR'),
             'vat_rate' => (float) ($taxSettings?->vat_rate ?? config('tammer.vat.default_rate', 5)),
-            'branding' => [
-                'logo_url' => $settings['logo_url'] ?? $metadata['logo_url'] ?? null,
-                'primary_color' => $settings['primary_color'] ?? $metadata['primary_color'] ?? '#0ea5e9',
-                'tagline' => $settings['tagline'] ?? $metadata['tagline'] ?? null,
-                'about' => $settings['about'] ?? $metadata['about'] ?? null,
-                'social' => $settings['social'] ?? $metadata['social'] ?? [],
-            ],
+            'branding' => BrandingHelper::resolve($settings, $metadata),
             'stats' => [
                 'branches' => Branch::query()->where('is_active', true)->count(),
                 'services' => Service::query()->where('is_active', true)->count(),
             ],
         ]);
+    }
+
+    public function branding(): JsonResponse
+    {
+        $tenant = $this->requireTenant();
+
+        if ($tenant instanceof JsonResponse) {
+            return $tenant;
+        }
+
+        return $this->success(BrandingHelper::publicPayload($tenant));
+    }
+
+    public function brandingJson(): Response
+    {
+        $tenant = $this->requireTenant();
+
+        if ($tenant instanceof JsonResponse) {
+            return $tenant;
+        }
+
+        return response()
+            ->json(BrandingHelper::publicPayload($tenant))
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Headers', 'X-Tenant-Slug, X-Tenant-Id, Accept')
+            ->header('Cache-Control', 'public, max-age=300');
     }
 
     public function services(Request $request): JsonResponse
@@ -174,13 +201,70 @@ class StorefrontController extends ApiController
                 'service_ids' => $validated['service_ids'] ?? [],
             ]);
 
+            $booking->load(['timeSlot', 'customer', 'vehicle', 'branch']);
+            $estimatedWait = $this->queueService->calculateEstimatedWait((int) $validated['branch_id']);
+            $pricing = $this->calculateServicePricing($validated['service_ids'] ?? []);
+
             return $this->success(
-                BookingResource::make($booking),
+                array_merge(
+                    BookingResource::make($booking)->resolve(),
+                    [
+                        'estimated_wait_minutes' => $estimatedWait,
+                        'pricing' => $pricing,
+                    ],
+                ),
                 'تم إنشاء حجزك بنجاح. سنتواصل معك للتأكيد.',
                 201,
             );
         } catch (RuntimeException $e) {
             return $this->error($e->getMessage(), 422);
         }
+    }
+
+    protected function requireTenant(): Tenant|JsonResponse
+    {
+        $tenant = $this->tenantContext->get();
+
+        if (! $tenant) {
+            return $this->error('Tenant context not found.', 404, 'tenant_not_found');
+        }
+
+        return $tenant;
+    }
+
+    /**
+     * @param  array<int, int>  $serviceIds
+     * @return array{subtotal: float, vat_rate: float, vat_amount: float, total: float, currency: string}
+     */
+    protected function calculateServicePricing(array $serviceIds): array
+    {
+        $taxSettings = TaxSetting::query()->first();
+        $vatRate = (float) ($taxSettings?->vat_rate ?? config('tammer.vat.default_rate', 5));
+        $vatEnabled = (bool) ($taxSettings?->vat_enabled ?? true);
+        $taxInclusive = (bool) ($taxSettings?->prices_tax_inclusive ?? false);
+
+        $lines = [];
+        foreach (Service::query()->whereIn('id', $serviceIds)->get() as $service) {
+            $calc = $this->vatCalculator->calculateLine(
+                (float) $service->base_price,
+                1,
+                0,
+                $vatRate,
+                $taxInclusive,
+                $vatEnabled,
+            );
+
+            $lines[] = $calc;
+        }
+
+        $totals = $this->vatCalculator->calculateTotals($lines, $taxInclusive, $vatEnabled);
+
+        return [
+            'subtotal' => round((float) $totals['subtotal'], 3),
+            'vat_rate' => $vatRate,
+            'vat_amount' => round((float) $totals['vat_amount'], 3),
+            'total' => round((float) $totals['total'], 3),
+            'currency' => config('tammer.vat.currency', 'OMR'),
+        ];
     }
 }
