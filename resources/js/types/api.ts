@@ -239,6 +239,24 @@ export interface QueueScreenData {
     entries: QueueEntry[];
 }
 
+export interface OrderScreenEntry {
+    id: number;
+    order_number: string;
+    queue_number?: string | number | null;
+    vehicle_plate?: string | null;
+    status: OrderStatus;
+    status_label?: string;
+    service_name?: string | null;
+}
+
+export interface OrderScreenData {
+    branch_id: number;
+    date: string;
+    in_progress_count: number;
+    ready_count: number;
+    orders: OrderScreenEntry[];
+}
+
 export type OrderStatus =
     | 'pending'
     | 'checked_in'

@@ -1,4 +1,4 @@
-import { LogOut, Menu, User, Home } from 'lucide-react';
+import { LogOut, Menu, User, Home, Monitor, Tv } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/providers/AuthProvider';
@@ -16,7 +16,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { t } from '@/lib/i18n';
 import { api, appConfig, endpoints } from '@/lib/api';
-import { getTenantPublicHomeHref, shouldUseTenantHomeRouterLink } from '@/lib/tenancy';
+import { getTenantPublicHomeHref, shouldUseTenantHomeRouterLink, tenantPath } from '@/lib/tenancy';
+import { useBranch } from '@/providers/BranchProvider';
 import type { ApiResponse, TenantSettings } from '@/types/api';
 
 interface HeaderProps {
@@ -25,6 +26,12 @@ interface HeaderProps {
 
 export function Header({ onMenuClick }: HeaderProps) {
     const { user, logout, isLandlord, isAuthenticated, isLoading: authLoading } = useAuth();
+    const { selectedBranchId } = useBranch();
+
+    const openTvScreen = (path: string) => {
+        const params = selectedBranchId ? `?branch_id=${selectedBranchId}` : '';
+        window.open(`${tenantPath(path)}${params}`, '_blank', 'noopener,noreferrer');
+    };
 
     const { data: settings } = useQuery({
         queryKey: ['settings'],
@@ -74,9 +81,55 @@ export function Header({ onMenuClick }: HeaderProps) {
 
             <div className="flex items-center gap-4">
                 {!isLandlord && (
-                    <div className="hidden md:block">
-                        <BranchSelector />
-                    </div>
+                    <>
+                        <div className="hidden md:flex items-center gap-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="hidden lg:flex h-10 rounded-xl font-bold gap-2"
+                                onClick={() => openTvScreen('/tv/queue')}
+                                title={t('tv.openQueue')}
+                            >
+                                <Monitor className="h-4 w-4" />
+                                {t('nav.tvQueue')}
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="hidden lg:flex h-10 rounded-xl font-bold gap-2"
+                                onClick={() => openTvScreen('/tv/status')}
+                                title={t('tv.openStatus')}
+                            >
+                                <Tv className="h-4 w-4" />
+                                {t('nav.tvStatus')}
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-10 w-10 rounded-xl lg:hidden"
+                                onClick={() => openTvScreen('/tv/queue')}
+                                title={t('tv.openQueue')}
+                            >
+                                <Monitor className="h-5 w-5" />
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-10 w-10 rounded-xl lg:hidden"
+                                onClick={() => openTvScreen('/tv/status')}
+                                title={t('tv.openStatus')}
+                            >
+                                <Tv className="h-5 w-5" />
+                            </Button>
+                        </div>
+                        <div className="hidden md:block">
+                            <BranchSelector />
+                        </div>
+                    </>
                 )}
 
                 <div className="h-8 w-[1px] bg-border/40 mx-2 hidden sm:block" />

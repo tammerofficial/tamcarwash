@@ -198,7 +198,7 @@ php artisan migrate --database=landlord --path=database/migrations/landlord --fo
 php artisan tenants:migrate
 
 SEED_EXIT=0
-php artisan app:seed-production --tenants --force || SEED_EXIT=$?
+php artisan db:seed --class=ProductionSeeder --force || SEED_EXIT=$?
 
 if [ "${SEED_EXIT}" -ne 0 ]; then
     echo "WARNING: production seeding failed (exit ${SEED_EXIT}) — check storage/logs/laravel.log"

@@ -9,9 +9,11 @@ use App\Modules\Orders\Http\Requests\StoreOrderRequest;
 use App\Modules\Orders\Http\Requests\TransitionOrderRequest;
 use App\Modules\Orders\Http\Resources\OrderItemResource;
 use App\Modules\Orders\Http\Resources\OrderResource;
+use App\Modules\Orders\Http\Resources\OrderScreenResource;
 use App\Modules\Orders\Models\Order;
 use App\Modules\Orders\Services\OrderService;
 use App\Modules\Shared\Http\Controllers\ApiController;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
@@ -113,5 +115,34 @@ class OrderController extends ApiController
             'تم إضافة البند.',
             201
         );
+    }
+
+    public function screen(Request $request): JsonResponse
+    {
+        $this->authorize('viewAny', Order::class);
+
+        return $this->screenResponse($request);
+    }
+
+    public function publicScreen(Request $request): JsonResponse
+    {
+        return $this->screenResponse($request);
+    }
+
+    protected function screenResponse(Request $request): JsonResponse
+    {
+        $request->validate([
+            'branch_id' => ['required', 'integer', 'exists:branches,id'],
+            'date' => ['nullable', 'date'],
+        ]);
+
+        $data = $this->orderService->getScreenData(
+            $request->integer('branch_id'),
+            $request->filled('date') ? Carbon::parse($request->string('date')) : null
+        );
+
+        $data['orders'] = OrderScreenResource::collection($data['orders']);
+
+        return $this->success($data);
     }
 }

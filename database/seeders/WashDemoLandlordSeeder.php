@@ -13,6 +13,16 @@ class WashDemoLandlordSeeder extends IdempotentSeeder
     /** @var array<int, array<string, mixed>> */
     private const DEMO_TENANTS = [
         [
+            'slug' => 'demo',
+            'name' => 'مغسلة تمير التجريبية',
+            'legal_name' => 'مغسلة تمير التجريبية',
+            'email' => 'info@demo.test',
+            'phone' => '+96824560000',
+            'plan' => 'starter',
+            'status' => 'active',
+            'trial_days' => null,
+        ],
+        [
             'slug' => 'alwadi-wash',
             'name' => 'مغسلة الوادي',
             'legal_name' => 'مغسلة الوادي للسيارات',

@@ -169,6 +169,10 @@
         display: none;
     }
 
+    .admin-sidebar-nav-item {
+        @apply text-[0.9375rem] font-bold leading-tight;
+    }
+
     .admin-sidebar-nav-item--active {
         @apply bg-primary text-primary-foreground shadow-lg scale-[1.02];
         background-image: linear-gradient(270deg, hsl(var(--primary)) 0%, var(--brand-secondary) 100%);
@@ -191,19 +195,23 @@
     }
 
     .admin-sidebar-brand-title {
-        @apply text-lg font-black tracking-tight text-center text-white;
+        @apply text-xl font-black tracking-tight text-center text-white;
     }
 
     .admin-sidebar-brand-subtitle {
-        @apply text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] text-center;
+        @apply text-[11px] font-bold text-white/40 uppercase tracking-[0.2em] text-center;
     }
 
     .admin-sidebar-brand-sultanate {
-        @apply text-[9px] font-black text-white/30 uppercase tracking-[0.2em] text-center;
+        @apply text-[10px] font-black text-white/30 uppercase tracking-[0.2em] text-center;
     }
 
     .admin-sidebar-section-label {
-        @apply text-[10px] font-black uppercase tracking-widest text-white/40 mb-4 px-4;
+        @apply text-xs font-black uppercase tracking-widest text-white/40 mb-2 px-3 text-right;
+    }
+
+    .admin-sidebar-footer-note {
+        @apply text-[11px] font-bold leading-relaxed text-white/50;
     }
 
     .admin-sidebar-mobile-backdrop {

@@ -136,6 +136,8 @@ export const endpoints = {
     orderAssignWorker: (id: number) => `orders/${id}/assign-worker`,
     orderAddItem: (id: number) => `orders/${id}/items`,
     orderInvoice: (orderId: number) => `orders/${orderId}/invoice`,
+    ordersScreen: 'orders/screen',
+    ordersScreenPublic: 'orders/screen/public',
     invoices: 'invoices',
     invoice: (id: number) => `invoices/${id}`,
     invoiceVoid: (id: number) => `invoices/${id}/void`,

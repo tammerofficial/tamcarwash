@@ -19,6 +19,8 @@ import { BookingPage } from '@/pages/booking/BookingPage';
 import { QueuePage } from '@/pages/queue/QueuePage';
 import { QueueScreenPage } from '@/pages/queue/QueueScreenPage';
 import { QueueDisplayPage } from '@/pages/queue/QueueDisplayPage';
+import { TvQueuePage } from '@/pages/tv/TvQueuePage';
+import { TvStatusPage } from '@/pages/tv/TvStatusPage';
 import { CashierPage } from '@/pages/cashier/CashierPage';
 import { WorkerPage } from '@/pages/worker/WorkerPage';
 import { OrdersPage } from '@/pages/orders/OrdersPage';
@@ -43,6 +45,8 @@ function TenantRoutes() {
                 <Route index element={tenantPublic ? <HomePage /> : <MarketingHomePage />} />
                 <Route path="/booking" element={<PublicBookingPage />} />
                 <Route path="/queue/display" element={<QueueDisplayPage />} />
+                <Route path="/tv/queue" element={<TvQueuePage />} />
+                <Route path="/tv/status" element={<TvStatusPage />} />
             </Route>
 
             <Route element={<GuestRoute />}>

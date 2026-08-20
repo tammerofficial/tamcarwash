@@ -38,52 +38,17 @@ export function AppShell() {
     }, [mobileNavOpen, closeMobileNav]);
 
     return (
-        <div className="flex min-h-screen bg-muted/30">
-            {/* Desktop Sidebar — first in RTL flex = right side */}
-            <Sidebar 
-                collapsed={collapsed} 
+        <div className="flex min-h-screen bg-muted/30" dir="rtl">
+            {/* Desktop sidebar */}
+            <Sidebar
+                collapsed={collapsed}
                 onToggleCollapse={() => setCollapsed((v) => !v)}
                 className="hidden lg:flex shrink-0"
             />
 
-            {/* Mobile Sidebar Overlay */}
-            <div
-                className={cn(
-                    'fixed inset-0 z-50 lg:hidden transition-all duration-300',
-                    mobileNavOpen ? 'pointer-events-auto' : 'pointer-events-none',
-                )}
-                aria-hidden={!mobileNavOpen}
-            >
-                {/* Backdrop */}
-                <div
-                    className={cn(
-                        'admin-sidebar-mobile-backdrop absolute inset-0 transition-opacity duration-300',
-                        mobileNavOpen ? 'opacity-100' : 'opacity-0',
-                    )}
-                    onClick={closeMobileNav}
-                />
-
-                {/* Sidebar Panel — slides from start (right in RTL) */}
-                <div
-                    className={cn(
-                        'absolute inset-y-0 start-0 transition-transform duration-300 ease-out shadow-2xl',
-                        mobileNavOpen ? 'translate-x-0' : 'translate-x-full',
-                    )}
-                >
-                    <Sidebar
-                        collapsed={false}
-                        onNavigate={closeMobileNav}
-                        showMobileClose
-                        onMobileClose={closeMobileNav}
-                        className="h-full"
-                    />
-                </div>
-            </div>
-
-            {/* Main Content Area */}
             <div className="relative flex min-w-0 flex-1 flex-col">
                 <Header onMenuClick={() => setMobileNavOpen(true)} />
-                
+
                 <main className="flex-1 p-6 lg:p-8 animate-in fade-in duration-700">
                     <div className="mx-auto w-full max-w-[1600px]">
                         <Outlet />
@@ -101,6 +66,38 @@ export function AppShell() {
                         </div>
                     </div>
                 </footer>
+            </div>
+
+            {/* Mobile sidebar overlay */}
+            <div
+                className={cn(
+                    'fixed inset-0 z-50 lg:hidden transition-all duration-300',
+                    mobileNavOpen ? 'pointer-events-auto' : 'pointer-events-none',
+                )}
+                aria-hidden={!mobileNavOpen}
+            >
+                <div
+                    className={cn(
+                        'admin-sidebar-mobile-backdrop absolute inset-0 transition-opacity duration-300',
+                        mobileNavOpen ? 'opacity-100' : 'opacity-0',
+                    )}
+                    onClick={closeMobileNav}
+                />
+
+                <div
+                    className={cn(
+                        'absolute inset-y-0 right-0 transition-transform duration-300 ease-out shadow-2xl',
+                        mobileNavOpen ? 'translate-x-0' : 'translate-x-full',
+                    )}
+                >
+                    <Sidebar
+                        collapsed={false}
+                        onNavigate={closeMobileNav}
+                        showMobileClose
+                        onMobileClose={closeMobileNav}
+                        className="h-full"
+                    />
+                </div>
             </div>
         </div>
     );

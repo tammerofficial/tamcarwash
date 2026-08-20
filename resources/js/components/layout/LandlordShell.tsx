@@ -53,7 +53,7 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
     }, [location.pathname, closeMobileNav]);
 
     return (
-        <div className="min-h-screen bg-muted/30 flex overflow-hidden">
+        <div className="flex min-h-screen bg-muted/30 overflow-hidden" dir="rtl">
             {/* Sidebar Overlay for Mobile */}
             {mobileNavOpen && (
                 <div 
@@ -62,10 +62,11 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
                 />
             )}
 
-            {/* Sidebar — first in RTL flex = right side; mobile slides from start (right) */}
+            {/* Sidebar — flows on desktop, drawer on mobile */}
             <aside
+                dir="rtl"
                 className={cn(
-                    'admin-sidebar fixed inset-y-0 start-0 z-50 flex flex-col transition-all duration-300 shadow-2xl border-e border-white/5 lg:relative shrink-0',
+                    'admin-sidebar fixed inset-y-0 right-0 z-50 flex flex-col transition-all duration-300 shadow-2xl border-s border-white/5 shrink-0 lg:relative',
                     collapsed ? 'admin-sidebar--collapsed w-[4.75rem]' : 'w-72',
                     mobileNavOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0',
                 )}
@@ -96,7 +97,7 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
                         </div>
                         {!collapsed && (
                             <div className="space-y-1 animate-in fade-in duration-500 text-center">
-                                <p className="admin-sidebar-brand-title text-xl font-black">Tammer Wash</p>
+                                <p className="admin-sidebar-brand-title">Tammer Wash</p>
                                 <p className="admin-sidebar-brand-subtitle">{t('auth.landlordPortal')}</p>
                                 <p className="admin-sidebar-brand-sultanate">{t('app.sultanate')}</p>
                             </div>
@@ -118,16 +119,21 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
                                     key={item.to}
                                     to={item.to}
                                     title={collapsed ? item.label : undefined}
+                                    dir={collapsed ? undefined : 'ltr'}
                                     className={cn(
-                                        'group flex items-center gap-3 rounded-full px-4 py-3 text-sm font-bold transition-all duration-200',
+                                        'admin-sidebar-nav-item group flex w-full flex-row items-center gap-3 rounded-2xl px-3 py-2.5 transition-all duration-200',
                                         isActive
                                             ? 'admin-sidebar-nav-item--active'
                                             : 'admin-sidebar-nav-item--inactive',
-                                        collapsed && 'justify-center px-2',
+                                        collapsed ? 'justify-center px-2 py-2.5' : 'justify-end',
                                     )}
                                 >
-                                    <item.icon className="h-[1.125rem] w-[1.125rem] shrink-0 stroke-[1.5]" />
-                                    {!collapsed && <span className="truncate">{item.label}</span>}
+                                    {!collapsed && (
+                                        <span className="min-w-0 flex-1 truncate text-right">{item.label}</span>
+                                    )}
+                                    <span className="flex w-5 shrink-0 items-center justify-center">
+                                        <item.icon className="h-[1.125rem] w-[1.125rem] shrink-0 stroke-[1.5]" />
+                                    </span>
                                 </Link>
                             );
                         })}
@@ -141,7 +147,7 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
                                 <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center text-white/80">
                                     <ShieldCheck className="h-4 w-4" />
                                 </div>
-                                <p className="text-[10px] text-white/50 font-bold leading-relaxed">
+                                <p className="admin-sidebar-footer-note">
                                     {t('app.secureAccess')}
                                 </p>
                             </div>
@@ -151,7 +157,7 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
             </aside>
 
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <div className="flex min-h-screen flex-1 flex-col min-w-0 overflow-hidden">
                 <header className="sticky top-0 z-40 flex h-20 items-center justify-between border-b border-border/40 bg-white/80 backdrop-blur-md px-4 lg:px-8">
                     <div className="flex items-center gap-4">
                         <Button 

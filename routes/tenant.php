@@ -54,6 +54,7 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::get('queue/screen/public', [QueueController::class, 'publicScreen']);
+Route::get('orders/screen/public', [OrderController::class, 'publicScreen']);
 
 Route::get('branding.json', [StorefrontController::class, 'brandingJson']);
 
@@ -133,6 +134,7 @@ Route::middleware('auth:tenant')->group(function () {
 
     Route::get('orders', [OrderController::class, 'index']);
     Route::post('orders', [OrderController::class, 'store']);
+    Route::get('orders/screen', [OrderController::class, 'screen']);
     Route::get('orders/{order}', [OrderController::class, 'show']);
     Route::post('orders/{order}/transition', [OrderController::class, 'transition']);
     Route::post('orders/{order}/assign-worker', [OrderController::class, 'assignWorker']);

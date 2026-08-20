@@ -6,8 +6,10 @@ use App\Models\Landlord\Tenant;
 use App\Services\Tenancy\TenantConnectionManager;
 use App\Services\Tenancy\DemoUserSeedingService;
 use App\Services\Tenancy\DemoSimulationSeedingService;
-use Database\Seeders\LandlordProductionSeeder;
+use App\Services\Tenancy\WashDemoScenarioService;
 use Database\Seeders\TenantProductionSeeder;
+use Database\Seeders\WashDemoLandlordSeeder;
+use Database\Seeders\WashDemoTenantSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +21,7 @@ class SeedProductionCommand extends Command
                             {--tenant= : Seed a specific tenant slug or UUID}
                             {--force : Accepted for deploy-script compatibility (seeding is already non-destructive)}';
 
-    protected $description = 'Run idempotent production seeders for landlord and optionally tenant databases (never truncates)';
+    protected $description = 'Run idempotent production seeders for landlord, demo tenants, and tenant databases (never truncates)';
 
     public function handle(
         TenantConnectionManager $tenantManager,
@@ -33,6 +35,12 @@ class SeedProductionCommand extends Command
         ]);
 
         $this->seedLandlord($tenantManager);
+
+        if ($this->option('tenants') || $this->option('tenant')) {
+            $this->line('Running tenant migrations...');
+            $this->callSilent('tenants:migrate');
+        }
+
         $this->seedTenants($tenantManager, $demoUserSeeding, $demoSimulationSeeding);
 
         $this->info('Production seed completed.');
@@ -47,8 +55,9 @@ class SeedProductionCommand extends Command
         $tenantManager->useLandlord();
 
         $this->callSilent('db:seed', [
-            '--class' => LandlordProductionSeeder::class,
+            '--class' => WashDemoLandlordSeeder::class,
             '--force' => true,
+            '--database' => config('tenancy.landlord_connection', 'landlord'),
         ]);
 
         $this->info('Landlord seed finished.');
@@ -106,6 +115,14 @@ class SeedProductionCommand extends Command
                     '--force' => true,
                     '--database' => config('tenancy.tenant_connection', 'tenant'),
                 ]);
+
+                if (in_array($tenant->slug, WashDemoScenarioService::ALWADI_SLUGS, true)) {
+                    $this->callSilent('db:seed', [
+                        '--class' => WashDemoTenantSeeder::class,
+                        '--force' => true,
+                        '--database' => config('tenancy.tenant_connection', 'tenant'),
+                    ]);
+                }
 
                 if ($demoUserSeeding->shouldSeedFor($tenant)) {
                     $demoUserSeeding->seed();

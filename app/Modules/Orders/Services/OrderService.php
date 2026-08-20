@@ -16,6 +16,7 @@ use App\Modules\Orders\Models\OrderItem;
 use App\Modules\Queue\Enums\QueueEntryStatus;
 use App\Modules\Queue\Models\QueueEntry;
 use App\Modules\Services\Models\Service;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -305,5 +306,48 @@ class OrderService
     protected function generateOrderNumber(): string
     {
         return 'ORD-'.now()->format('Ymd').'-'.Str::upper(Str::random(6));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getScreenData(int $branchId, ?Carbon $date = null): array
+    {
+        $date = $date ?? today();
+
+        $activeStatuses = [
+            OrderStatus::Pending,
+            OrderStatus::CheckedIn,
+            OrderStatus::Queued,
+            OrderStatus::InService,
+            OrderStatus::QualityCheck,
+            OrderStatus::Ready,
+        ];
+
+        $orders = Order::query()
+            ->with(['vehicle', 'queueEntry', 'items'])
+            ->where('branch_id', $branchId)
+            ->whereDate('created_at', $date)
+            ->whereIn('status', $activeStatuses)
+            ->get()
+            ->sortBy(fn (Order $order) => match ($order->status) {
+                OrderStatus::Ready => 0,
+                OrderStatus::QualityCheck => 1,
+                OrderStatus::InService => 2,
+                OrderStatus::Queued => 3,
+                OrderStatus::CheckedIn => 4,
+                default => 5,
+            })
+            ->values();
+
+        return [
+            'branch_id' => $branchId,
+            'date' => $date->toDateString(),
+            'in_progress_count' => $orders
+                ->filter(fn (Order $order) => ! in_array($order->status, [OrderStatus::Ready, OrderStatus::Pending], true))
+                ->count(),
+            'ready_count' => $orders->where('status', OrderStatus::Ready)->count(),
+            'orders' => $orders,
+        ];
     }
 }
