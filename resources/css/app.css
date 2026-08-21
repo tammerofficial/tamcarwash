@@ -42,6 +42,15 @@
     --color-chart-3: hsl(var(--chart-3));
     --color-chart-4: hsl(var(--chart-4));
     --color-chart-5: hsl(var(--chart-5));
+    --color-inst-teal: var(--inst-teal);
+    --color-inst-primary: var(--inst-primary);
+    --color-inst-aqua: var(--inst-aqua);
+    --color-inst-bg: var(--inst-bg);
+    --color-inst-text: var(--inst-text);
+    --color-inst-muted: var(--inst-muted);
+    --color-inst-border: var(--inst-border);
+    --color-inst-success: var(--inst-success);
+    --color-inst-silver: var(--inst-silver);
 }
 
 :root {
@@ -89,6 +98,17 @@
     --brand-secondary: #0b9dd3;
     --brand-primary-dark: #085f87;
     --brand-icon-dark: #064a6b;
+
+    /* Institutional B2B SaaS marketing palette */
+    --inst-teal: #063F49;
+    --inst-primary: #008C9E;
+    --inst-aqua: #10B8C7;
+    --inst-bg: #F4FAFC;
+    --inst-text: #082F3A;
+    --inst-muted: #607783;
+    --inst-border: #D8E7EC;
+    --inst-success: #14A86B;
+    --inst-silver: #EEF4F6;
 }
 
 .dark {
@@ -425,5 +445,64 @@
         background-color: color-mix(in srgb, var(--brand-primary) 10%, transparent);
         color: var(--brand-icon-dark);
         box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+
+    .inst-btn-primary {
+        background-color: var(--inst-primary) !important;
+        background-image: none !important;
+        color: #ffffff !important;
+    }
+
+    .inst-btn-primary:hover {
+        background-color: #007a8a !important;
+        color: #ffffff !important;
+    }
+
+    .inst-btn-gradient {
+        background-color: var(--inst-primary) !important;
+        background-image: linear-gradient(135deg, var(--inst-teal) 0%, var(--inst-primary) 100%) !important;
+        color: #ffffff !important;
+    }
+
+    .inst-btn-gradient:hover {
+        opacity: 0.94;
+        color: #ffffff !important;
+    }
+
+    .inst-btn-outline {
+        background-color: #ffffff !important;
+        background-image: none !important;
+        border: 1px solid var(--inst-border) !important;
+        color: var(--inst-text) !important;
+    }
+
+    .inst-btn-outline:hover {
+        background-color: var(--inst-bg) !important;
+        border-color: var(--inst-border) !important;
+        color: var(--inst-text) !important;
+    }
+
+    .inst-icon-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--inst-silver);
+        color: var(--inst-teal);
+        border: 1px solid var(--inst-border);
+    }
+
+    .inst-hero-surface {
+        background-color: var(--inst-bg);
+        background-image:
+            linear-gradient(180deg, var(--inst-bg) 0%, #ffffff 78%),
+            linear-gradient(color-mix(in srgb, var(--inst-teal) 7%, transparent) 1px, transparent 1px),
+            linear-gradient(90deg, color-mix(in srgb, var(--inst-teal) 7%, transparent) 1px, transparent 1px);
+        background-size: auto, 40px 40px, 40px 40px;
+    }
+
+    .inst-geo-pattern {
+        background-image:
+            radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--inst-teal) 10%, transparent) 1px, transparent 0);
+        background-size: 26px 26px;
     }
 }

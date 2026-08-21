@@ -1,53 +1,56 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import {
-    ArrowLeft,
-    CheckCircle2,
-    Droplets,
-    Menu,
-    Shield,
-    Sparkles,
-    X,
-} from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { Droplets, Menu, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { INST_GRADIENT_BTN, INST_OUTLINE_BTN } from '@/components/marketing/constants';
 import { t } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { getAppTagline, getPlatformName } from '@/lib/branding';
 
+type NavItem = {
+    name: 'home' | 'features' | 'pricing' | 'vat' | 'contact';
+    path: string;
+    sectionId?: string;
+};
+
+const navItems: NavItem[] = [
+    { name: 'home', path: '/' },
+    { name: 'features', path: '/#features', sectionId: 'features' },
+    { name: 'pricing', path: '/#pricing', sectionId: 'pricing' },
+    { name: 'vat', path: '/#vat', sectionId: 'vat' },
+    { name: 'contact', path: '/#contact', sectionId: 'contact' },
+];
+
 export function PlatformHeader() {
     const platformName = getPlatformName();
     const brand = { name: platformName };
-    const brandTagline = getAppTagline() ?? 'Enterprise SaaS';
+    const brandTagline = getAppTagline() ?? t('marketing.footer.tagline');
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
-    type NavItem = {
-        name: 'features' | 'whyUs' | 'pricing' | 'about';
-        path: string;
-        sectionId?: string;
-    };
-
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
+            setScrolled(window.scrollY > 12);
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const navItems: NavItem[] = [
-        { name: 'features', path: '/#features', sectionId: 'features' },
-        { name: 'whyUs', path: '/why-us' },
-        { name: 'pricing', path: '/pricing' },
-        { name: 'about', path: '/about' },
-    ];
-
     const handleNavClick = (item: NavItem) => {
         setMobileMenuOpen(false);
+
+        if (item.name === 'home') {
+            if (location.pathname === '/') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            navigate('/');
+            return;
+        }
+
         const sectionId = item.sectionId;
         if (sectionId) {
             if (location.pathname === '/') {
@@ -56,90 +59,53 @@ export function PlatformHeader() {
             }
 
             navigate({ pathname: '/', hash: `#${sectionId}` });
-            return;
         }
-
-        navigate(item.path);
     };
 
     const isNavItemActive = (item: NavItem) => {
-        const sectionId = item.sectionId;
-        if (sectionId) {
-            return location.pathname === '/' && location.hash === `#${sectionId}`;
+        if (item.name === 'home') {
+            return location.pathname === '/' && !location.hash;
         }
 
-        return location.pathname === item.path;
+        return location.pathname === '/' && location.hash === `#${item.sectionId}`;
     };
 
     return (
-        <header className="fixed left-0 right-0 top-0 z-50 transition-all duration-300" dir="rtl">
-            {/* Top Bar / Announcement */}
-            <div className="border-b border-brand-secondary/20 bg-brand-primary/5 text-xs font-bold text-brand-primary/80">
-                <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6 lg:px-8">
-                    <div className="flex items-center gap-3">
-                        <span className="flex size-2 rounded-full bg-brand-primary ring-4 ring-brand-primary/20 animate-pulse" />
-                        <span className="font-bold text-brand-primary uppercase tracking-widest text-xs">
-                            نظام إدارة مغاسل السيارات في عُمان
-                        </span>
-                    </div>
-                    <div className="flex items-center gap-3 text-xs">
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-secondary/20 bg-white/80 px-3 py-1 text-brand-primary/70 shadow-sm">
-                            <CheckCircle2 className="size-3.5 text-icon-dark" />
-                            امتثال ضريبي كامل
-                        </span>
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-3 py-1 font-bold text-brand-primary shadow-sm">
-                            <Shield className="size-3.5 text-icon-dark" />
-                            أمان وموثوقية
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Navigation Bar */}
+        <header className="fixed left-0 right-0 top-0 z-50" dir="rtl">
             <div
                 className={cn(
-                    'transition-all duration-500 border-b',
+                    'border-b bg-white transition-shadow',
                     scrolled || location.pathname !== '/'
-                        ? 'border-brand-secondary/20 bg-white/70 py-3 shadow-lg backdrop-blur-md'
-                        : 'border-transparent bg-transparent py-5',
+                        ? 'border-inst-border shadow-sm'
+                        : 'border-inst-border',
                 )}
             >
-                <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-                    {/* Brand Logo */}
-                    <Link to="/" className="group flex items-center gap-4">
-                        <div className="relative flex size-12 items-center justify-center rounded-[1rem] bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-xl shadow-brand-primary/20 transition-all duration-500 group-hover:scale-105 group-hover:shadow-brand-primary/40">
-                            <Droplets className="size-6 text-white transition-transform group-hover:rotate-6" />
-                            <div className="absolute -bottom-1 -right-1 flex size-4 items-center justify-center rounded-full bg-white ring-2 ring-brand-primary/20 shadow-md">
-                                <Sparkles className="size-2.5 text-brand-primary" />
-                            </div>
+                <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-4 sm:px-6 lg:px-8">
+                    <Link to="/" className="flex items-center gap-3">
+                        <div className="flex size-10 items-center justify-center rounded-lg bg-inst-teal text-white">
+                            <Droplets className="size-5" />
                         </div>
                         <div className="flex flex-col text-right">
-                            <div className="flex items-center gap-2">
-                                <span className="text-lg font-black leading-none tracking-tight text-brand-primary uppercase sm:text-xl">
-                                    {platformName}
-                                </span>
-                                <span className="rounded-md bg-brand-primary/10 px-2 py-0.5 text-xs font-bold uppercase tracking-widest text-brand-primary border border-brand-primary/20">
-                                    عُمان
-                                </span>
-                            </div>
-                            <span className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-brand-primary/60 group-hover:text-brand-primary transition-colors">
+                            <span className="text-base font-black leading-none text-inst-text sm:text-lg">
+                                {platformName}
+                            </span>
+                            <span className="mt-1 text-[11px] font-semibold text-inst-muted">
                                 {brandTagline}
                             </span>
                         </div>
                     </Link>
 
-                    {/* Desktop Navigation Links */}
-                    <nav className="hidden items-center gap-2 rounded-2xl border border-brand-secondary/20 bg-white/50 p-1 shadow-sm lg:flex">
+                    <nav className="hidden items-center gap-1 lg:flex">
                         {navItems.map((item) => (
                             <button
                                 key={item.name}
                                 type="button"
                                 onClick={() => handleNavClick(item)}
                                 className={cn(
-                                    'relative rounded-xl px-6 py-2 text-sm font-semibold transition-all duration-300 uppercase tracking-wide',
+                                    'rounded-md px-3 py-2 text-sm font-bold transition-colors',
                                     isNavItemActive(item)
-                                        ? 'bg-white text-brand-primary shadow-sm border border-brand-secondary/20'
-                                        : 'text-brand-primary/80 hover:text-brand-primary hover:bg-brand-primary/5',
+                                        ? 'bg-inst-silver text-inst-teal'
+                                        : 'text-inst-text hover:bg-inst-bg',
                                 )}
                             >
                                 {t(`marketing.nav.${item.name}`, brand)}
@@ -147,29 +113,17 @@ export function PlatformHeader() {
                         ))}
                     </nav>
 
-                    {/* Action Buttons */}
-                    <div className="hidden items-center gap-4 md:flex">
-                        <Button
-                            variant="outline"
-                            className="rounded-xl border-brand-primary/25 !bg-white px-6 text-sm font-semibold text-brand-primary transition-all hover:!bg-brand-primary/5"
-                            asChild
-                        >
+                    <div className="hidden items-center gap-2 md:flex">
+                        <Button variant="outline" className={cn(INST_OUTLINE_BTN, 'h-10 px-4 text-sm')} asChild>
                             <Link to="/login">{t('marketing.nav.login')}</Link>
                         </Button>
-                        <Button
-                            className="group relative overflow-hidden rounded-xl bg-aquatic-gradient px-7 py-6 text-sm font-semibold text-white shadow-xl shadow-brand-primary/20 transition-all duration-500 hover:opacity-90 hover:scale-[1.05] hover:shadow-brand-primary/40"
-                            asChild
-                        >
-                            <Link to="/register">
-                                <span>ابدأ الآن مجاناً</span>
-                                <ArrowLeft className="me-2 size-5 transition-transform group-hover:-translate-x-1.5" />
-                            </Link>
+                        <Button className={cn(INST_GRADIENT_BTN, 'h-10 px-5 text-sm')} asChild>
+                            <Link to="/register">{t('marketing.nav.getStarted')}</Link>
                         </Button>
                     </div>
 
-                    {/* Mobile Menu Button */}
                     <button
-                        className="flex size-10 items-center justify-center rounded-xl border border-brand-secondary/20 bg-white p-2 text-brand-primary/80 shadow-sm transition-colors hover:bg-brand-primary/5 md:hidden"
+                        className="flex size-10 items-center justify-center rounded-lg border border-inst-border bg-white text-inst-text md:hidden"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         aria-label={mobileMenuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
                     >
@@ -178,62 +132,34 @@ export function PlatformHeader() {
                 </div>
             </div>
 
-            {/* Mobile Dropdown Menu */}
             {mobileMenuOpen && (
-                <div className="border-b border-brand-secondary/20 bg-white/95 p-6 shadow-2xl backdrop-blur-xl animate-in slide-in-from-top-3 duration-200 md:hidden">
-                    <div className="mb-4 flex items-center justify-between rounded-2xl border border-brand-primary/15 bg-brand-primary/5 p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white">
-                                <Droplets className="size-5" />
-                            </div>
-                            <div className="text-right">
-                                <p className="text-sm font-black text-brand-primary">{platformName}</p>
-                                <p className="text-[10px] font-bold text-brand-primary/60 uppercase tracking-widest">{brandTagline}</p>
-                            </div>
-                        </div>
-                        <span className="rounded-full bg-brand-primary/10 px-2.5 py-0.5 text-[9px] font-bold text-brand-primary border border-brand-primary/20">
-                            سحابي • عُمان
-                        </span>
-                    </div>
-
-                    <div className="flex flex-col gap-1.5 text-right">
+                <div className="border-b border-inst-border bg-white p-4 shadow-lg md:hidden">
+                    <div className="flex flex-col gap-1">
                         {navItems.map((item) => (
                             <button
                                 key={item.name}
                                 type="button"
                                 onClick={() => handleNavClick(item)}
                                 className={cn(
-                                    'flex items-center justify-between rounded-xl px-4 py-3 text-right text-sm font-semibold transition-colors',
+                                    'rounded-lg px-3 py-2.5 text-right text-sm font-bold',
                                     isNavItemActive(item)
-                                        ? 'bg-brand-primary/10 text-brand-primary'
-                                        : 'text-brand-primary/80 hover:bg-brand-primary/5 hover:text-brand-primary',
+                                        ? 'bg-inst-silver text-inst-teal'
+                                        : 'text-inst-text hover:bg-inst-bg',
                                 )}
                             >
-                                <span>{t(`marketing.nav.${item.name}`, brand)}</span>
-                                {isNavItemActive(item) && <CheckCircle2 className="size-4 text-icon-dark" />}
+                                {t(`marketing.nav.${item.name}`, brand)}
                             </button>
                         ))}
                     </div>
-
-                    <Separator className="my-4 bg-brand-primary/10" />
-
-                    <div className="flex flex-col gap-3">
-                        <Button
-                            variant="outline"
-                            className="h-12 w-full justify-center rounded-xl border-brand-primary/25 !bg-white font-bold text-brand-primary hover:!bg-brand-primary/5"
-                            asChild
-                        >
+                    <div className="mt-4 flex flex-col gap-2">
+                        <Button variant="outline" className={cn(INST_OUTLINE_BTN, 'w-full')} asChild>
                             <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
                                 {t('marketing.nav.login')}
                             </Link>
                         </Button>
-                        <Button
-                            className="h-12 w-full justify-center rounded-xl bg-aquatic-gradient font-bold text-white shadow-lg shadow-brand-primary/20 hover:opacity-90"
-                            asChild
-                        >
+                        <Button className={cn(INST_GRADIENT_BTN, 'w-full')} asChild>
                             <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                                <span>ابدأ الآن مجاناً</span>
-                                <ArrowLeft className="me-2 size-4" />
+                                {t('marketing.nav.getStarted')}
                             </Link>
                         </Button>
                     </div>
