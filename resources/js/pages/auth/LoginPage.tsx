@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
-import { Car, Loader2, ArrowLeft, ShieldCheck, Building2, Lock, User as UserIcon, LogIn, Droplets, Info, ChevronLeft, ClipboardList, Users } from 'lucide-react';
+import { Car, Loader2, ArrowLeft, ShieldCheck, Building2, Lock, User as UserIcon, LogIn, Info, ChevronLeft, ClipboardList, Users } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
 import { appConfig, getActiveTenantSlug } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -124,67 +124,66 @@ export function LoginPage() {
     const features = [
         {
             icon: Car,
-            title: t('auth.feature1Title') || 'إدارة غسيل السيارات',
-            body: t('auth.feature1Body') || 'نظام متكامل لإدارة الطلبات والعملاء والمغاسل.',
+            title: t('auth.feature1Title'),
+            body: t('auth.feature1Body'),
         },
         {
             icon: ClipboardList,
-            title: t('auth.feature2Title') || 'تتبع الطلبات',
-            body: t('auth.feature2Body') || 'متابعة حالة الطلبات من الاستلام حتى التسليم.',
+            title: t('auth.feature2Title'),
+            body: t('auth.feature2Body'),
         },
         {
             icon: Users,
-            title: t('auth.feature3Title') || 'إدارة العملاء',
-            body: t('auth.feature3Body') || 'قاعدة بيانات شاملة للعملاء وتاريخ تعاملاتهم.',
+            title: t('auth.feature3Title'),
+            body: t('auth.feature3Body'),
         },
     ];
 
     return (
-        <section className="min-h-screen bg-muted/30 flex items-center justify-center p-4 sm:p-6 lg:p-8 animate-in fade-in duration-700">
-            <div className="w-full max-w-[1200px] bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-border/40 grid lg:grid-cols-12">
-                
-                {/* 1. Login Form — first in RTL grid = right side */}
-                <main className="lg:col-span-7 bg-muted/5 p-8 sm:p-12 lg:p-20 flex flex-col justify-center order-2 lg:order-1">
-                    <div className="max-w-md mx-auto w-full space-y-10">
-                        {/* Welcome Header */}
-                        <div className="space-y-4 text-center lg:text-start">
-                            <div className="h-16 w-16 rounded-2xl bg-primary/5 text-primary flex items-center justify-center mx-auto lg:mx-0 shadow-sm border border-primary/10">
-                                <LogIn className="h-8 w-8" />
+        <section className="inst-geo-pattern flex min-h-screen items-center justify-center bg-inst-bg p-4 sm:p-6 lg:p-8">
+            <div className="grid w-full max-w-[1120px] overflow-hidden rounded-2xl border border-inst-border bg-white shadow-lg lg:grid-cols-12">
+                <main className="flex flex-col justify-center bg-white p-8 sm:p-12 lg:col-span-7 lg:order-1 lg:p-16 order-2">
+                    <div className="mx-auto w-full max-w-md space-y-8">
+                        <div className="space-y-3 text-center lg:text-start">
+                            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg border border-inst-border bg-inst-silver text-inst-teal lg:mx-0">
+                                <LogIn className="h-6 w-6" />
                             </div>
                             <div>
-                                <h2 className="text-3xl font-black text-foreground leading-none">
-                                    {t('auth.loginHeader') || 'تسجيل الدخول'}
+                                <p className="mb-1 text-[10px] font-bold tracking-[0.16em] text-inst-muted">
+                                    {isLandlord ? t('auth.landlordPortal') : t('app.operationsConsole')}
+                                </p>
+                                <h2 className="text-2xl font-bold leading-tight text-inst-text">
+                                    {t('auth.loginHeader')}
                                 </h2>
-                                <p className="text-muted-foreground font-bold mt-3">
-                                    {t('auth.loginDescription') || 'أهلاً بك مجدداً، يرجى إدخال بياناتك للمتابعة.'}
+                                <p className="mt-2 font-medium text-inst-muted">
+                                    {t('auth.consoleDescription')}
                                 </p>
                             </div>
                         </div>
 
-                        {/* Error Handling */}
                         {error && (
-                            <div className="bg-destructive/5 border border-destructive/20 p-4 rounded-2xl flex items-center gap-3 text-destructive animate-in slide-in-from-top-2 duration-300">
+                            <div className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/5 p-4 text-destructive">
                                 <Info className="h-5 w-5 shrink-0" />
                                 <p className="text-sm font-bold leading-tight">{error}</p>
                             </div>
                         )}
 
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                                 {needsTenantSlug && (
                                     <FormField
                                         control={form.control}
                                         name="tenant_slug"
                                         render={({ field }) => (
-                                            <FormItem className="space-y-3">
-                                                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ps-1">{t('auth.tenantSlug')}</FormLabel>
+                                            <FormItem className="space-y-2">
+                                                <FormLabel className="text-[11px] font-bold tracking-wide text-inst-muted">{t('auth.tenantSlug')}</FormLabel>
                                                 <FormControl>
                                                     <div className="relative group">
-                                                        <Building2 className="absolute start-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/30 group-focus-within:text-primary transition-colors" />
+                                                        <Building2 className="absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2 text-inst-muted group-focus-within:text-inst-primary" />
                                                         <Input
                                                             dir="ltr"
                                                             placeholder="my-wash"
-                                                            className="h-14 ps-12 rounded-2xl border-none bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-primary font-bold text-lg transition-all"
+                                                            className="h-12 rounded-lg border-inst-border bg-inst-silver ps-12 text-base font-semibold focus-visible:ring-inst-primary"
                                                             {...field}
                                                             onChange={(event) => {
                                                                 field.onChange(event.target.value.toLowerCase());
@@ -192,7 +191,7 @@ export function LoginPage() {
                                                         />
                                                     </div>
                                                 </FormControl>
-                                                <p className="text-xs text-muted-foreground ps-1">{t('auth.tenantSlugHint')}</p>
+                                                <p className="text-xs text-inst-muted">{t('auth.tenantSlugHint')}</p>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -203,17 +202,17 @@ export function LoginPage() {
                                     control={form.control}
                                     name="email"
                                     render={({ field }) => (
-                                        <FormItem className="space-y-3">
-                                            <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ps-1">{t('auth.email')}</FormLabel>
+                                        <FormItem className="space-y-2">
+                                            <FormLabel className="text-[11px] font-bold tracking-wide text-inst-muted">{t('auth.email')}</FormLabel>
                                             <FormControl>
                                                 <div className="relative group">
-                                                    <UserIcon className="absolute start-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/30 group-focus-within:text-primary transition-colors" />
-                                                    <Input 
-                                                        type="email" 
-                                                        autoComplete="email" 
-                                                        dir="ltr" 
-                                                        className="h-14 ps-12 rounded-2xl border-none bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-primary font-bold text-lg transition-all"
-                                                        {...field} 
+                                                    <UserIcon className="absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2 text-inst-muted group-focus-within:text-inst-primary" />
+                                                    <Input
+                                                        type="email"
+                                                        autoComplete="email"
+                                                        dir="ltr"
+                                                        className="h-12 rounded-lg border-inst-border bg-inst-silver ps-12 text-base font-semibold focus-visible:ring-inst-primary"
+                                                        {...field}
                                                     />
                                                 </div>
                                             </FormControl>
@@ -226,17 +225,17 @@ export function LoginPage() {
                                     control={form.control}
                                     name="password"
                                     render={({ field }) => (
-                                        <FormItem className="space-y-3">
-                                            <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ps-1">{t('auth.password')}</FormLabel>
+                                        <FormItem className="space-y-2">
+                                            <FormLabel className="text-[11px] font-bold tracking-wide text-inst-muted">{t('auth.password')}</FormLabel>
                                             <FormControl>
                                                 <div className="relative group">
-                                                    <Lock className="absolute start-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/30 group-focus-within:text-primary transition-colors" />
-                                                    <Input 
-                                                        type="password" 
-                                                        autoComplete="current-password" 
-                                                        dir="ltr" 
-                                                        className="h-14 ps-12 rounded-2xl border-none bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-primary font-bold text-lg transition-all"
-                                                        {...field} 
+                                                    <Lock className="absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2 text-inst-muted group-focus-within:text-inst-primary" />
+                                                    <Input
+                                                        type="password"
+                                                        autoComplete="current-password"
+                                                        dir="ltr"
+                                                        className="h-12 rounded-lg border-inst-border bg-inst-silver ps-12 text-base font-semibold focus-visible:ring-inst-primary"
+                                                        {...field}
                                                     />
                                                 </div>
                                             </FormControl>
@@ -245,59 +244,54 @@ export function LoginPage() {
                                     )}
                                 />
 
-                                <div className="flex items-center justify-between gap-4 ps-1">
-                                    <FormField
-                                        control={form.control}
-                                        name="remember"
-                                        render={({ field }) => (
-                                            <FormItem className="flex items-center gap-3 space-y-0 cursor-pointer group">
-                                                <FormControl>
-                                                    <Checkbox
-                                                        checked={field.value}
-                                                        onCheckedChange={(checked) => field.onChange(checked === true)}
-                                                        className="h-5 w-5 rounded-lg border-2 border-muted-foreground/20 bg-white data-[state=checked]:bg-primary data-[state=checked]:border-primary transition-all"
-                                                    />
-                                                </FormControl>
-                                                <FormLabel className="!mt-0 text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors cursor-pointer">{t('auth.remember')}</FormLabel>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
+                                <FormField
+                                    control={form.control}
+                                    name="remember"
+                                    render={({ field }) => (
+                                        <FormItem className="flex items-center gap-3 space-y-0">
+                                            <FormControl>
+                                                <Checkbox
+                                                    checked={field.value}
+                                                    onCheckedChange={(checked) => field.onChange(checked === true)}
+                                                    className="h-5 w-5 rounded-md border-inst-border bg-white data-[state=checked]:border-inst-primary data-[state=checked]:bg-inst-primary"
+                                                />
+                                            </FormControl>
+                                            <FormLabel className="!mt-0 cursor-pointer text-xs font-bold text-inst-muted">{t('auth.remember')}</FormLabel>
+                                        </FormItem>
+                                    )}
+                                />
 
-                                <div className="pt-2">
-                                    <Button 
-                                        type="submit" 
-                                        size="lg"
-                                        className="h-16 w-full rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 transition-all transform hover:-translate-y-1 active:translate-y-0"
-                                        disabled={isSubmitting}
-                                    >
-                                        {isSubmitting && !quickLoginRole ? (
-                                            <div className="flex items-center gap-3">
-                                                <Loader2 className="h-6 w-6 animate-spin" />
-                                                {t('auth.loggingIn')}
-                                            </div>
-                                        ) : (
-                                            <div className="flex items-center gap-3">
-                                                {t('auth.submit')}
-                                                <ArrowLeft className="h-5 w-5" />
-                                            </div>
-                                        )}
-                                    </Button>
-                                </div>
+                                <Button
+                                    type="submit"
+                                    size="lg"
+                                    className="h-12 w-full rounded-lg bg-inst-primary text-base font-bold text-white hover:bg-inst-teal"
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting && !quickLoginRole ? (
+                                        <span className="flex items-center gap-3">
+                                            <Loader2 className="h-5 w-5 animate-spin" />
+                                            {t('auth.loggingIn')}
+                                        </span>
+                                    ) : (
+                                        <span className="flex items-center gap-3">
+                                            {t('auth.submit')}
+                                            <ArrowLeft className="h-4 w-4" />
+                                        </span>
+                                    )}
+                                </Button>
                             </form>
                         </Form>
 
-                        {/* Quick Login for Demo/Dev */}
                         {showQuickLogin && (
-                            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
+                            <div className="space-y-5">
                                 <div className="relative flex items-center justify-center">
-                                    <Separator className="bg-border/60" />
-                                    <span className="absolute bg-white px-4 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                                    <Separator className="bg-inst-border" />
+                                    <span className="absolute bg-white px-3 text-[10px] font-bold tracking-[0.16em] text-inst-muted">
                                         {t('auth.quickLogin.title')}
                                     </span>
                                 </div>
 
-                                <div className="grid gap-3 sm:grid-cols-2">
+                                <div className="grid gap-2 sm:grid-cols-2">
                                     {DEMO_ROLE_CREDENTIALS.map(({ role, email, password, labelKey, icon: Icon }) => {
                                         const isLoading = quickLoginRole === role;
 
@@ -306,23 +300,23 @@ export function LoginPage() {
                                                 key={role}
                                                 type="button"
                                                 variant="outline"
-                                                className="h-14 rounded-xl border-border/60 bg-white/50 hover:bg-white hover:border-primary/30 justify-between px-4 group transition-all"
+                                                className="h-12 justify-between rounded-lg border-inst-border bg-white px-3 hover:bg-inst-silver"
                                                 disabled={isSubmitting}
                                                 onClick={() => handleQuickLogin(email, password, role)}
                                             >
                                                 <div className="flex items-center gap-3">
-                                                    <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                                                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-inst-teal text-white">
                                                         <Icon className="h-4 w-4" />
                                                     </div>
                                                     <div className="text-start">
-                                                        <p className="text-xs font-black text-foreground leading-none">{t(labelKey)}</p>
-                                                        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mt-1">{t('auth.quickLogin.hint')}</p>
+                                                        <p className="text-xs font-bold leading-none text-inst-text">{t(labelKey)}</p>
+                                                        <p className="mt-1 text-[9px] font-semibold tracking-wide text-inst-muted">{t('auth.quickLogin.hint')}</p>
                                                     </div>
                                                 </div>
                                                 {isLoading ? (
-                                                    <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                                                    <Loader2 className="h-3 w-3 animate-spin text-inst-primary" />
                                                 ) : (
-                                                    <ChevronLeft className="h-4 w-4 text-muted-foreground/30 group-hover:text-primary" />
+                                                    <ChevronLeft className="h-4 w-4 text-inst-muted" />
                                                 )}
                                             </Button>
                                         );
@@ -330,11 +324,11 @@ export function LoginPage() {
                                 </div>
 
                                 {showLandlordQuickLogin && (
-                                    <div className="space-y-3 pt-2">
-                                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground text-center">
+                                    <div className="space-y-3 pt-1">
+                                        <p className="text-center text-[10px] font-bold tracking-[0.16em] text-inst-muted">
                                             {t('landlord.quickLogin.title')}
                                         </p>
-                                        <div className="grid gap-3">
+                                        <div className="grid gap-2">
                                             {DEMO_LANDLORD_CREDENTIALS.map(({ role, email, password, labelKey, icon: Icon }) => {
                                                 const isLoading = quickLoginRole === role;
 
@@ -343,25 +337,25 @@ export function LoginPage() {
                                                         key={role}
                                                         type="button"
                                                         variant="outline"
-                                                        className="h-14 rounded-xl border-border/60 bg-white/50 hover:bg-white hover:border-primary/30 justify-between px-4 group transition-all"
+                                                        className="h-12 justify-between rounded-lg border-inst-border bg-white px-3 hover:bg-inst-silver"
                                                         disabled={isSubmitting}
                                                         onClick={() => handleLandlordQuickLogin(email, password, role)}
                                                     >
                                                         <div className="flex items-center gap-3">
-                                                            <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                                                            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-inst-teal text-white">
                                                                 <Icon className="h-4 w-4" />
                                                             </div>
                                                             <div className="text-start">
-                                                                <p className="text-xs font-black text-foreground leading-none">{t(labelKey)}</p>
-                                                                <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mt-1">
+                                                                <p className="text-xs font-bold leading-none text-inst-text">{t(labelKey)}</p>
+                                                                <p className="mt-1 text-[9px] font-semibold tracking-wide text-inst-muted">
                                                                     {t('landlord.quickLogin.hint')}
                                                                 </p>
                                                             </div>
                                                         </div>
                                                         {isLoading ? (
-                                                            <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                                                            <Loader2 className="h-3 w-3 animate-spin text-inst-primary" />
                                                         ) : (
-                                                            <ChevronLeft className="h-4 w-4 text-muted-foreground/30 group-hover:text-primary" />
+                                                            <ChevronLeft className="h-4 w-4 text-inst-muted" />
                                                         )}
                                                     </Button>
                                                 );
@@ -374,43 +368,36 @@ export function LoginPage() {
                     </div>
                 </main>
 
-                {/* 2. Branding panel — second in RTL grid = left side */}
-                <aside className="lg:col-span-5 relative overflow-hidden bg-primary text-primary-foreground p-8 sm:p-12 flex flex-col justify-between min-h-[400px] lg:min-h-[700px] order-1 lg:order-2">
-                    {/* Background Decorations */}
-                    <div className="absolute inset-0 pointer-events-none opacity-5">
-                        <Car className="absolute -top-10 -start-10 h-64 w-64 rotate-12" />
-                        <Droplets className="absolute -bottom-20 end-20 h-96 w-96 -rotate-12" />
-                        <Car className="absolute top-1/2 start-1/3 h-48 w-48 opacity-50" />
-                    </div>
+                <aside className="relative flex min-h-[320px] flex-col justify-between overflow-hidden bg-inst-teal p-8 text-white sm:p-12 lg:col-span-5 lg:order-2 lg:min-h-[680px] order-1">
+                    <div className="inst-geo-pattern pointer-events-none absolute inset-0 opacity-20" />
 
-                    <div className="relative z-10 space-y-10">
-                        <div className="space-y-6">
-                            <div className="bg-white p-4 rounded-3xl inline-block shadow-xl">
-                                <Car className="h-10 w-10 text-primary" />
+                    <div className="relative z-10 space-y-8">
+                        <div className="space-y-5">
+                            <div className="inline-flex rounded-lg bg-white p-3">
+                                <Car className="h-8 w-8 text-inst-teal" />
                             </div>
                             <div className="space-y-2">
-                                <Badge className="bg-white/20 text-white border-none px-4 py-1 rounded-full font-black text-[10px] uppercase tracking-widest">
-                                    {isLandlord ? t('auth.landlordPortal') || 'بوابة الإدارة المركزية' : t('auth.tenantPortal') || 'بوابة المشتركين'}
+                                <Badge className="rounded-md border-0 bg-white/15 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-white">
+                                    {isLandlord ? t('auth.landlordPortal') : t('auth.tenantPortal')}
                                 </Badge>
-                                <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-tight mt-4">
-                                    {t('auth.loginTitle')}
+                                <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+                                    {t('auth.consoleLogin')}
                                 </h1>
                             </div>
-                            <p className="text-white/60 text-lg leading-relaxed max-w-sm font-medium">
+                            <p className="max-w-sm text-base font-medium leading-relaxed text-white/70">
                                 {isLandlord ? t('auth.landlordLogin') : t('auth.tenantLogin')}
                             </p>
                         </div>
 
-                        {/* Value Props / Features */}
-                        <div className="space-y-4">
-                            {features.map((feature, i) => (
-                                <div key={i} className="flex items-center gap-4 group">
-                                    <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center text-white group-hover:bg-white group-hover:text-primary transition-all duration-300">
+                        <div className="space-y-3">
+                            {features.map((feature) => (
+                                <div key={feature.title} className="flex items-center gap-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-white">
                                         <feature.icon className="h-5 w-5" />
                                     </div>
                                     <div className="text-start">
-                                        <p className="font-black text-sm">{feature.title}</p>
-                                        <p className="text-xs text-white/40 font-bold">{feature.body}</p>
+                                        <p className="text-sm font-bold">{feature.title}</p>
+                                        <p className="text-xs font-medium text-white/55">{feature.body}</p>
                                     </div>
                                 </div>
                             ))}
@@ -418,15 +405,13 @@ export function LoginPage() {
                     </div>
 
                     <div className="relative z-10">
-                        <div className="p-6 rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur-md">
-                            <div className="flex items-center gap-4">
-                                <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white">
-                                    <ShieldCheck className="h-5 w-5" />
-                                </div>
-                                <p className="text-xs text-white/60 font-bold leading-relaxed text-start">
-                                    {t('auth.officialNotice') || 'نظام آمن ومشفر لحماية بياناتك ومعاملاتك المالية.'}
-                                </p>
+                        <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/15 text-white">
+                                <ShieldCheck className="h-5 w-5" />
                             </div>
+                            <p className="text-start text-xs font-semibold leading-relaxed text-white/70">
+                                {t('auth.officialNotice')}
+                            </p>
                         </div>
                     </div>
                 </aside>

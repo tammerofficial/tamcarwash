@@ -80,7 +80,7 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
     }, [location.pathname, closeMobileNav]);
 
     return (
-        <div className="flex min-h-screen bg-muted/30 overflow-hidden" dir="rtl">
+        <div className="admin-console flex min-h-screen overflow-hidden" dir="rtl">
             {/* Sidebar Overlay for Mobile */}
             {mobileNavOpen && (
                 <div 

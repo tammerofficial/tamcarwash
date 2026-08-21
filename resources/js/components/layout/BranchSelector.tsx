@@ -8,7 +8,7 @@ export function BranchSelector() {
     const { branches, selectedBranchId, setSelectedBranchId, isLoading } = useBranch();
 
     if (isLoading) {
-        return <Skeleton className="h-10 w-48" />;
+        return <Skeleton className="h-10 w-48 rounded-lg" />;
     }
 
     return (
@@ -16,13 +16,13 @@ export function BranchSelector() {
             value={selectedBranchId ? String(selectedBranchId) : undefined}
             onValueChange={(value) => setSelectedBranchId(Number(value))}
         >
-            <SelectTrigger className="w-56 h-11 rounded-xl border-border/60 bg-white font-bold transition-all hover:bg-muted/30">
+            <SelectTrigger className="h-10 w-56 rounded-lg border-inst-border bg-white font-bold text-inst-text hover:bg-inst-silver">
                 <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4 text-primary" />
+                    <Building2 className="h-4 w-4 text-inst-primary" />
                     <SelectValue placeholder={t('common.branch')} />
                 </div>
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="border-inst-border">
                 {branches.map((branch) => (
                     <SelectItem key={branch.id} value={String(branch.id)}>
                         {branch.name}

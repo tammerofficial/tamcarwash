@@ -88,10 +88,13 @@
     --sidebar-border: 217 33% 17%;
     --sidebar-ring: 199 89% 48%;
 
-    /* Design Tokens for Admin Shell */
-    --admin-sidebar-bg: 222 47% 11%;
-    --admin-sidebar-active: 180 100% 15%;
-    --admin-sidebar-active-foreground: 0 0% 100%;
+    /* Design Tokens for Admin Shell — institutional chrome, brand-aware */
+    --admin-sidebar-bg: var(--inst-teal);
+    --admin-sidebar-active: var(--brand-primary);
+    --admin-sidebar-active-foreground: #ffffff;
+    --dash-chrome: var(--inst-teal);
+    --dash-accent: var(--brand-primary);
+    --dash-aqua: var(--brand-secondary, var(--inst-aqua));
 
     /* Tenant storefront branding (homepage/marketing) - Daytime Aquatic */
     --brand-primary: #0b81b7;
@@ -171,10 +174,97 @@
 }
 
 @layer utilities {
-    /* ── Admin sidebar ── */
+    /* ── Operations console chrome ── */
+    .admin-console {
+        background-color: var(--inst-bg);
+        color: var(--inst-text);
+    }
+
+    .admin-console-main {
+        background-color: var(--inst-bg);
+    }
+
+    .admin-console-footer {
+        background-color: var(--inst-silver);
+        border-top: 1px solid var(--inst-border);
+        color: var(--inst-muted);
+    }
+
+    .admin-header {
+        position: relative;
+        background-color: #ffffff;
+        border-bottom: 1px solid var(--inst-border);
+        box-shadow: 0 1px 0 color-mix(in srgb, var(--inst-teal) 5%, transparent);
+    }
+
+    .admin-header::before {
+        content: '';
+        position: absolute;
+        inset-inline: 0;
+        top: 0;
+        height: 3px;
+        background: linear-gradient(
+            90deg,
+            var(--inst-teal) 0%,
+            var(--brand-primary) 52%,
+            var(--inst-aqua) 100%
+        );
+    }
+
+    .admin-page-header {
+        border-bottom: 1px solid var(--inst-border);
+        padding-bottom: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .admin-page-kicker {
+        color: var(--inst-muted);
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        margin-bottom: 0.35rem;
+    }
+
+    .admin-stat-card {
+        background: #ffffff;
+        border: 1px solid var(--inst-border);
+        border-inline-start: 4px solid var(--brand-primary);
+        box-shadow: 0 1px 2px color-mix(in srgb, var(--inst-teal) 7%, transparent);
+    }
+
+    .admin-panel {
+        background: #ffffff;
+        border: 1px solid var(--inst-border);
+        box-shadow: 0 1px 2px color-mix(in srgb, var(--inst-teal) 6%, transparent);
+    }
+
+    .admin-table-card {
+        background: #ffffff;
+        border: 1px solid var(--inst-border);
+        overflow: hidden;
+        box-shadow: 0 1px 2px color-mix(in srgb, var(--inst-teal) 6%, transparent);
+    }
+
+    .admin-table-card thead {
+        background-color: var(--inst-silver);
+    }
+
+    .admin-table-toolbar {
+        background-color: var(--inst-silver);
+        border-bottom: 1px solid var(--inst-border);
+    }
+
+    /* ── Admin sidebar — deep institutional teal ── */
     .admin-sidebar {
-        @apply sticky top-0 z-20 overflow-hidden h-screen bg-[#0f172a] text-white;
-        background-image: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        @apply sticky top-0 z-20 overflow-hidden h-screen text-white;
+        background-color: var(--inst-teal);
+        background-image: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--inst-teal) 72%, var(--brand-primary)) 0%,
+            var(--inst-teal) 38%,
+            color-mix(in srgb, var(--inst-teal) 86%, #000000) 100%
+        );
+        border-inline-start: 1px solid color-mix(in srgb, #ffffff 8%, transparent);
     }
 
     .admin-sidebar--collapsed {
@@ -191,52 +281,70 @@
     }
 
     .admin-sidebar-nav-item {
-        @apply text-[0.9375rem] font-bold leading-tight;
+        @apply text-[0.875rem] font-semibold leading-tight;
     }
 
     .admin-sidebar-nav-item--active {
-        @apply bg-primary text-primary-foreground shadow-lg scale-[1.02];
-        background-image: linear-gradient(270deg, hsl(var(--primary)) 0%, var(--brand-secondary) 100%);
+        background-color: var(--brand-primary);
+        background-image: none;
+        color: #ffffff;
+        box-shadow: none;
+        position: relative;
+    }
+
+    .admin-sidebar-nav-item--active::before {
+        content: '';
+        position: absolute;
+        top: 7px;
+        bottom: 7px;
+        right: 0;
+        width: 3px;
+        border-radius: 999px 0 0 999px;
+        background: var(--inst-aqua);
     }
 
     .admin-sidebar-nav-item--inactive {
-        @apply bg-transparent text-white/70;
+        background-color: transparent;
+        color: color-mix(in srgb, #ffffff 72%, transparent);
     }
 
     .admin-sidebar-nav-item--inactive:hover {
-        @apply bg-white/10 text-white;
+        background-color: color-mix(in srgb, #ffffff 10%, transparent);
+        color: #ffffff;
     }
 
     .admin-sidebar-brand {
-        @apply relative z-30 flex-shrink-0 p-6 pt-8;
+        @apply relative z-30 flex-shrink-0 p-5 pt-7;
+        border-bottom: 1px solid color-mix(in srgb, #ffffff 10%, transparent);
     }
 
     .admin-sidebar-brand--compact {
-        @apply p-4 pt-8;
+        @apply p-3 pt-7;
     }
 
     .admin-sidebar-brand-title {
-        @apply text-xl font-black tracking-tight text-center text-white;
+        @apply text-lg font-bold tracking-tight text-center text-white;
     }
 
     .admin-sidebar-brand-subtitle {
-        @apply text-[11px] font-bold text-white/40 uppercase tracking-[0.2em] text-center;
+        @apply text-[11px] font-semibold text-white/55 tracking-wide text-center;
     }
 
     .admin-sidebar-brand-sultanate {
-        @apply text-[10px] font-black text-white/30 uppercase tracking-[0.2em] text-center;
+        @apply text-[10px] font-semibold text-white/35 tracking-[0.16em] text-center;
     }
 
     .admin-sidebar-section-label {
-        @apply text-xs font-black uppercase tracking-widest text-white/40 mb-2 px-3 text-right;
+        @apply text-[10px] font-bold tracking-[0.16em] mb-1.5 px-2.5 text-right;
+        color: color-mix(in srgb, var(--inst-aqua) 70%, #ffffff);
     }
 
     .admin-sidebar-footer-note {
-        @apply text-[11px] font-bold leading-relaxed text-white/50;
+        @apply text-[11px] font-medium leading-relaxed text-white/55;
     }
 
     .admin-sidebar-mobile-backdrop {
-        @apply bg-black/50 backdrop-blur-sm;
+        @apply bg-black/50;
     }
 
     .bg-brand-primary {

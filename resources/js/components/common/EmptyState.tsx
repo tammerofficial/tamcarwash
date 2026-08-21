@@ -23,23 +23,23 @@ export function EmptyState({
     className,
 }: EmptyStateProps) {
     return (
-        <div className={cn('flex flex-col items-center justify-center py-12 text-center', className)}>
-            <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-border bg-muted/30 text-muted-foreground/40">
-                <Icon className="h-10 w-10" />
+        <div className={cn('flex flex-col items-center justify-center px-4 py-10 text-center', className)}>
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg border border-inst-border bg-inst-silver text-inst-teal">
+                <Icon className="h-5 w-5" />
             </div>
-            <p className="text-sm font-bold text-muted-foreground">{title}</p>
+            <p className="text-sm font-bold text-inst-text">{title}</p>
             {description && (
-                <p className="mt-1 max-w-sm text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                <p className="mt-1 max-w-sm text-xs font-medium text-inst-muted">
                     {description}
                 </p>
             )}
             {actionLabel && actionTo && (
-                <Button asChild size="sm" className="mt-6 rounded-xl font-bold">
+                <Button asChild size="sm" className="mt-4 rounded-lg bg-inst-primary font-bold text-white hover:bg-inst-teal">
                     <Link to={actionTo}>{actionLabel}</Link>
                 </Button>
             )}
             {actionLabel && onAction && !actionTo && (
-                <Button size="sm" className="mt-6 rounded-xl font-bold" onClick={onAction}>
+                <Button size="sm" className="mt-4 rounded-lg bg-inst-primary font-bold text-white hover:bg-inst-teal" onClick={onAction}>
                     {actionLabel}
                 </Button>
             )}

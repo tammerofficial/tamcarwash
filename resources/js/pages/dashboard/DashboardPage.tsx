@@ -1,21 +1,17 @@
 import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
-import { 
-    CalendarDays, 
-    ClipboardList, 
-    Crown, 
-    DollarSign, 
-    Sparkles, 
-    Users, 
-    Activity, 
-    PlusCircle, 
-    Car, 
-    Droplets, 
-    ListOrdered, 
-    Search, 
-    Filter, 
-    ArrowUpRight, 
-    ChevronRight, 
-    LayoutGrid 
+import {
+    CalendarDays,
+    ClipboardList,
+    Crown,
+    Banknote,
+    Users,
+    Activity,
+    Car,
+    Droplets,
+    ListOrdered,
+    LayoutDashboard,
+    ChevronLeft,
+    AlertCircle,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
@@ -32,16 +28,19 @@ import {
 import { api, endpoints } from '@/lib/api';
 import { useAuth } from '@/providers/AuthProvider';
 import { useBranchQueryParams } from '@/providers/BranchProvider';
+import { usePlanFeatures } from '@/hooks/usePlanFeatures';
 import { StatsCard } from '@/components/common/StatsCard';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getAppTagline } from '@/lib/branding';
+import { PageHeader } from '@/components/common/PageHeader';
 import { t } from '@/lib/i18n';
 import type { ApiResponse, DashboardStats } from '@/types/api';
 import { formatCurrency, cn, formatNumber } from '@/lib/utils';
+import type { PlanFeatureKey } from '@/lib/plan-features';
+import type { LucideIcon } from 'lucide-react';
 
 const PLAN_DISPLAY_NAMES: Record<string, string> = {
     starter: 'Starter',
@@ -60,11 +59,11 @@ function formatPlanLabel(slug?: string, name?: string): string {
 function formatSubscriptionStatus(status?: string): string {
     switch (status) {
         case 'trial':
-            return t('dashboard.subscriptionStatusTrial') || 'تجريبي';
+            return t('dashboard.subscriptionStatusTrial');
         case 'active':
-            return t('dashboard.subscriptionStatusActive') || 'نشط';
+            return t('dashboard.subscriptionStatusActive');
         default:
-            return t('dashboard.subscriptionStatusInactive') || 'غير نشط';
+            return t('dashboard.subscriptionStatusInactive');
     }
 }
 
@@ -80,9 +79,28 @@ function formatDate(iso?: string | null): string {
     });
 }
 
+function todayLabel(): string {
+    return new Date().toLocaleDateString('ar-OM', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+}
+
+const chartTooltipStyle = {
+    borderRadius: '0.75rem',
+    border: '1px solid var(--inst-border)',
+    background: '#ffffff',
+    boxShadow: '0 8px 20px color-mix(in srgb, var(--inst-teal) 10%, transparent)',
+    padding: '0.75rem 1rem',
+    color: 'var(--inst-text)',
+};
+
 export function DashboardPage() {
     const { isAuthenticated, isLoading: authLoading, isLandlord } = useAuth();
     const branchParams = useBranchQueryParams();
+    const { hasFeature } = usePlanFeatures();
 
     const { data, isLoading, isError } = useAuthenticatedQuery({
         queryKey: ['dashboard', branchParams],
@@ -110,233 +128,216 @@ export function DashboardPage() {
     const maxBranches = plan?.limits.max_branches;
     const branchUsage = plan?.usage.branches ?? 0;
 
+    const allShortcuts: Array<{
+        to: string;
+        label: string;
+        icon: LucideIcon;
+        feature: PlanFeatureKey;
+        primary?: boolean;
+    }> = [
+        { to: '/cashier', label: t('dashboard.openCashier'), icon: Banknote, feature: 'cashier', primary: true },
+        { to: '/orders/create', label: t('dashboard.newOrder'), icon: ClipboardList, feature: 'orders' },
+        { to: '/queue', label: t('dashboard.openQueue'), icon: ListOrdered, feature: 'queue' },
+        { to: '/booking', label: t('dashboard.openBookings'), icon: CalendarDays, feature: 'bookings' },
+    ];
+    const shortcuts = allShortcuts.filter((item) => hasFeature(item.feature));
+
     return (
-        <div className="space-y-10 animate-in fade-in duration-700">
-            {/* Enhanced Header Section */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-border/10 pb-8">
-                <div>
-                    <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="outline" className="rounded-lg border-primary/20 bg-primary/5 text-primary font-black px-3 py-0.5 text-[10px] uppercase tracking-widest">
-                            <Activity className="h-3 w-3 me-1.5" />
-                            {t('dashboard.realtimeStats')}
-                        </Badge>
+        <div className="space-y-5">
+            <PageHeader
+                kicker={t('dashboard.liveOps')}
+                title={t('dashboard.commandCenter')}
+                description={`${t('dashboard.commandSubtitle')} · ${todayLabel()}`}
+                actions={
+                    <div className="flex flex-wrap items-center gap-2">
+                        {plan && (
+                            <Badge className="rounded-md border border-inst-border bg-inst-silver px-3 py-1.5 text-[11px] font-bold text-inst-teal">
+                                {t('dashboard.plan')}: {formatPlanLabel(plan.plan_slug, plan.plan_name)}
+                            </Badge>
+                        )}
+                        {shortcuts.map((item) => (
+                            <Button
+                                key={item.to}
+                                asChild
+                                className={cn(
+                                    'h-10 rounded-lg font-bold',
+                                    item.primary
+                                        ? 'bg-inst-primary text-white hover:bg-inst-teal'
+                                        : 'border-inst-border bg-white text-inst-text hover:bg-inst-silver',
+                                )}
+                                variant={item.primary ? 'default' : 'outline'}
+                            >
+                                <Link to={item.to}>
+                                    <item.icon className="h-4 w-4" />
+                                    {item.label}
+                                </Link>
+                            </Button>
+                        ))}
                     </div>
-                    <h1 className="text-4xl font-black text-foreground tracking-tight mb-2">{t('dashboard.title')}</h1>
-                    <p className="text-muted-foreground font-bold flex items-center gap-2">
-                        {getAppTagline() ?? t('app.tagline')}
-                    </p>
-                </div>
-                
-                <div className="flex flex-wrap items-center gap-3">
-                    {plan && (
-                        <Badge variant="secondary" className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl text-primary bg-primary/5 border border-primary/10 font-bold shadow-sm">
-                            <Sparkles className="size-4" />
-                            <span className="text-[11px] uppercase tracking-wider">{t('dashboard.plan')}:</span>
-                            <span className="text-sm">{formatPlanLabel(plan.plan_slug, plan.plan_name)}</span>
-                        </Badge>
-                    )}
-                    <div className="relative group hidden sm:block">
-                        <Search className="absolute inset-y-0 start-3 my-auto h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                        <input 
-                            type="text" 
-                            placeholder={t('common.search') || 'بحث سريع...'}
-                            className="h-11 w-64 rounded-xl border border-border/40 bg-white ps-10 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all outline-none shadow-sm" 
-                        />
-                    </div>
-                    <Button variant="outline" className="h-11 px-5 rounded-xl border-border/60 font-bold hover:bg-muted/30 shadow-sm bg-white">
-                        <Filter className="me-2 h-4 w-4" />
-                        {t('common.filter') || 'تصفية'}
-                    </Button>
-                </div>
-            </div>
+                }
+            />
 
             {isError && (
-                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 flex items-center gap-3 animate-in slide-in-from-top-4 duration-500">
-                    <Activity className="h-5 w-5 text-amber-500" />
+                <div className="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900">
+                    <AlertCircle className="h-5 w-5 shrink-0 text-amber-600" />
                     {t('dashboard.error')}
                 </div>
             )}
 
             {plan && (
-                <Card className="rounded-[2.5rem] border border-primary/10 bg-gradient-to-br from-primary/[0.03] via-white to-white overflow-hidden shadow-xl shadow-primary/5">
-                    <CardHeader className="p-8 pb-4">
-                        <div className="flex flex-wrap items-center justify-between gap-3">
-                            <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                    <Sparkles className="size-5" />
-                                </div>
-                                <CardTitle className="text-xl font-black">{t('dashboard.subscriptionTitle')}</CardTitle>
+                <div className="admin-panel overflow-hidden rounded-xl">
+                    <div className="flex flex-col gap-4 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+                            <div>
+                                <p className="text-[10px] font-bold tracking-[0.14em] text-inst-muted">{t('dashboard.currentPlan')}</p>
+                                <p className="mt-0.5 text-base font-bold text-inst-text">{formatPlanLabel(plan.plan_slug, plan.plan_name)}</p>
                             </div>
-                            <Badge variant={plan.subscription_status === 'trial' ? 'outline' : 'default'} className={cn(
-                                "rounded-lg px-4 py-1.5 font-black uppercase tracking-widest text-[10px]",
-                                plan.subscription_status === 'active' ? "bg-primary text-white" : "border-primary/20 text-primary"
-                            )}>
-                                {formatSubscriptionStatus(plan.subscription_status)}
-                            </Badge>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="p-8 pt-4">
-                        <div className="grid gap-8 sm:grid-cols-3">
-                            <div className="space-y-1">
-                                <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground opacity-60">{t('dashboard.currentPlan')}</p>
-                                <p className="text-2xl font-black text-foreground">{formatPlanLabel(plan.plan_slug, plan.plan_name)}</p>
+                            <div className="hidden h-8 w-px bg-inst-border sm:block" />
+                            <div>
+                                <p className="text-[10px] font-bold tracking-[0.14em] text-inst-muted">{t('dashboard.subscriptionEnds')}</p>
+                                <p className="mt-0.5 text-base font-bold text-inst-text">{formatDate(plan.subscription_ends_at)}</p>
                             </div>
-                            <div className="space-y-1 border-s border-border/40 ps-8">
-                                <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground opacity-60">{t('dashboard.subscriptionEnds')}</p>
-                                <p className="text-2xl font-black text-foreground">{formatDate(plan.subscription_ends_at)}</p>
-                            </div>
-                            <div className="space-y-1 border-s border-border/40 ps-8">
-                                <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground opacity-60">{t('dashboard.daysRemaining')}</p>
-                                <div className="flex items-center gap-2">
-                                    <p className="text-2xl font-black text-primary">{plan.days_remaining ?? 0}</p>
-                                    <p className="text-xs font-bold text-muted-foreground">{t('dashboard.days')}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {maxBranches !== null && (
-                            <div className="mt-8 flex items-center gap-4">
-                                <div className="flex-1 h-3 rounded-full bg-muted/50 overflow-hidden p-0.5 border border-border/20">
-                                    <div 
-                                        className="h-full bg-primary rounded-full transition-all duration-1000 shadow-sm" 
-                                        style={{ width: `${(branchUsage / (maxBranches || 1)) * 100}%` }}
-                                    />
-                                </div>
-                                <p className="text-[10px] font-black text-muted-foreground whitespace-nowrap uppercase tracking-widest">
-                                    {t('dashboard.branchLimit') || 'استهلاك الفروع'}: {branchUsage} / {maxBranches}
+                            <div className="hidden h-8 w-px bg-inst-border sm:block" />
+                            <div>
+                                <p className="text-[10px] font-bold tracking-[0.14em] text-inst-muted">{t('dashboard.daysRemaining')}</p>
+                                <p className="mt-0.5 text-base font-bold text-inst-primary">
+                                    {plan.days_remaining ?? 0} {t('dashboard.days')}
                                 </p>
                             </div>
-                        )}
-
-                        {isStarter && (
-                            <div className="mt-10 flex flex-wrap items-center justify-between gap-6 rounded-[2.25rem] border border-dashed border-primary/30 bg-primary/[0.02] p-8 shadow-inner group hover:bg-primary/[0.04] transition-all">
-                                <div className="flex items-center gap-5">
-                                    <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
-                                        <Crown className="size-7" />
+                            {maxBranches !== null && (
+                                <>
+                                    <div className="hidden h-8 w-px bg-inst-border sm:block" />
+                                    <div className="min-w-[11rem]">
+                                        <p className="text-[10px] font-bold tracking-[0.14em] text-inst-muted">
+                                            {t('dashboard.branchLimit')}: {branchUsage} / {maxBranches}
+                                        </p>
+                                        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-inst-silver">
+                                            <div
+                                                className="h-full rounded-full bg-inst-primary"
+                                                style={{ width: `${Math.min(100, (branchUsage / (maxBranches || 1)) * 100)}%` }}
+                                            />
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-lg font-black text-foreground">{t('dashboard.upgradeTitle')}</p>
-                                        <p className="text-sm font-bold text-muted-foreground">{t('dashboard.upgradeHint')}</p>
-                                    </div>
+                                </>
+                            )}
+                        </div>
+                        <Badge
+                            className={cn(
+                                'rounded-md px-3 py-1 text-[10px] font-bold tracking-wide',
+                                plan.subscription_status === 'active'
+                                    ? 'bg-inst-success text-white'
+                                    : 'border border-inst-border bg-inst-silver text-inst-teal',
+                            )}
+                        >
+                            {formatSubscriptionStatus(plan.subscription_status)}
+                        </Badge>
+                    </div>
+                    {isStarter && (
+                        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-inst-border bg-inst-silver px-5 py-3">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-inst-teal text-white">
+                                    <Crown className="h-4 w-4" />
                                 </div>
-                                <Button size="lg" className="rounded-xl font-black shadow-xl shadow-primary/20 px-8 h-12" asChild>
-                                    <Link to="/settings" className="flex items-center gap-2">
-                                        {t('dashboard.upgradeCta')}
-                                        <ArrowUpRight className="h-4 w-4" />
-                                    </Link>
-                                </Button>
+                                <div>
+                                    <p className="text-sm font-bold text-inst-text">{t('dashboard.upgradeTitle')}</p>
+                                    <p className="text-xs font-medium text-inst-muted">{t('dashboard.upgradeHint')}</p>
+                                </div>
                             </div>
-                        )}
-                    </CardContent>
-                </Card>
+                            <Button asChild className="h-10 rounded-lg bg-inst-primary font-bold text-white hover:bg-inst-teal">
+                                <Link to="/settings">{t('dashboard.upgradeCta')}</Link>
+                            </Button>
+                        </div>
+                    )}
+                </div>
             )}
 
-            {/* Top Stats Cards */}
-            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-                <StatsCard 
-                    title={t('dashboard.todayOrders')} 
-                    value={stats.today_orders} 
-                    icon={ClipboardList} 
-                    loading={isLoading} 
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <StatsCard
+                    title={t('dashboard.todayOrders')}
+                    value={stats.today_orders}
+                    icon={ClipboardList}
+                    loading={isLoading}
+                    hint={t('dashboard.kpiHint')}
                 />
-                <StatsCard 
-                    title={t('dashboard.todayRevenue')} 
-                    value={stats.today_revenue} 
-                    icon={DollarSign} 
-                    format="currency" 
-                    loading={isLoading} 
+                <StatsCard
+                    title={t('dashboard.todayRevenue')}
+                    value={stats.today_revenue}
+                    icon={Banknote}
+                    format="currency"
+                    loading={isLoading}
+                    hint={t('common.today')}
                 />
-                <StatsCard 
-                    title={t('dashboard.queueWaiting')} 
-                    value={stats.queue_waiting} 
-                    icon={Users} 
-                    loading={isLoading} 
+                <StatsCard
+                    title={t('dashboard.queueWaiting')}
+                    value={stats.queue_waiting}
+                    icon={Users}
+                    loading={isLoading}
+                    hint={t('nav.queue')}
                 />
-                <StatsCard 
-                    title={t('dashboard.activeBookings')} 
-                    value={stats.active_bookings} 
-                    icon={CalendarDays} 
-                    loading={isLoading} 
+                <StatsCard
+                    title={t('dashboard.activeBookings')}
+                    value={stats.active_bookings}
+                    icon={CalendarDays}
+                    loading={isLoading}
+                    hint={t('nav.booking')}
                 />
             </div>
 
-            <div className="grid gap-8 lg:grid-cols-12">
-                <div className="lg:col-span-8 space-y-8">
-                    {/* Quick Actions Panel */}
-                    <Card className="rounded-[2.5rem] border border-border/50 shadow-sm overflow-hidden bg-white">
-                        <CardHeader className="bg-primary text-primary-foreground p-10">
-                            <div className="flex items-center gap-5">
-                                <div className="h-14 w-14 rounded-2xl bg-white/10 flex items-center justify-center text-white shadow-inner">
-                                    <PlusCircle className="h-7 w-7" />
+            <div className="grid gap-4 lg:grid-cols-12">
+                <div className="space-y-4 lg:col-span-8">
+                    <Card className="admin-panel rounded-xl shadow-none">
+                        <CardHeader className="border-b border-inst-border px-5 py-4">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-inst-border bg-inst-silver text-inst-teal">
+                                    <LayoutDashboard className="h-5 w-5" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-2xl font-black tracking-tight">{t('dashboard.quickActions')}</CardTitle>
-                                    <CardDescription className="text-white/40 font-bold text-sm">{t('dashboard.actionHint')}</CardDescription>
+                                    <CardTitle className="text-base font-bold text-inst-text">{t('dashboard.opsShortcuts')}</CardTitle>
+                                    <CardDescription className="text-xs font-medium text-inst-muted">{t('dashboard.opsShortcutsHint')}</CardDescription>
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-10">
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-10">
-                                <DashboardQuickAction 
-                                    icon={Car} 
-                                    label={t('nav.vehicles')} 
-                                    to="/vehicles" 
-                                    className="bg-primary/5 text-primary hover:bg-primary hover:text-white"
-                                />
-                                <DashboardQuickAction 
-                                    icon={Droplets} 
-                                    label={t('nav.services')} 
-                                    to="/services" 
-                                    className="bg-emerald-500/5 text-emerald-500 hover:bg-emerald-500 hover:text-white"
-                                />
-                                <DashboardQuickAction 
-                                    icon={ListOrdered} 
-                                    label={t('nav.queue')} 
-                                    to="/queue" 
-                                    className="bg-orange-500/5 text-orange-500 hover:bg-orange-500 hover:text-white"
-                                />
-                                <DashboardQuickAction 
-                                    icon={LayoutGrid} 
-                                    label={t('nav.dashboard')} 
-                                    to="/dashboard" 
-                                    className="bg-indigo-500/5 text-indigo-500 hover:bg-indigo-500 hover:text-white"
-                                />
+                        <CardContent className="p-4">
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                                {hasFeature('cashier') && (
+                                    <DashboardQuickAction icon={Banknote} label={t('nav.cashier')} to="/cashier" />
+                                )}
+                                {hasFeature('queue') && (
+                                    <DashboardQuickAction icon={ListOrdered} label={t('nav.queue')} to="/queue" />
+                                )}
+                                {hasFeature('orders') && (
+                                    <DashboardQuickAction icon={ClipboardList} label={t('nav.orders')} to="/orders" />
+                                )}
+                                {hasFeature('vehicles') && (
+                                    <DashboardQuickAction icon={Car} label={t('nav.vehicles')} to="/vehicles" />
+                                )}
                             </div>
                         </CardContent>
                     </Card>
 
-                    {/* Charts Grid */}
-                    <div className="grid gap-8 lg:grid-cols-2">
-                        <Card className="rounded-[2.5rem] border border-border/50 p-10 shadow-sm bg-white group hover:shadow-xl transition-all duration-500">
-                            <CardHeader className="p-0 pb-8 flex flex-row items-center justify-between">
-                                <div>
-                                    <CardTitle className="text-xl font-black tracking-tight">{t('dashboard.revenueTrend')}</CardTitle>
-                                    <CardDescription className="text-xs font-bold text-muted-foreground mt-1">{t('dashboard.revenueTrendHint')}</CardDescription>
-                                </div>
-                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-muted group-hover:bg-primary group-hover:text-white transition-all">
-                                    <ArrowUpRight className="h-4 w-4" />
-                                </Button>
+                    <div className="grid gap-4 lg:grid-cols-2">
+                        <Card className="admin-panel rounded-xl shadow-none">
+                            <CardHeader className="border-b border-inst-border px-5 py-4">
+                                <CardTitle className="text-base font-bold text-inst-text">{t('dashboard.revenueTrend')}</CardTitle>
+                                <CardDescription className="text-xs font-medium text-inst-muted">{t('dashboard.revenueTrendHint')}</CardDescription>
                             </CardHeader>
-                            <CardContent className="h-72 p-0">
+                            <CardContent className="h-64 p-4">
                                 {isLoading ? (
-                                    <Skeleton className="h-full w-full rounded-2xl" />
+                                    <Skeleton className="h-full w-full rounded-lg" />
                                 ) : (
                                     <ResponsiveContainer width="100%" height="100%">
                                         <LineChart data={stats.revenue_trend}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" vertical={false} />
-                                            <XAxis dataKey="date" tick={{ fontSize: 10, fontWeight: '800', fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                                            <YAxis tick={{ fontSize: 10, fontWeight: '800', fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                                            <Tooltip 
-                                                contentStyle={{ borderRadius: '1.25rem', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', padding: '1rem' }}
-                                                formatter={(value: number) => formatCurrency(value)} 
-                                            />
-                                            <Line 
-                                                type="monotone" 
-                                                dataKey="revenue" 
-                                                stroke="hsl(var(--primary))" 
-                                                strokeWidth={4} 
-                                                dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 5 }}
-                                                activeDot={{ r: 8, strokeWidth: 4, stroke: '#fff' }}
+                                            <CartesianGrid strokeDasharray="3 3" stroke="var(--inst-border)" vertical={false} />
+                                            <XAxis dataKey="date" tick={{ fontSize: 10, fontWeight: 700, fill: 'var(--inst-muted)' }} axisLine={false} tickLine={false} />
+                                            <YAxis tick={{ fontSize: 10, fontWeight: 700, fill: 'var(--inst-muted)' }} axisLine={false} tickLine={false} />
+                                            <Tooltip contentStyle={chartTooltipStyle} formatter={(value: number) => formatCurrency(value)} />
+                                            <Line
+                                                type="monotone"
+                                                dataKey="revenue"
+                                                stroke="var(--brand-primary)"
+                                                strokeWidth={2.5}
+                                                dot={{ fill: 'var(--brand-primary)', strokeWidth: 0, r: 3 }}
+                                                activeDot={{ r: 6, strokeWidth: 2, stroke: '#fff', fill: 'var(--inst-aqua)' }}
                                             />
                                         </LineChart>
                                     </ResponsiveContainer>
@@ -344,27 +345,22 @@ export function DashboardPage() {
                             </CardContent>
                         </Card>
 
-                        <Card className="rounded-[2.5rem] border border-border/50 p-10 shadow-sm bg-white group hover:shadow-xl transition-all duration-500">
-                            <CardHeader className="p-0 pb-8 flex flex-row items-center justify-between">
-                                <div>
-                                    <CardTitle className="text-xl font-black tracking-tight">{t('dashboard.ordersByStatus')}</CardTitle>
-                                    <CardDescription className="text-xs font-bold text-muted-foreground mt-1">{t('dashboard.ordersByStatusHint')}</CardDescription>
-                                </div>
-                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-muted group-hover:bg-primary group-hover:text-white transition-all">
-                                    <ArrowUpRight className="h-4 w-4" />
-                                </Button>
+                        <Card className="admin-panel rounded-xl shadow-none">
+                            <CardHeader className="border-b border-inst-border px-5 py-4">
+                                <CardTitle className="text-base font-bold text-inst-text">{t('dashboard.ordersByStatus')}</CardTitle>
+                                <CardDescription className="text-xs font-medium text-inst-muted">{t('dashboard.ordersByStatusHint')}</CardDescription>
                             </CardHeader>
-                            <CardContent className="h-72 p-0">
+                            <CardContent className="h-64 p-4">
                                 {isLoading ? (
-                                    <Skeleton className="h-full w-full rounded-2xl" />
+                                    <Skeleton className="h-full w-full rounded-lg" />
                                 ) : (
                                     <ResponsiveContainer width="100%" height="100%">
                                         <BarChart data={stats.orders_by_status}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" vertical={false} />
-                                            <XAxis dataKey="status" tick={{ fontSize: 10, fontWeight: '800', fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                                            <YAxis tick={{ fontSize: 10, fontWeight: '800', fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                                            <Tooltip contentStyle={{ borderRadius: '1.25rem', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', padding: '1rem' }} />
-                                            <Bar dataKey="count" fill="hsl(var(--primary))" radius={[10, 10, 0, 0]} barSize={40} />
+                                            <CartesianGrid strokeDasharray="3 3" stroke="var(--inst-border)" vertical={false} />
+                                            <XAxis dataKey="status" tick={{ fontSize: 10, fontWeight: 700, fill: 'var(--inst-muted)' }} axisLine={false} tickLine={false} />
+                                            <YAxis tick={{ fontSize: 10, fontWeight: 700, fill: 'var(--inst-muted)' }} axisLine={false} tickLine={false} />
+                                            <Tooltip contentStyle={chartTooltipStyle} />
+                                            <Bar dataKey="count" fill="var(--brand-primary)" radius={[6, 6, 0, 0]} barSize={36} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 )}
@@ -373,18 +369,17 @@ export function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="lg:col-span-4 space-y-8">
-                    {/* Activity Panel */}
-                    <Card className="rounded-[2.5rem] border border-border/50 shadow-sm bg-white overflow-hidden">
-                        <CardHeader className="bg-muted/30 border-b border-border/40 p-10">
-                            <div className="flex items-center gap-4">
-                                <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                                    <Activity className="h-6 w-6" />
+                <div className="space-y-4 lg:col-span-4">
+                    <Card className="admin-panel rounded-xl shadow-none">
+                        <CardHeader className="border-b border-inst-border px-5 py-4">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-inst-border bg-inst-silver text-inst-teal">
+                                    <Activity className="h-5 w-5" />
                                 </div>
-                                <CardTitle className="text-xl font-black leading-none tracking-tight">{t('dashboard.platformActivity')}</CardTitle>
+                                <CardTitle className="text-base font-bold text-inst-text">{t('dashboard.platformActivity')}</CardTitle>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-10 space-y-6">
+                        <CardContent className="space-y-2 p-4">
                             {stats.today_orders === 0 &&
                             stats.queue_waiting === 0 &&
                             stats.active_bookings === 0 &&
@@ -407,27 +402,28 @@ export function DashboardPage() {
                         </CardContent>
                     </Card>
 
-                    {/* Top Services Panel */}
-                    <Card className="rounded-[2.5rem] border border-border/50 shadow-sm bg-white overflow-hidden">
-                        <CardHeader className="p-10 pb-4 flex flex-row items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                                    <Sparkles className="h-6 w-6" />
+                    <Card className="admin-panel rounded-xl shadow-none">
+                        <CardHeader className="flex flex-row items-center justify-between border-b border-inst-border px-5 py-4">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-inst-border bg-inst-silver text-inst-teal">
+                                    <Droplets className="h-5 w-5" />
                                 </div>
-                                <CardTitle className="text-xl font-black leading-none tracking-tight">{t('dashboard.topServices')}</CardTitle>
+                                <CardTitle className="text-base font-bold text-inst-text">{t('dashboard.topServices')}</CardTitle>
                             </div>
-                            <Button variant="ghost" size="sm" asChild className="font-black text-primary hover:bg-primary/5 rounded-xl px-4">
-                                <Link to="/services" className="flex items-center gap-1.5">
-                                    {t('common.viewAll')}
-                                    <ChevronRight className="h-4 w-4" />
-                                </Link>
-                            </Button>
+                            {hasFeature('services') && (
+                                <Button variant="outline" size="sm" asChild className="h-8 rounded-lg border-inst-border bg-white font-bold text-inst-text hover:bg-inst-silver">
+                                    <Link to="/services" className="flex items-center gap-1">
+                                        {t('common.viewAll')}
+                                        <ChevronLeft className="h-3.5 w-3.5" />
+                                    </Link>
+                                </Button>
+                            )}
                         </CardHeader>
-                        <CardContent className="p-10 pt-6">
+                        <CardContent className="p-4">
                             {isLoading ? (
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     {Array.from({ length: 3 }).map((_, i) => (
-                                        <Skeleton key={i} className="h-16 w-full rounded-2xl" />
+                                        <Skeleton key={i} className="h-14 w-full rounded-lg" />
                                     ))}
                                 </div>
                             ) : stats.top_services.length === 0 ? (
@@ -439,19 +435,24 @@ export function DashboardPage() {
                                     actionTo="/services"
                                 />
                             ) : (
-                                <div className="space-y-5">
+                                <div className="space-y-2">
                                     {stats.top_services.map((service) => (
-                                        <div key={service.name} className="group flex items-center justify-between p-5 rounded-[1.75rem] hover:bg-primary/[0.03] transition-all border border-transparent hover:border-primary/10">
-                                            <div className="flex items-center gap-5">
-                                                <div className="h-12 w-12 rounded-2xl bg-primary/5 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-lg group-hover:shadow-primary/20">
-                                                    <Droplets className="h-6 w-6" />
+                                        <div
+                                            key={service.name}
+                                            className="flex items-center justify-between rounded-lg border border-inst-border bg-inst-silver/60 px-3 py-3"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white text-inst-teal">
+                                                    <Droplets className="h-4 w-4" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-black text-foreground group-hover:text-primary transition-colors">{service.name}</p>
-                                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-0.5">{service.count} {t('dashboard.ordersCount')}</p>
+                                                    <p className="text-sm font-bold text-inst-text">{service.name}</p>
+                                                    <p className="text-[11px] font-semibold text-inst-muted">
+                                                        {service.count} {t('dashboard.ordersCount')}
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <p className="text-sm font-black text-primary">{formatCurrency(service.revenue)}</p>
+                                            <p className="text-sm font-bold text-inst-primary">{formatCurrency(service.revenue)}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -464,25 +465,25 @@ export function DashboardPage() {
     );
 }
 
-function DashboardQuickAction({ icon: Icon, label, to, className }: { icon: any; label: string; to: string; className?: string }) {
+function DashboardQuickAction({ icon: Icon, label, to }: { icon: LucideIcon; label: string; to: string }) {
     return (
-        <Link 
-            to={to} 
-            className="group flex flex-col items-center gap-5 text-center transition-all"
+        <Link
+            to={to}
+            className="group flex items-center gap-3 rounded-lg border border-inst-border bg-inst-silver px-3 py-3 transition-colors hover:border-[var(--brand-primary)] hover:bg-white"
         >
-            <div className={cn("flex h-20 w-20 items-center justify-center rounded-[2rem] transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:shadow-current/15 border border-transparent hover:border-white/50", className)}>
-                <Icon className="h-9 w-9 transition-transform duration-500 group-hover:rotate-12" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-inst-teal text-white">
+                <Icon className="h-5 w-5" />
             </div>
-            <span className="text-[11px] font-black text-foreground group-hover:text-primary transition-colors leading-tight uppercase tracking-wider">{label}</span>
+            <span className="text-sm font-bold text-inst-text group-hover:text-inst-primary">{label}</span>
         </Link>
     );
 }
 
 function DashboardMetricRow({ label, value }: { label: string; value: string }) {
     return (
-        <div className="flex items-center justify-between rounded-2xl border border-border/30 bg-muted/20 px-5 py-4">
-            <span className="text-sm font-bold text-muted-foreground">{label}</span>
-            <span className="text-lg font-black text-foreground">{value}</span>
+        <div className="flex items-center justify-between rounded-lg border border-inst-border bg-inst-silver/70 px-4 py-3">
+            <span className="text-sm font-semibold text-inst-muted">{label}</span>
+            <span className="text-base font-bold text-inst-text">{value}</span>
         </div>
     );
 }

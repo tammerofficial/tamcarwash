@@ -4,6 +4,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
 import { cn } from '@/lib/utils';
 import { getAppName } from '@/lib/branding';
+import { t } from '@/lib/i18n';
 
 export function AppShell() {
     const [collapsed, setCollapsed] = useState(false);
@@ -39,37 +40,34 @@ export function AppShell() {
     }, [mobileNavOpen, closeMobileNav]);
 
     return (
-        <div className="flex min-h-screen bg-muted/30" dir="rtl">
-            {/* Desktop sidebar */}
+        <div className="admin-console flex min-h-screen" dir="rtl">
             <Sidebar
                 collapsed={collapsed}
                 onToggleCollapse={() => setCollapsed((v) => !v)}
                 className="hidden lg:flex shrink-0"
             />
 
-            <div className="relative flex min-w-0 flex-1 flex-col">
+            <div className="admin-console-main relative flex min-w-0 flex-1 flex-col">
                 <Header onMenuClick={() => setMobileNavOpen(true)} />
 
-                <main className="flex-1 p-6 lg:p-8 animate-in fade-in duration-700">
+                <main className="flex-1 px-4 py-5 lg:px-7 lg:py-6">
                     <div className="mx-auto w-full max-w-[1600px]">
                         <Outlet />
                     </div>
                 </main>
 
-                <footer className="border-t border-border/40 bg-white/50 px-6 py-6 lg:px-8 text-center sm:text-start">
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                            &copy; {new Date().getFullYear()} {getAppName()}. All Rights Reserved.
+                <footer className="admin-console-footer px-4 py-4 lg:px-7">
+                    <div className="mx-auto flex w-full max-w-[1600px] flex-col items-center justify-between gap-2 sm:flex-row sm:items-center">
+                        <p className="text-[11px] font-semibold tracking-wide">
+                            &copy; {new Date().getFullYear()} {getAppName()} · {t('app.operationsConsole')}
                         </p>
-                        <div className="flex items-center gap-6">
-                            <a href="#" className="text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">Privacy Policy</a>
-                            <a href="#" className="text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">Terms of Service</a>
-                        </div>
+                        <p className="text-[11px] font-semibold tracking-[0.12em]">
+                            {t('app.sultanate')}
+                        </p>
                     </div>
                 </footer>
             </div>
 
-            {/* Mobile sidebar overlay */}
             <div
                 className={cn(
                     'fixed inset-0 z-50 lg:hidden transition-all duration-300',

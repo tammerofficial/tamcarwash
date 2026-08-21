@@ -1,5 +1,4 @@
-import { Activity, ArrowUpRight, LucideIcon } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { LucideIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn, formatCurrency, formatNumber } from '@/lib/utils';
 
@@ -11,36 +10,31 @@ interface StatsCardProps {
     loading?: boolean;
     className?: string;
     trend?: string;
+    hint?: string;
 }
 
-export function StatsCard({ title, value, icon: Icon, format = 'number', loading, className, trend }: StatsCardProps) {
+export function StatsCard({ title, value, icon: Icon, format = 'number', loading, className, trend, hint }: StatsCardProps) {
     return (
-        <Card className={cn('rounded-[2.5rem] border border-border/50 shadow-sm bg-white p-8 flex flex-col justify-center relative group hover:shadow-lg transition-all', className)}>
-            <div className="absolute top-8 end-8 h-10 w-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                <Icon className="h-5 w-5" />
+        <div className={cn('admin-stat-card flex min-h-[7.5rem] flex-col justify-between rounded-xl p-5', className)}>
+            <div className="flex items-start justify-between gap-3">
+                <p className="text-[11px] font-bold tracking-wide text-inst-muted">{title}</p>
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-inst-border bg-inst-silver text-inst-teal">
+                    <Icon className="h-4 w-4" />
+                </div>
             </div>
-            
-            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 ps-1">
-                {title}
-            </p>
-            
+
             {loading ? (
-                <Skeleton className="h-10 w-24" />
+                <Skeleton className="mt-3 h-9 w-24" />
             ) : (
-                <>
-                    <p className="text-4xl font-black text-foreground mb-1 ps-1">
+                <div>
+                    <p className="text-[1.85rem] font-bold leading-none tracking-tight text-inst-text">
                         {format === 'currency' ? formatCurrency(value) : formatNumber(value)}
                     </p>
-                    {trend && (
-                        <div className="flex items-center gap-2 text-xs font-bold text-primary ps-1 mt-1">
-                            <Activity className="h-3.5 w-3.5" />
-                            <span>{trend}</span>
-                        </div>
+                    {(trend || hint) && (
+                        <p className="mt-2 text-[11px] font-semibold text-inst-muted">{trend ?? hint}</p>
                     )}
-                </>
+                </div>
             )}
-            
-            <ArrowUpRight className="absolute bottom-8 end-8 h-5 w-5 text-muted-foreground/20 group-hover:text-primary group-hover:-translate-x-1 group-hover:-translate-y-1 transition-all rtl:rotate-90" />
-        </Card>
+        </div>
     );
 }

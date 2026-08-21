@@ -19,7 +19,7 @@ export function FormPage({ title, description, backTo, backLabel, actions, child
     return (
         <div className="space-y-6" dir="rtl">
             <div className="space-y-4">
-                <Button variant="ghost" size="sm" className="px-0 text-muted-foreground hover:text-foreground" asChild>
+                <Button variant="outline" size="sm" className="border-inst-border bg-white font-bold text-inst-text hover:bg-inst-silver" asChild>
                     <Link to={backTo}>
                         <ArrowRight className="h-4 w-4" />
                         {backLabel ?? t('common.back')}
@@ -27,7 +27,7 @@ export function FormPage({ title, description, backTo, backLabel, actions, child
                 </Button>
                 <PageHeader title={title} description={description} actions={actions} />
             </div>
-            <Card>
+            <Card className="admin-panel rounded-xl border-inst-border shadow-none">
                 <CardContent className="pt-6">{children}</CardContent>
             </Card>
         </div>

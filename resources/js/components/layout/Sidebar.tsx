@@ -105,13 +105,13 @@ interface SidebarProps {
     className?: string;
 }
 
-export function Sidebar({ 
-    collapsed = false, 
-    onToggleCollapse, 
-    showMobileClose = false, 
+export function Sidebar({
+    collapsed = false,
+    onToggleCollapse,
+    showMobileClose = false,
     onMobileClose,
     onNavigate,
-    className 
+    className,
 }: SidebarProps) {
     const { user } = useAuth();
     const { hasFeature } = usePlanFeatures();
@@ -131,7 +131,7 @@ export function Sidebar({
         <aside
             dir="rtl"
             className={cn(
-                'admin-sidebar flex flex-col transition-all duration-300 shadow-2xl border-s border-white/5 shrink-0 text-end',
+                'admin-sidebar flex flex-col shrink-0 text-end',
                 collapsed ? 'admin-sidebar--collapsed w-[4.75rem]' : 'w-72',
                 className,
             )}
@@ -142,7 +142,7 @@ export function Sidebar({
                         variant="ghost"
                         size="icon"
                         className={cn(
-                            'absolute end-2 top-2 z-20 shrink-0 text-white/60 hover:bg-white/10 hover:text-white transition-all',
+                            'absolute end-2 top-2 z-20 shrink-0 text-white/70 hover:bg-white/10 hover:text-white',
                             collapsed ? 'h-7 w-7' : 'h-8 w-8',
                         )}
                         onClick={onToggleCollapse}
@@ -160,7 +160,7 @@ export function Sidebar({
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute end-2 top-2 z-20 h-8 w-8 shrink-0 text-white/60 hover:bg-white/10 hover:text-white lg:hidden"
+                        className="absolute end-2 top-2 z-20 h-8 w-8 shrink-0 text-white/70 hover:bg-white/10 hover:text-white lg:hidden"
                         onClick={onMobileClose}
                         aria-label={t('public.closeMenu')}
                     >
@@ -168,27 +168,29 @@ export function Sidebar({
                     </Button>
                 )}
 
-                <Link to="/dashboard" onClick={onNavigate} className={cn('flex flex-col items-center gap-2 text-center', !collapsed && 'pt-2')}>
-                    <div className={cn(
-                        "flex items-center justify-center rounded-2xl bg-white shadow-xl ring-1 ring-white/15 transition-all duration-300",
-                        collapsed ? "h-10 w-10" : "h-14 w-14"
-                    )}>
-                        <Car className={cn("text-primary transition-all", collapsed ? "h-6 w-6" : "h-8 w-8")} />
+                <Link to="/dashboard" onClick={onNavigate} className={cn('flex flex-col items-center gap-2.5 text-center', !collapsed && 'pt-1')}>
+                    <div
+                        className={cn(
+                            'flex items-center justify-center rounded-lg border border-white/15 bg-white shadow-sm',
+                            collapsed ? 'h-10 w-10' : 'h-12 w-12',
+                        )}
+                    >
+                        <Car className={cn('text-inst-teal', collapsed ? 'h-5 w-5' : 'h-6 w-6')} />
                     </div>
                     {!collapsed && (
-                        <div className="space-y-1 animate-in fade-in duration-500">
+                        <div className="space-y-0.5">
                             <p className="admin-sidebar-brand-title">{getAppName()}</p>
-                            <p className="admin-sidebar-brand-subtitle">{getAppTagline() ?? t('app.tagline')}</p>
-                            <p className="admin-sidebar-brand-sultanate">{t('app.sultanate')}</p>
+                            <p className="admin-sidebar-brand-subtitle">{t('app.operationsConsole')}</p>
+                            <p className="admin-sidebar-brand-sultanate">{getAppTagline() ?? t('app.sultanate')}</p>
                         </div>
                     )}
                 </Link>
             </div>
 
-            <ScrollArea className="admin-sidebar-nav px-3 pb-6 pt-2">
-                <nav className="space-y-6">
+            <ScrollArea className="admin-sidebar-nav px-2.5 pb-5 pt-3">
+                <nav className="space-y-5">
                     {visibleSections.map((section) => (
-                        <div key={section.sectionKey} className="space-y-1">
+                        <div key={section.sectionKey} className="space-y-0.5">
                             {!collapsed && (
                                 <p className="admin-sidebar-section-label">
                                     {section.sectionLabel}
@@ -204,11 +206,11 @@ export function Sidebar({
                                     dir={collapsed ? undefined : 'ltr'}
                                     className={({ isActive }) =>
                                         cn(
-                                            'admin-sidebar-nav-item group flex w-full flex-row items-center gap-3 rounded-2xl px-3 py-2.5 transition-all duration-200',
+                                            'admin-sidebar-nav-item group flex w-full flex-row items-center gap-2.5 rounded-lg px-2.5 py-2 transition-colors duration-150',
                                             isActive
                                                 ? 'admin-sidebar-nav-item--active'
                                                 : 'admin-sidebar-nav-item--inactive',
-                                            collapsed ? 'justify-center px-2 py-2.5' : 'justify-end',
+                                            collapsed ? 'justify-center px-2 py-2' : 'justify-end',
                                         )
                                     }
                                 >
@@ -216,7 +218,7 @@ export function Sidebar({
                                         <span className="min-w-0 flex-1 truncate text-right">{item.label}</span>
                                     )}
                                     <span className="flex w-5 shrink-0 items-center justify-center">
-                                        <item.icon className="h-[1.125rem] w-[1.125rem] shrink-0 stroke-[1.5]" />
+                                        <item.icon className="h-[1.05rem] w-[1.05rem] shrink-0 stroke-[1.75]" />
                                     </span>
                                 </NavLink>
                             ))}
@@ -224,18 +226,14 @@ export function Sidebar({
                     ))}
                 </nav>
             </ScrollArea>
-            
+
             {!collapsed && (
-                <div className="p-4 border-t border-white/5 animate-in slide-in-from-bottom-4 duration-500">
-                    <div className="p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-md">
-                        <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center text-white/80">
-                                <ShieldCheck className="h-4 w-4" />
-                            </div>
-                            <p className="admin-sidebar-footer-note">
-                                {t('app.secureAccess')}
-                            </p>
+                <div className="border-t border-white/10 p-3">
+                    <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2.5">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-white/10 text-white">
+                            <ShieldCheck className="h-4 w-4" />
                         </div>
+                        <p className="admin-sidebar-footer-note">{t('app.secureAccess')}</p>
                     </div>
                 </div>
             )}
