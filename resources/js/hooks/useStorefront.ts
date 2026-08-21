@@ -109,8 +109,51 @@ export function getTenantDisplayName(profile?: StorefrontProfile | null): string
     return profile?.business_name ?? appConfig.tenant?.name ?? 'مغسلة سيارات';
 }
 
+export const CURRENCY_LABELS_AR: Record<string, string> = {
+    OMR: 'ر.ع',
+    KWD: 'د.ك',
+    SAR: 'ر.س',
+    AED: 'د.إ',
+    BHD: 'د.ب',
+    QAR: 'ر.ق',
+};
+
+export function formatCurrencyLabel(currency = 'OMR'): string {
+    return CURRENCY_LABELS_AR[currency.toUpperCase()] ?? currency;
+}
+
 export function formatPrice(amount: number, currency = 'OMR'): string {
-    return `${amount.toFixed(3)} ${currency}`;
+    const label = formatCurrencyLabel(currency);
+    const value = Number(amount);
+
+    if (!Number.isFinite(value)) {
+        return `0 ${label}`;
+    }
+
+    const display = value % 1 === 0 ? String(Math.round(value)) : value.toFixed(3);
+
+    return `${display} ${label}`;
+}
+
+export function formatBranchHours(branch?: StorefrontBranch | null): string {
+    if (!branch?.working_hours?.length) {
+        return 'يومياً — يرجى التواصل للتأكيد';
+    }
+
+    const openDays = branch.working_hours.filter((hour) => !hour.is_closed && hour.opens_at && hour.closes_at);
+
+    if (openDays.length === 0) {
+        return 'يرجى التواصل لمعرفة ساعات العمل';
+    }
+
+    const first = openDays[0];
+    const allSame = openDays.every((hour) => hour.opens_at === first.opens_at && hour.closes_at === first.closes_at);
+
+    if (openDays.length === 7 && allSame) {
+        return `${first.opens_at} – ${first.closes_at}`;
+    }
+
+    return `${first.opens_at} – ${first.closes_at}`;
 }
 
 export const ARABIC_DAYS = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];

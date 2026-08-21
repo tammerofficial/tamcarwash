@@ -1,106 +1,140 @@
 import { Link } from 'react-router-dom';
-import { 
-    Star, 
-    Droplets, 
-    ShieldCheck, 
-    Sparkles,
-    ArrowLeft
-} from 'lucide-react';
+import { CalendarDays, Clock3, MapPin, Search, ShieldCheck, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import {
+    formatPrice,
+    getTenantBranding,
+    getTenantDisplayName,
+    getTenantPhone,
+} from '@/hooks/useStorefront';
+import type { StorefrontProfile, StorefrontService } from '@/types/api';
 
-export function PublicHero() {
+interface PublicHeroProps {
+    profile?: StorefrontProfile | null;
+    featuredService?: StorefrontService | null;
+}
+
+export function PublicHero({ profile, featuredService }: PublicHeroProps) {
+    const branding = getTenantBranding(profile);
+    const businessName = getTenantDisplayName(profile);
+    const contactPhone = getTenantPhone(profile);
+    const currency = profile?.currency ?? 'OMR';
+    const announcement = branding.tagline ?? 'حجز أونلاين وتتبع مباشر لحالة الطابور';
+    const about =
+        branding.about ??
+        `${businessName} تقدّم عناية مؤسسية للسيارات: مواد معتمدة، مواعيد دقيقة، وفروع تُدار بمعايير تشغيل واضحة.`;
+    const featuredName = featuredService?.name_ar || featuredService?.name || 'تلميع نانو سيراميك';
+    const featuredPrice = featuredService ? Number(featuredService.base_price) : 45;
+
     return (
-        <section className="relative min-h-[90vh] flex items-center pt-20 overflow-hidden bg-brand-primary" dir="rtl">
-            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-secondary-10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
-            
-            <div className="absolute inset-0 bg-[url('/images/grid.svg')] opacity-[0.03] bg-center" />
+        <section className="sf-hero relative min-h-[88vh] flex items-center pt-24 overflow-hidden" dir="rtl">
+            <div className="sf-hero-grid absolute inset-0 opacity-40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10" />
 
-            <div className="relative mx-auto max-w-7xl px-4 lg:px-8 w-full py-20 lg:py-32">
-                <div className="grid lg:grid-cols-2 gap-20 items-center">
-                    <div className="space-y-10 text-center lg:text-start max-w-2xl mx-auto lg:mx-0">
-                        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
-                            <Badge className="bg-brand-secondary text-white hover:opacity-90 border-none font-bold text-[10px] px-2 py-0.5 uppercase tracking-wider">NEW</Badge>
-                            <span className="text-white/70 text-xs font-medium tracking-wide">الآن خدمة التلميع السيراميكي متاحة في جميع الفروع</span>
+            <div className="relative mx-auto max-w-7xl px-4 lg:px-8 w-full py-16 lg:py-24">
+                <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                    <div className="lg:col-span-7 space-y-8">
+                        <div className="inline-flex items-center gap-2.5 rounded-md border border-white/15 bg-white/8 px-3.5 py-1.5">
+                            <ShieldCheck className="h-3.5 w-3.5 text-[var(--brand-secondary)]" />
+                            <span className="text-[12px] font-semibold text-white/85">{announcement}</span>
                         </div>
-                        
-                        <div className="space-y-6">
-                            <h1 className="text-5xl md:text-7xl font-bold text-white leading-[1.15]">
-                                تجربة العناية <br />
-                                <span className="text-brand-secondary">بسيارتك كما لم تعهدها</span>
+
+                        <div className="space-y-5">
+                            <p className="sf-kicker sf-kicker-light">{businessName}</p>
+                            <h1 className="text-4xl md:text-6xl font-bold text-white leading-[1.2] tracking-tight">
+                                معايير مؤسسية
+                                <br />
+                                <span className="text-[var(--brand-secondary)]">لعناية سيارتك</span>
                             </h1>
-                            
-                            <p className="text-lg text-white/60 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                                نجمع بين التكنولوجيا الألمانية والخبرة العمانية لنقدم لسيارتك أفضل حماية ولمعان يدوم طويلاً.
+                            <p className="text-base md:text-lg text-white/72 leading-relaxed max-w-xl">
+                                {about}
                             </p>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row items-center gap-5">
-                            <Button size="lg" asChild className="h-14 px-10 rounded-xl text-lg font-bold bg-brand-secondary text-white hover:opacity-90 shadow-xl w-full sm:w-auto transition-all">
+                        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
+                            <Button size="lg" asChild className="sf-cta-accent h-12 px-7 rounded-lg text-base font-bold shadow-none">
                                 <Link to="/book">
-                                    احجز موعدك الآن
+                                    <CalendarDays className="me-2 h-5 w-5" />
+                                    احجز موعدك
                                 </Link>
                             </Button>
-
-                            <Button variant="outline" size="lg" asChild className="h-14 px-8 rounded-xl text-lg font-bold border-white/20 bg-white/5 text-white hover:bg-white/10 w-full sm:w-auto backdrop-blur-sm transition-all">
+                            <Button size="lg" asChild className="sf-cta-solid h-12 px-7 rounded-lg text-base font-bold shadow-none">
                                 <Link to="/track">
+                                    <Search className="me-2 h-5 w-5" />
                                     تتبع طلبي
                                 </Link>
                             </Button>
+                            <Button
+                                size="lg"
+                                asChild
+                                className="h-12 px-7 rounded-lg text-base font-bold bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-primary-dark)] shadow-none"
+                            >
+                                <Link to="/queue">
+                                    <Clock3 className="me-2 h-5 w-5" />
+                                    حالة الطابور
+                                </Link>
+                            </Button>
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm">
-                            <Link to="/queue" className="text-white/70 hover:text-brand-secondary transition-colors font-medium">
-                                حالة الطابور المباشرة ←
-                            </Link>
-                        </div>
-
-                        <div className="pt-10 flex flex-wrap items-center justify-center lg:justify-start gap-10 opacity-70">
-                            <div className="flex flex-col gap-2">
-                                <div className="flex items-center gap-1">
-                                    {[1,2,3,4,5].map(i => <Star key={i} className="h-3 w-3 fill-brand-secondary text-brand-secondary" />)}
-                                </div>
-                                <p className="text-white font-medium text-xs tracking-wide">أكثر من 50,000 عميل سعيد</p>
+                        <div className="grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-white/12 bg-white/8 max-w-xl">
+                            <div className="px-4 py-4 bg-black/15">
+                                <p className="text-2xl font-bold text-white">
+                                    {profile?.stats?.services ?? '—'}
+                                </p>
+                                <p className="text-[11px] font-semibold text-white/55 mt-1">خدمة معتمدة</p>
                             </div>
-                            <div className="h-8 w-[1px] bg-white/10 hidden sm:block" />
-                            <div className="flex items-center gap-4">
-                                <ShieldCheck className="h-5 w-5 text-brand-secondary" />
-                                <span className="text-white text-[10px] font-bold uppercase tracking-[0.2em]">Quality Guaranteed</span>
+                            <div className="px-4 py-4 bg-black/15">
+                                <p className="text-2xl font-bold text-white">
+                                    {profile?.stats?.branches ?? '—'}
+                                </p>
+                                <p className="text-[11px] font-semibold text-white/55 mt-1">فرع تشغيل</p>
+                            </div>
+                            <div className="px-4 py-4 bg-black/15">
+                                <a href={`tel:${contactPhone}`} className="block">
+                                    <p className="text-sm font-bold text-white leading-snug">{contactPhone}</p>
+                                    <p className="text-[11px] font-semibold text-white/55 mt-1">تواصل مباشر</p>
+                                </a>
                             </div>
                         </div>
                     </div>
 
-                    <div className="relative lg:block">
-                        <div className="relative z-10 overflow-hidden rounded-[2rem] border border-white/10 shadow-3xl bg-brand-primary-20">
-                            <img 
-                                src="/images/wash/hero-car-wash.jpg" 
-                                alt="Premium Car Wash" 
+                    <div className="lg:col-span-5">
+                        <div className="relative overflow-hidden rounded-2xl border border-white/12 bg-black/20">
+                            <img
+                                src="/images/wash/hero-car-wash.jpg"
+                                alt={businessName}
                                 className="w-full aspect-[4/5] object-cover opacity-90"
                                 onError={(e) => {
-                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?q=80&w=1000&auto=format&fit=crop';
+                                    (e.target as HTMLImageElement).src =
+                                        'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?q=80&w=1000&auto=format&fit=crop';
                                 }}
                             />
-                            
-                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--brand-primary)] via-transparent to-transparent opacity-60" />
-                            
-                            <div className="absolute bottom-10 right-10 left-10 p-8 rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl border border-white/20">
-                                <div className="flex items-center gap-5">
-                                    <div className="h-14 w-14 rounded-xl bg-brand-secondary flex items-center justify-center text-white shrink-0 shadow-lg">
-                                        <Sparkles className="h-7 w-7" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--inst-teal)] via-transparent to-transparent" />
+
+                            <div className="absolute bottom-5 inset-x-5 rounded-xl bg-white p-5 shadow-xl">
+                                <div className="flex items-center gap-4">
+                                    <div className="h-12 w-12 rounded-lg bg-[var(--brand-primary)] flex items-center justify-center text-white shrink-0">
+                                        <Sparkles className="h-6 w-6" />
                                     </div>
-                                    <div className="flex-1">
-                                        <p className="text-gray-900 font-bold text-lg mb-0.5">تلميع نانو سيراميك</p>
-                                        <p className="text-brand-secondary text-[10px] font-black uppercase tracking-[0.15em]">Starts from 45 OMR</p>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-bold text-[var(--inst-text)] truncate">{featuredName}</p>
+                                        <p className="text-sm font-semibold text-[var(--brand-primary)] mt-0.5">
+                                            يبدأ من {formatPrice(featuredPrice, currency)}
+                                        </p>
                                     </div>
-                                    <Button size="icon" variant="ghost" className="rounded-lg bg-brand-secondary-10 text-brand-secondary hover:bg-brand-secondary-20">
-                                        <ArrowLeft className="h-5 w-5" />
-                                    </Button>
+                                    <Link
+                                        to="/book"
+                                        className="shrink-0 text-[13px] font-bold text-[var(--inst-teal)] hover:text-[var(--brand-primary)]"
+                                    >
+                                        احجز
+                                    </Link>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="absolute -top-6 -right-6 h-20 w-20 rounded-2xl bg-brand-secondary shadow-2xl flex items-center justify-center text-white z-20">
-                            <Droplets className="h-10 w-10" />
+                        <div className="mt-4 flex items-center gap-2 text-white/60 text-[12px] font-medium">
+                            <MapPin className="h-3.5 w-3.5 text-[var(--brand-secondary)]" />
+                            شبكة فروع تُدار بمعايير تشغيل موحّدة
                         </div>
                     </div>
                 </div>

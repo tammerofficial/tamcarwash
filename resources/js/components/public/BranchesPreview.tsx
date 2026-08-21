@@ -1,111 +1,119 @@
-import { 
-    MapPin, 
-    Phone, 
-    Clock, 
-    ExternalLink,
-    Navigation,
-    CalendarDays
-} from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { CalendarDays, Clock, MapPin, Navigation, Phone } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+    formatBranchHours,
+    getBranchAddress,
+    getBranchPhone,
+    useStorefrontBranches,
+    useStorefrontProfile,
+} from '@/hooks/useStorefront';
 
 export function BranchesPreview() {
-    const branches = [
-        { 
-            id: 1, 
-            name: 'فرع المعبيلة', 
-            address: 'المعبيلة الصناعية، مسقط، سلطنة عمان',
-            phone: '+968 9000 0000',
-            hours: '8:00 ص - 11:00 م',
-            image: 'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?q=80&w=800&auto=format&fit=crop'
-        },
-        { 
-            id: 2, 
-            name: 'فرع الخوير', 
-            address: 'شارع الخدمات، الخوير، مسقط، سلطنة عمان',
-            phone: '+968 9000 0001',
-            hours: '24 ساعة',
-            image: 'https://images.unsplash.com/photo-1605164597160-f560ad9101d3?q=80&w=800&auto=format&fit=crop'
-        },
-    ];
+    const { data: profile } = useStorefrontProfile();
+    const { data: branches, isLoading } = useStorefrontBranches();
+    const list = branches ?? [];
 
     return (
-        <section className="py-32 bg-white relative overflow-hidden" dir="rtl">
+        <section className="py-20 bg-white" dir="rtl">
             <div className="mx-auto max-w-7xl px-4 lg:px-8">
-                <div className="mb-20 text-center lg:text-start flex flex-col lg:flex-row items-end justify-between gap-10">
-                    <div className="space-y-6 max-w-2xl">
-                        <Badge className="bg-brand-secondary-10 text-brand-primary hover:bg-brand-secondary-20 border-none font-bold text-[10px] px-4 py-1 uppercase tracking-widest">
-                            Our Network
-                        </Badge>
-                        <h2 className="text-4xl md:text-5xl font-bold text-brand-primary">
-                            فروعنا في <span className="text-brand-secondary">مسقط</span>
+                <div className="mb-10 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
+                    <div className="max-w-2xl space-y-3">
+                        <p className="sf-kicker">شبكة الفروع</p>
+                        <h2 className="text-3xl md:text-4xl font-bold text-[var(--inst-text)]">
+                            فروع تُدار <span className="text-[var(--brand-primary)]">بمعيار واحد</span>
                         </h2>
-                        <p className="text-gray-500 text-lg opacity-80">
-                            نحن متواجدون في أهم المواقع الحيوية لخدمتكم بشكل أسرع وأفضل عبر شبكة فروعنا المتكاملة.
+                        <p className="text-[var(--inst-muted)] leading-relaxed">
+                            اختر أقرب فرع واحجز مسبقاً، أو تابع حالة الطابور قبل الوصول.
                         </p>
                     </div>
-                    <Button variant="outline" size="lg" className="rounded-xl font-bold border-brand-secondary-20 text-brand-primary hover:bg-brand-secondary-10 h-14 px-8">
-                        استعراض كافة الفروع
-                        <ExternalLink className="ms-2 h-4 w-4" />
+                    <Button
+                        variant="outline"
+                        size="lg"
+                        asChild
+                        className="rounded-lg font-bold border-[var(--inst-border)] text-[var(--inst-text)] h-11 px-6"
+                    >
+                        <Link to="/branches">كل الفروع</Link>
                     </Button>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-10">
-                    {branches.map((branch) => (
-                        <Card key={branch.id} className="group relative overflow-hidden rounded-2xl border border-gray-100 shadow-xl shadow-gray-200/50 bg-white flex flex-col lg:flex-row transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl">
-                            <div className="lg:w-[45%] h-64 lg:h-auto overflow-hidden">
-                                <img 
-                                    src={branch.image} 
-                                    alt={branch.name}
-                                    className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                                />
-                                <div className="absolute inset-0 bg-brand-primary-20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </div>
+                {isLoading ? (
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {Array.from({ length: 2 }).map((_, index) => (
+                            <Skeleton key={index} className="h-64 rounded-xl" />
+                        ))}
+                    </div>
+                ) : list.length === 0 ? (
+                    <Card className="sf-card rounded-xl p-10 text-center shadow-none">
+                        <p className="font-semibold text-[var(--inst-text)]">لا توجد فروع معروضة حالياً.</p>
+                    </Card>
+                ) : (
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {list.map((branch) => {
+                            const phone = getBranchPhone(branch, profile);
+                            const address = getBranchAddress(branch, profile);
+                            const hours = formatBranchHours(branch);
+                            const mapsQuery = encodeURIComponent(address);
 
-                            <div className="lg:w-[55%] p-10 flex flex-col">
-                                <div className="mb-8">
-                                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-brand-secondary transition-colors">{branch.name}</h3>
-                                    <p className="text-sm text-gray-500 flex items-start gap-3 leading-relaxed">
-                                        <MapPin className="h-4 w-4 text-brand-secondary shrink-0 mt-0.5 opacity-60" />
-                                        {branch.address}
-                                    </p>
-                                </div>
+                            return (
+                                <Card
+                                    key={branch.id}
+                                    className="sf-card sf-card-accent rounded-xl shadow-none overflow-hidden flex flex-col"
+                                >
+                                    <div className="p-6 flex flex-col flex-1">
+                                        <h3 className="text-xl font-bold text-[var(--inst-text)] mb-2">{branch.name}</h3>
+                                        <p className="text-[13px] text-[var(--inst-muted)] flex items-start gap-2 leading-relaxed">
+                                            <MapPin className="h-4 w-4 text-[var(--brand-primary)] shrink-0 mt-0.5" />
+                                            {address}
+                                        </p>
 
-                                <div className="space-y-4 mb-10">
-                                    <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50/50 border border-gray-100/50">
-                                        <div className="h-10 w-10 rounded-lg bg-white shadow-sm flex items-center justify-center text-brand-secondary">
-                                            <Phone className="h-4 w-4" />
+                                        <div className="grid sm:grid-cols-2 gap-3 mt-6 mb-6">
+                                            <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--inst-silver)] border border-[var(--inst-border)]">
+                                                <Phone className="h-4 w-4 text-[var(--brand-primary)] shrink-0" />
+                                                <div>
+                                                    <p className="text-[11px] font-semibold text-[var(--inst-muted)]">الهاتف</p>
+                                                    <p className="text-sm font-bold text-[var(--inst-text)]">{phone}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--inst-silver)] border border-[var(--inst-border)]">
+                                                <Clock className="h-4 w-4 text-[var(--brand-primary)] shrink-0" />
+                                                <div>
+                                                    <p className="text-[11px] font-semibold text-[var(--inst-muted)]">ساعات العمل</p>
+                                                    <p className="text-sm font-bold text-[var(--inst-text)]">{hours}</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-0.5">Contact</p>
-                                            <p className="text-sm font-bold text-gray-900">{branch.phone}</p>
+
+                                        <div className="mt-auto flex items-center gap-3">
+                                            <Button asChild className="sf-cta-accent flex-1 h-11 rounded-lg font-bold shadow-none">
+                                                <a
+                                                    href={`https://maps.google.com/?q=${mapsQuery}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    <Navigation className="me-2 h-4 w-4" />
+                                                    الاتجاهات
+                                                </a>
+                                            </Button>
+                                            <Button
+                                                asChild
+                                                variant="outline"
+                                                className="h-11 px-4 rounded-lg border-[var(--inst-border)] font-bold"
+                                            >
+                                                <Link to="/book">
+                                                    <CalendarDays className="me-2 h-4 w-4" />
+                                                    احجز
+                                                </Link>
+                                            </Button>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50/50 border border-gray-100/50">
-                                        <div className="h-10 w-10 rounded-lg bg-white shadow-sm flex items-center justify-center text-brand-secondary">
-                                            <Clock className="h-4 w-4" />
-                                        </div>
-                                        <div>
-                                            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-0.5">Opening Hours</p>
-                                            <p className="text-sm font-bold text-gray-900">{branch.hours}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="mt-auto flex items-center gap-4">
-                                    <Button className="flex-1 h-14 rounded-xl font-bold bg-brand-secondary shadow-lg transition-all active:scale-[0.98]">
-                                        <Navigation className="me-2 h-4 w-4" />
-                                        الاتجاهات
-                                    </Button>
-                                    <Button variant="outline" size="icon" className="h-14 w-14 rounded-xl border-gray-100 text-gray-400 hover:text-brand-secondary hover:border-brand-secondary hover:bg-brand-secondary-10 transition-all shadow-sm">
-                                        <CalendarDays className="h-5 w-5" />
-                                    </Button>
-                                </div>
-                            </div>
-                        </Card>
-                    ))}
-                </div>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
         </section>
     );

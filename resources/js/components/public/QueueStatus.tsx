@@ -1,12 +1,5 @@
 import { Link } from 'react-router-dom';
-import {
-    Monitor,
-    Activity,
-    Timer,
-    AlertCircle,
-    Car,
-    RefreshCw,
-} from 'lucide-react';
+import { Activity, AlertCircle, Building2, Car, RefreshCw, Search, Timer } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -34,33 +27,29 @@ export function QueueStatus() {
     const branches = data?.branches ?? [];
 
     return (
-        <section className="py-32 bg-gray-50/50 relative overflow-hidden" dir="rtl" id="queue-status">
-            <div className="absolute top-0 left-0 w-64 h-64 bg-brand-secondary-10 rounded-full blur-3xl" />
-
+        <section className="sf-section-muted py-20 relative overflow-hidden" dir="rtl" id="queue-status">
             <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
-                <div className="flex flex-col lg:flex-row items-end justify-between gap-10 mb-20">
-                    <div className="space-y-6 text-center lg:text-start max-w-2xl mx-auto lg:mx-0">
-                        <Badge className="bg-brand-secondary-10 text-brand-primary hover:bg-brand-secondary-20 border-none font-bold text-[10px] px-4 py-1 uppercase tracking-widest">
-                            Live Status
-                        </Badge>
-                        <h2 className="text-4xl md:text-5xl font-bold text-brand-primary">
-                            حالة الطابور <span className="text-brand-secondary font-black">مباشرة</span>
+                <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-8 mb-10">
+                    <div className="max-w-2xl space-y-3">
+                        <p className="sf-kicker">الطابور المباشر</p>
+                        <h2 className="text-3xl md:text-4xl font-bold text-[var(--inst-text)]">
+                            حالة الفروع <span className="text-[var(--brand-primary)]">الآن</span>
                         </h2>
-                        <p className="text-gray-500 text-lg leading-relaxed opacity-80">
-                            تابع حالة الفروع مباشرة ووفّر وقتك باختيار الفرع الأقل ازدحاماً عبر نظامنا الذكي.
+                        <p className="text-[var(--inst-muted)] leading-relaxed">
+                            اختر الفرع الأقل ازدحاماً قبل التحرك. البيانات تُحدَّث تلقائياً من نظام التشغيل.
                         </p>
                     </div>
-                    <div className="flex items-center gap-3 mx-auto lg:mx-0">
-                        <div className="flex items-center gap-4 bg-white px-5 py-3 rounded-xl shadow-sm border border-gray-100/50">
-                            <div className={cn('h-2.5 w-2.5 rounded-full bg-brand-secondary', isFetching && 'animate-pulse')} />
-                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
-                                {isFetching ? 'Updating…' : 'Real-time Updates'}
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2.5 bg-white px-3.5 py-2 rounded-lg border border-[var(--inst-border)]">
+                            <div className={cn('h-2 w-2 rounded-full bg-[var(--brand-secondary)]', isFetching && 'animate-pulse')} />
+                            <span className="text-[12px] font-semibold text-[var(--inst-muted)]">
+                                {isFetching ? 'جاري التحديث…' : 'تحديث مباشر'}
                             </span>
                         </div>
                         <Button
                             variant="outline"
                             size="icon"
-                            className="rounded-xl border-gray-200"
+                            className="rounded-lg border-[var(--inst-border)]"
                             onClick={() => refetch()}
                             disabled={isFetching}
                             aria-label="تحديث حالة الطابور"
@@ -70,88 +59,82 @@ export function QueueStatus() {
                     </div>
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-10">
-                    <Card className="lg:col-span-2 p-10 rounded-2xl border border-gray-100 shadow-xl shadow-gray-200/50 bg-white overflow-hidden relative group">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--brand-secondary)] to-[var(--brand-primary)]" />
-
+                <div className="grid lg:grid-cols-3 gap-6">
+                    <Card className="sf-card lg:col-span-2 p-6 md:p-8 rounded-xl shadow-none overflow-hidden">
                         {isLoading ? (
-                            <div className="grid sm:grid-cols-2 gap-10">
+                            <div className="grid sm:grid-cols-2 gap-5">
                                 {Array.from({ length: 2 }).map((_, index) => (
-                                    <Skeleton key={index} className="h-56 rounded-xl" />
+                                    <Skeleton key={index} className="h-52 rounded-xl" />
                                 ))}
                             </div>
                         ) : isError || branches.length === 0 ? (
-                            <div className="py-16 text-center space-y-4">
-                                <AlertCircle className="h-10 w-10 text-amber-500 mx-auto" />
-                                <p className="text-gray-600 font-medium">تعذّر تحميل حالة الطابور حالياً.</p>
+                            <div className="py-14 text-center space-y-3">
+                                <AlertCircle className="h-9 w-9 text-amber-600 mx-auto" />
+                                <p className="text-[var(--inst-text)] font-semibold">تعذّر تحميل حالة الطابور حالياً.</p>
                                 <Button variant="outline" onClick={() => refetch()}>
                                     إعادة المحاولة
                                 </Button>
                             </div>
                         ) : (
-                            <div className="grid sm:grid-cols-2 gap-10">
+                            <div className="grid sm:grid-cols-2 gap-5">
                                 {branches.map((branch) => (
                                     <div
                                         key={branch.branch_id}
-                                        className="space-y-8 p-6 rounded-xl bg-gray-50/50 border border-gray-100 transition-all hover:bg-white hover:shadow-lg"
+                                        className="sf-card-accent space-y-5 p-5 rounded-xl bg-[var(--inst-silver)] border border-[var(--inst-border)]"
                                     >
-                                        <div className="flex items-start justify-between">
+                                        <div className="flex items-start justify-between gap-3">
                                             <div>
-                                                <h3 className="text-xl font-bold text-gray-900 mb-2">{branch.branch_name}</h3>
+                                                <h3 className="text-lg font-bold text-[var(--inst-text)]">{branch.branch_name}</h3>
                                                 {branch.city && (
-                                                    <p className="text-xs text-gray-400 mb-2">{branch.city}</p>
+                                                    <p className="text-[12px] text-[var(--inst-muted)] mt-1">{branch.city}</p>
                                                 )}
                                                 <Badge
                                                     className={cn(
-                                                        'font-bold text-[9px] uppercase tracking-wider',
+                                                        'mt-2 font-bold text-[11px] border',
                                                         branch.load_percent > 50
-                                                            ? 'bg-amber-50 text-amber-700 border-amber-100'
-                                                            : 'bg-brand-secondary-10 text-brand-primary border-brand-secondary-20',
+                                                            ? 'bg-amber-50 text-amber-800 border-amber-100'
+                                                            : 'bg-brand-secondary-10 text-brand-primary border-transparent',
                                                     )}
                                                 >
                                                     {branch.status_label}
                                                 </Badge>
                                             </div>
-                                            <div className="h-12 w-12 rounded-xl bg-white shadow-sm flex items-center justify-center text-brand-secondary border border-gray-50">
-                                                <Monitor className="h-5 w-5" />
+                                            <div className="h-10 w-10 rounded-lg bg-white border border-[var(--inst-border)] flex items-center justify-center text-[var(--brand-primary)]">
+                                                <Building2 className="h-4 w-4" />
                                             </div>
                                         </div>
 
-                                        <div className="space-y-3">
-                                            <div className="flex justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
-                                                <span>Current Load</span>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between text-[12px] font-semibold text-[var(--inst-muted)]">
+                                                <span>نسبة الإشغال</span>
                                                 <span>{branch.load_percent}%</span>
                                             </div>
-                                            <div className="h-1.5 w-full bg-gray-200/50 rounded-full overflow-hidden">
+                                            <div className="h-1.5 w-full bg-white rounded-full overflow-hidden border border-[var(--inst-border)]">
                                                 <div
                                                     className={cn(
-                                                        'h-full transition-all duration-1000',
-                                                        branch.load_percent > 70 ? 'bg-amber-500' : 'bg-brand-secondary',
+                                                        'h-full transition-all duration-700',
+                                                        branch.load_percent > 70 ? 'bg-amber-500' : 'bg-[var(--brand-secondary)]',
                                                     )}
                                                     style={{ width: `${branch.load_percent}%` }}
                                                 />
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                                                    Wait Time
-                                                </p>
-                                                <div className="flex items-center gap-2">
-                                                    <Timer className="h-4 w-4 text-brand-secondary opacity-60" />
-                                                    <span className="text-base font-bold text-gray-900">
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="bg-white p-3 rounded-lg border border-[var(--inst-border)]">
+                                                <p className="text-[11px] font-semibold text-[var(--inst-muted)] mb-1">الانتظار</p>
+                                                <div className="flex items-center gap-1.5">
+                                                    <Timer className="h-4 w-4 text-[var(--brand-primary)]" />
+                                                    <span className="text-sm font-bold text-[var(--inst-text)]">
                                                         {formatWaitTime(branch.estimated_wait_minutes)}
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                                                    In Queue
-                                                </p>
-                                                <div className="flex items-center gap-2">
-                                                    <Car className="h-4 w-4 text-brand-secondary opacity-60" />
-                                                    <span className="text-base font-bold text-gray-900">
+                                            <div className="bg-white p-3 rounded-lg border border-[var(--inst-border)]">
+                                                <p className="text-[11px] font-semibold text-[var(--inst-muted)] mb-1">في الطابور</p>
+                                                <div className="flex items-center gap-1.5">
+                                                    <Car className="h-4 w-4 text-[var(--brand-primary)]" />
+                                                    <span className="text-sm font-bold text-[var(--inst-text)]">
                                                         {branch.waiting_count}
                                                     </span>
                                                 </div>
@@ -159,8 +142,9 @@ export function QueueStatus() {
                                         </div>
 
                                         {branch.current_number != null && (
-                                            <p className="text-xs text-gray-500 font-medium">
-                                                الرقم الحالي: <span className="font-bold text-brand-primary">{branch.current_number}</span>
+                                            <p className="text-[12px] text-[var(--inst-muted)] font-medium">
+                                                الرقم الحالي:{' '}
+                                                <span className="font-bold text-[var(--brand-primary)]">{branch.current_number}</span>
                                             </p>
                                         )}
                                     </div>
@@ -169,30 +153,26 @@ export function QueueStatus() {
                         )}
                     </Card>
 
-                    <Card className="p-10 rounded-2xl border border-brand-primary-20 shadow-xl bg-brand-primary text-white relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-brand-secondary-10 rounded-full blur-2xl" />
-                        <h3 className="text-2xl font-bold mb-10 relative z-10">نظام إدارة الوقت</h3>
-                        <div className="space-y-10 relative z-10">
+                    <Card className="p-7 rounded-xl border-0 shadow-none text-white relative overflow-hidden bg-[var(--inst-teal)]">
+                        <h3 className="text-xl font-bold mb-8">نظام إدارة الوقت</h3>
+                        <div className="space-y-7">
                             {[
-                                { icon: Activity, title: 'رصد فوري', desc: 'نظام ذكي يرصد عدد السيارات وحالة كل منصة غسيل.' },
-                                { icon: Timer, title: 'توقع دقيق', desc: 'خوارزميات متقدمة لحساب وقت الانتظار بناءً على الخدمات.' },
-                                { icon: AlertCircle, title: 'تتبع طلبك', desc: 'أدخل رقم الفاتورة من إيصال الكاشير لمتابعة سيارتك.' },
-                            ].map((item, index) => (
-                                <div key={index} className="flex gap-5">
-                                    <div className="h-11 w-11 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/5">
-                                        <item.icon className="h-5 w-5 text-brand-secondary" />
+                                { icon: Activity, title: 'رصد فوري', desc: 'يتابع النظام عدد السيارات وحالة كل منصة غسيل.' },
+                                { icon: Timer, title: 'توقع دقيق', desc: 'حساب الانتظار حسب الخدمة والحمل التشغيلي.' },
+                                { icon: Search, title: 'تتبع الطلب', desc: 'أدخل رقم الفاتورة من إيصال الكاشير لمتابعة سيارتك.' },
+                            ].map((item) => (
+                                <div key={item.title} className="flex gap-3.5">
+                                    <div className="h-10 w-10 rounded-lg bg-white/10 flex items-center justify-center shrink-0 border border-white/10">
+                                        <item.icon className="h-4 w-4 text-[var(--brand-secondary)]" />
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-lg mb-1.5 text-white/95">{item.title}</h4>
-                                        <p className="text-white/40 text-xs leading-relaxed">{item.desc}</p>
+                                        <h4 className="font-bold text-white mb-1">{item.title}</h4>
+                                        <p className="text-white/55 text-[13px] leading-relaxed">{item.desc}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <Button
-                            asChild
-                            className="mt-10 w-full rounded-xl bg-brand-secondary text-white hover:opacity-90 relative z-10"
-                        >
+                        <Button asChild className="sf-cta-accent mt-8 w-full rounded-lg shadow-none font-bold">
                             <Link to="/track">تتبع طلبي</Link>
                         </Button>
                     </Card>

@@ -8,9 +8,9 @@ export function QueuePage() {
     const { data: branches } = useStorefrontBranches();
 
     return (
-        <div className="min-h-screen bg-white" dir="rtl">
+        <div className="sf-shell min-h-screen" dir="rtl">
             <PublicHeader profile={profile} />
-            <main className="pt-40 pb-24">
+            <main className="pt-24 pb-16">
                 <QueueStatus />
             </main>
             <PublicFooter profile={profile} branches={branches} />

@@ -4,8 +4,8 @@ import { ar } from 'date-fns/locale';
 import { ArrowRight, CalendarDays, CheckCircle2, Loader2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { TenantMarketingFooter } from '@/components/marketing/TenantMarketingFooter';
-import { TenantMarketingHeader } from '@/components/marketing/TenantMarketingHeader';
+import { PublicFooter } from '@/components/public/Footer';
+import { PublicHeader } from '@/components/public/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -161,16 +161,17 @@ export function PublicBookingPage() {
     const pricing = confirmation?.pricing ?? previewPricing;
 
     return (
-        <div className="min-h-screen bg-background">
-            <TenantMarketingHeader profile={profile} />
+        <div className="sf-shell min-h-screen" dir="rtl">
+            <PublicHeader profile={profile} />
 
-            <main className="mx-auto max-w-3xl px-4 py-10 lg:px-6">
+            <main className="mx-auto max-w-3xl px-4 pt-28 pb-16 lg:px-6">
                 <div className="mb-8">
                     <Button variant="ghost" size="sm" asChild>
-                        <Link to="/">← العودة للرئيسية</Link>
+                        <Link to="/">العودة للرئيسية</Link>
                     </Button>
-                    <h1 className="mt-4 text-3xl font-bold">احجز موعدك — {businessName}</h1>
-                    <p className="mt-2 text-muted-foreground">
+                    <p className="sf-kicker mt-5">الحجز</p>
+                    <h1 className="mt-2 text-3xl font-bold text-[var(--inst-text)]">احجز موعدك — {businessName}</h1>
+                    <p className="mt-2 text-[var(--inst-muted)]">
                         اختر الفرع والخدمة والموعد، ثم أدخل بياناتك. العملية بسيطة ولا تحتاج أكثر من دقيقتين.
                     </p>
                 </div>
@@ -589,7 +590,7 @@ export function PublicBookingPage() {
                 )}
             </main>
 
-            <TenantMarketingFooter profile={profile} branches={branches} />
+            <PublicFooter profile={profile} branches={branches} />
         </div>
     );
 }

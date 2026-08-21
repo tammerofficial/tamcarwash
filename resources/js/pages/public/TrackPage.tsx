@@ -66,30 +66,28 @@ export function TrackPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50/50" dir="rtl">
+        <div className="sf-shell min-h-screen" dir="rtl">
             <PublicHeader profile={profile} />
 
-            <main className="pt-48 pb-24">
+            <main className="pt-28 pb-20">
                 <div className="mx-auto max-w-3xl px-4 lg:px-8">
-                    <div className="text-center mb-16 space-y-5 max-w-2xl mx-auto">
-                        <Badge className="bg-brand-secondary-10 text-brand-primary border-none font-bold text-[10px] px-4 py-1 tracking-widest uppercase">
-                            Track Status
-                        </Badge>
-                        <h1 className="text-4xl md:text-5xl font-bold text-brand-primary">
-                            تتبع <span className="text-brand-secondary font-black">طلبك</span>
+                    <div className="mb-10 space-y-3">
+                        <p className="sf-kicker">تتبع الطلب</p>
+                        <h1 className="text-3xl md:text-5xl font-bold text-[var(--inst-text)]">
+                            تتبع <span className="text-[var(--brand-primary)]">طلبك</span>
                         </h1>
-                        <p className="text-gray-500 text-lg opacity-80 leading-relaxed">
-                            أدخل رقم الفاتورة المطبوع على إيصال الكاشير (POS) لمتابعة حالة سيارتك وموقعك في الطابور.
+                        <p className="text-[var(--inst-muted)] leading-relaxed">
+                            أدخل رقم الفاتورة المطبوع على إيصال الكاشير لمتابعة حالة سيارتك وموقعك في الطابور.
                         </p>
                     </div>
 
-                    <Card className="p-2 rounded-2xl border border-gray-100 shadow-2xl shadow-gray-200/50 bg-white mb-12">
+                    <Card className="sf-card p-2 rounded-xl shadow-none mb-10">
                         <form className="flex flex-col sm:flex-row gap-2" onSubmit={handleSearch}>
                             <div className="relative flex-1">
-                                <Receipt className="absolute right-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                <Receipt className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--inst-muted)]" />
                                 <Input
-                                    className="h-16 pr-14 pl-6 rounded-xl border-none bg-gray-50/50 text-lg font-bold placeholder:text-gray-400 focus-visible:ring-brand-secondary"
-                                    placeholder="رقم الفاتورة (مثال: WASH-INV-LIVE-001)"
+                                    className="h-14 pr-12 pl-5 rounded-lg border-none bg-[var(--inst-silver)] text-base font-bold placeholder:text-[var(--inst-muted)]"
+                                    placeholder="رقم الفاتورة"
                                     value={trackingNumber}
                                     onChange={(event) => setTrackingNumber(event.target.value)}
                                     autoComplete="off"
@@ -97,7 +95,7 @@ export function TrackPage() {
                             </div>
                             <Button
                                 type="submit"
-                                className="h-16 px-10 rounded-xl font-bold text-lg bg-brand-primary hover:opacity-90 shadow-xl transition-all active:scale-[0.98]"
+                                className="sf-cta h-14 px-8 rounded-lg font-bold text-base shadow-none"
                                 disabled={isSearching}
                             >
                                 <Search className="me-2 h-5 w-5" />
@@ -117,17 +115,17 @@ export function TrackPage() {
                     )}
 
                     {result ? (
-                        <Card className="p-10 rounded-2xl border border-gray-100 shadow-2xl shadow-gray-200/50 bg-white animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-12 pb-10 border-b border-gray-100">
+                        <Card className="sf-card p-8 rounded-xl shadow-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-10 pb-8 border-b border-[var(--inst-border)]">
                                 <div className="flex items-center gap-5">
-                                    <div className="h-16 w-16 rounded-xl bg-brand-secondary-10 flex items-center justify-center text-brand-secondary border border-brand-secondary-20">
-                                        <Car className="h-8 w-8" />
+                                    <div className="h-14 w-14 rounded-lg bg-[var(--inst-silver)] flex items-center justify-center text-[var(--brand-primary)] border border-[var(--inst-border)]">
+                                        <Car className="h-7 w-7" />
                                     </div>
                                     <div>
-                                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1.5 text-start">
-                                            License Plate
+                                        <p className="text-[12px] font-semibold text-[var(--inst-muted)] mb-1 text-start">
+                                            رقم اللوحة
                                         </p>
-                                        <p className="text-2xl font-bold text-gray-900 text-start tracking-wider">
+                                        <p className="text-2xl font-bold text-[var(--inst-text)] text-start tracking-wider">
                                             {result.vehicle_plate_masked ?? '—'}
                                         </p>
                                         {result.branch_name && (
@@ -225,8 +223,8 @@ export function TrackPage() {
                                 <div className="mt-8 p-6 rounded-xl bg-amber-50/50 border border-amber-100/50 flex gap-5">
                                     <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
                                     <div>
-                                        <p className="text-[10px] font-bold text-amber-900 uppercase tracking-widest mb-1.5 text-start">
-                                            Note to Customer
+                                        <p className="text-[12px] font-bold text-amber-900 mb-1.5 text-start">
+                                            تنبيه للعميل
                                         </p>
                                         <p className="text-sm text-amber-800 leading-relaxed font-medium text-start">
                                             سيارتك جاهزة للاستلام. يرجى التوجه إلى الفرع في أقرب وقت.

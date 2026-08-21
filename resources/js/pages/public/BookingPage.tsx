@@ -2,30 +2,28 @@ import { useStorefrontProfile } from '@/hooks/useStorefront';
 import { PublicHeader } from '@/components/public/Header';
 import { PublicFooter } from '@/components/public/Footer';
 import { BookingWidget } from '@/components/public/BookingWidget';
-import { Badge } from '@/components/ui/badge';
 import { ShieldCheck, Info } from 'lucide-react';
 
 export function BookingPage() {
     const { data: profile } = useStorefrontProfile();
 
     return (
-        <div className="min-h-screen bg-gray-50/50" dir="rtl">
+        <div className="sf-shell min-h-screen" dir="rtl">
             <PublicHeader profile={profile} />
 
-            <main className="pt-40 pb-32">
+            <main className="pt-28 pb-20">
                 <div className="mx-auto max-w-7xl px-4 lg:px-8">
-                    <div className="grid lg:grid-cols-3 gap-16 items-start">
-                        <div className="lg:col-span-1 space-y-10 lg:sticky lg:top-40">
-                            <div className="space-y-6">
-                                <Badge className="bg-brand-secondary-10 text-brand-primary border-none font-bold text-[10px] px-4 py-1 uppercase tracking-[0.2em]">
-                                    Direct Booking
-                                </Badge>
-                                <h1 className="text-4xl md:text-5xl font-bold text-brand-primary leading-[1.2]">
-                                    احجز موعد <br />
-                                    <span className="text-brand-secondary font-black">تألق سيارتك</span>
+                    <div className="grid lg:grid-cols-3 gap-12 items-start">
+                        <div className="lg:col-span-1 space-y-8 lg:sticky lg:top-28">
+                            <div className="space-y-4">
+                                <p className="sf-kicker">الحجز المباشر</p>
+                                <h1 className="text-3xl md:text-4xl font-bold text-[var(--inst-text)] leading-[1.25]">
+                                    احجز موعد
+                                    <br />
+                                    <span className="text-[var(--brand-primary)]">عناية سيارتك</span>
                                 </h1>
-                                <p className="text-gray-500 text-lg leading-relaxed opacity-80">
-                                    نظام الحجز الذكي يضمن لك الأولوية في الخدمة وتوفير وقتك الثمين.
+                                <p className="text-[var(--inst-muted)] leading-relaxed">
+                                    أكمل الحجز في خطوات واضحة: الفرع، الخدمة، ثم الموعد.
                                 </p>
                             </div>
 

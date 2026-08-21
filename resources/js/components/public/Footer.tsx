@@ -1,82 +1,58 @@
 import { Link } from 'react-router-dom';
-import { 
-    Droplets, 
-    Facebook, 
-    Instagram, 
-    Linkedin, 
-    Mail, 
-    Phone, 
-    Twitter, 
-    ChevronLeft,
-    ShieldCheck,
-    CreditCard
-} from 'lucide-react';
-import { getTenantDisplayName, getTenantPhone } from '@/hooks/useStorefront';
-import type { StorefrontProfile, Branch } from '@/types/api';
+import { CreditCard, Droplets, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
+import { getBranchAddress, getTenantDisplayName, getTenantPhone } from '@/hooks/useStorefront';
+import type { StorefrontBranch, StorefrontProfile } from '@/types/api';
 
 interface PublicFooterProps {
     profile?: StorefrontProfile | null;
-    branches?: Branch[] | null;
+    branches?: StorefrontBranch[] | null;
 }
 
-export function PublicFooter({ profile }: PublicFooterProps) {
+export function PublicFooter({ profile, branches }: PublicFooterProps) {
     const businessName = getTenantDisplayName(profile);
     const contactPhone = getTenantPhone(profile);
-
+    const contactEmail = profile?.email ?? 'info@tammer.om';
+    const primaryAddress = getBranchAddress(branches?.[0], profile);
     const currentYear = new Date().getFullYear();
+    const tagline = profile?.branding?.tagline ?? 'عناية سيارات احترافية';
 
     return (
-        <footer className="relative bg-brand-primary-dark pt-24 pb-12 text-white overflow-hidden" dir="rtl">
-            <div className="absolute top-0 right-0 h-96 w-96 bg-brand-secondary-10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
-            
+        <footer className="sf-footer relative pt-16 pb-8 text-white" dir="rtl">
             <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
-                <div className="grid gap-16 lg:grid-cols-4 lg:gap-8">
-                    <div className="space-y-8">
-                        <Link to="/" className="flex items-center gap-4">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-secondary shadow-xl">
-                                <Droplets className="h-7 w-7 text-white" />
+                <div className="grid gap-12 lg:grid-cols-4">
+                    <div className="space-y-5">
+                        <Link to="/" className="flex items-center gap-3">
+                            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--brand-secondary)]">
+                                <Droplets className="h-5 w-5 text-white" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-2xl font-bold tracking-tight">{businessName}</span>
-                                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-secondary-60">Professional Car Care</span>
+                                <span className="text-lg font-bold tracking-tight">{businessName}</span>
+                                <span className="text-[11px] font-semibold text-white/50">{tagline}</span>
                             </div>
                         </Link>
-                        <p className="text-white/50 text-sm leading-relaxed max-w-xs">
-                            نحن نضع معايير جديدة للعناية بالسيارات في سلطنة عمان، من خلال دمج الخبرة الفنية مع أرقى مواد الحماية العالمية.
+                        <p className="text-white/55 text-[13px] leading-relaxed max-w-xs">
+                            مؤسسة متخصصة في عناية السيارات: تشغيل منضبط، مواد معتمدة، وتجربة واضحة للعميل من الحجز حتى التسليم.
                         </p>
-                        <div className="flex items-center gap-4">
-                            {[Instagram, Twitter, Facebook, Linkedin].map((Icon, i) => (
-                                <a 
-                                    key={i} 
-                                    href="#" 
-                                    className="h-10 w-10 flex items-center justify-center rounded-lg bg-white/5 hover:bg-brand-secondary hover:text-white transition-all duration-300 border border-white/5"
-                                >
-                                    <Icon className="h-4 w-4 opacity-70" />
-                                </a>
-                            ))}
-                        </div>
                     </div>
 
                     <div>
-                        <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-brand-secondary-60 mb-10 flex items-center gap-3">
-                            <span className="h-px w-8 bg-brand-secondary-20" />
-                            Quick Links
-                        </h4>
-                        <ul className="space-y-4">
+                        <h4 className="text-[13px] font-bold text-white mb-5">روابط سريعة</h4>
+                        <ul className="space-y-2.5">
                             {[
                                 { to: '/', label: 'الرئيسية' },
-                                { to: '/services', label: 'خدماتنا' },
+                                { to: '/services', label: 'الخدمات' },
                                 { to: '/pricing', label: 'الأسعار' },
                                 { to: '/branches', label: 'الفروع' },
                                 { to: '/book', label: 'حجز موعد' },
+                                { to: '/queue', label: 'حالة الطابور' },
                                 { to: '/track', label: 'تتبع الطلب' },
+                                { to: '/login', label: 'دخول الموظفين' },
                             ].map((item) => (
                                 <li key={item.to}>
-                                    <Link 
-                                        to={item.to} 
-                                        className="text-white/50 hover:text-brand-secondary flex items-center gap-2 group transition-colors text-sm font-medium"
+                                    <Link
+                                        to={item.to}
+                                        className="text-[13px] font-medium text-white/55 hover:text-[var(--brand-secondary)]"
                                     >
-                                        <ChevronLeft className="h-3.5 w-3.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                                         {item.label}
                                     </Link>
                                 </li>
@@ -85,67 +61,72 @@ export function PublicFooter({ profile }: PublicFooterProps) {
                     </div>
 
                     <div>
-                        <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-brand-secondary-60 mb-10 flex items-center gap-3">
-                            <span className="h-px w-8 bg-brand-secondary-20" />
-                            Contact
-                        </h4>
-                        <ul className="space-y-6">
+                        <h4 className="text-[13px] font-bold text-white mb-5">التواصل</h4>
+                        <ul className="space-y-4">
                             <li>
-                                <a href={`tel:${contactPhone}`} className="flex items-center gap-5 group">
-                                    <div className="h-11 w-11 flex items-center justify-center rounded-xl bg-white/5 group-hover:bg-brand-secondary group-hover:text-white transition-all border border-white/5 shadow-sm">
-                                        <Phone className="h-4 w-4" />
-                                    </div>
+                                <a href={`tel:${contactPhone}`} className="flex items-start gap-3 group">
+                                    <Phone className="h-4 w-4 mt-0.5 text-[var(--brand-secondary)]" />
                                     <div>
-                                        <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-brand-secondary-60 mb-0.5">Contact Number</p>
-                                        <p className="font-bold text-base">{contactPhone}</p>
+                                        <p className="text-[11px] font-semibold text-white/40 mb-0.5">الهاتف</p>
+                                        <p className="font-bold text-sm">{contactPhone}</p>
                                     </div>
                                 </a>
                             </li>
                             <li>
-                                <a href="mailto:info@tammer.om" className="flex items-center gap-5 group">
-                                    <div className="h-11 w-11 flex items-center justify-center rounded-xl bg-white/5 group-hover:bg-brand-secondary group-hover:text-white transition-all border border-white/5 shadow-sm">
-                                        <Mail className="h-4 w-4" />
-                                    </div>
+                                <a href={`mailto:${contactEmail}`} className="flex items-start gap-3 group">
+                                    <Mail className="h-4 w-4 mt-0.5 text-[var(--brand-secondary)]" />
                                     <div>
-                                        <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-brand-secondary-60 mb-0.5">Email Address</p>
-                                        <p className="font-bold text-base">info@tammer.om</p>
+                                        <p className="text-[11px] font-semibold text-white/40 mb-0.5">البريد</p>
+                                        <p className="font-bold text-sm">{contactEmail}</p>
                                     </div>
                                 </a>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <MapPin className="h-4 w-4 mt-0.5 text-[var(--brand-secondary)]" />
+                                <div>
+                                    <p className="text-[11px] font-semibold text-white/40 mb-0.5">العنوان</p>
+                                    <p className="font-medium text-sm text-white/80">{primaryAddress}</p>
+                                </div>
                             </li>
                         </ul>
                     </div>
 
-                    <div className="lg:ps-8">
-                        <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-brand-secondary-60 mb-10 flex items-center gap-3">
-                            <span className="h-px w-8 bg-brand-secondary-20" />
-                            Premium Care
-                        </h4>
-                        <div className="space-y-5">
-                            <div className="p-5 rounded-xl bg-white/5 border border-white/5 shadow-sm">
-                                <div className="flex items-center gap-3 mb-2.5">
-                                    <ShieldCheck className="h-4 w-4 text-brand-secondary" />
-                                    <span className="text-xs font-bold uppercase tracking-wider">Quality Assurance</span>
+                    <div>
+                        <h4 className="text-[13px] font-bold text-white mb-5">التزام التشغيل</h4>
+                        <div className="space-y-3">
+                            <div className="p-4 rounded-xl bg-white/6 border border-white/8">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                    <ShieldCheck className="h-4 w-4 text-[var(--brand-secondary)]" />
+                                    <span className="text-[13px] font-bold">ضمان الجودة</span>
                                 </div>
-                                <p className="text-[11px] text-white/30 leading-relaxed font-medium">نضمن لك أفضل حماية لطلاء سيارتك باستخدام مواد عالية الجودة.</p>
+                                <p className="text-[12px] text-white/45 leading-relaxed">
+                                    مواد معتمدة ومعايير ثابتة لحماية الطلاء والمقصورة.
+                                </p>
                             </div>
-                            <div className="p-5 rounded-xl bg-white/5 border border-white/5 shadow-sm">
-                                <div className="flex items-center gap-3 mb-2.5">
-                                    <CreditCard className="h-4 w-4 text-brand-secondary" />
-                                    <span className="text-xs font-bold uppercase tracking-wider">Secure Payment</span>
+                            <div className="p-4 rounded-xl bg-white/6 border border-white/8">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                    <CreditCard className="h-4 w-4 text-[var(--brand-secondary)]" />
+                                    <span className="text-[13px] font-bold">دفع آمن</span>
                                 </div>
-                                <p className="text-[11px] text-white/30 leading-relaxed font-medium">خيارات دفع متعددة وآمنة تناسب احتياجاتك.</p>
+                                <p className="text-[12px] text-white/45 leading-relaxed">
+                                    خيارات دفع واضحة تناسب الأفراد والشركات.
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-24 pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8">
-                    <p className="text-white/20 text-[10px] font-bold uppercase tracking-widest">
-                        © {currentYear} {businessName}. All Rights Reserved. 
+                <div className="mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p className="text-white/40 text-[12px] font-medium">
+                        © {currentYear} {businessName}. جميع الحقوق محفوظة.
                     </p>
-                    <div className="flex items-center gap-10">
-                        <a href="#" className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 hover:text-brand-secondary transition-colors">Privacy</a>
-                        <a href="#" className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 hover:text-brand-secondary transition-colors">Terms</a>
+                    <div className="flex items-center gap-6">
+                        <Link to="/track" className="text-[12px] font-semibold text-white/40 hover:text-[var(--brand-secondary)]">
+                            تتبع طلبي
+                        </Link>
+                        <Link to="/book" className="text-[12px] font-semibold text-white/40 hover:text-[var(--brand-secondary)]">
+                            احجز الآن
+                        </Link>
                     </div>
                 </div>
             </div>

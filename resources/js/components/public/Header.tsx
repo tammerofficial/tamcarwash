@@ -1,9 +1,8 @@
 import { Link, NavLink } from 'react-router-dom';
-import { CalendarDays, Droplets, LogIn, Menu, Phone, X, LayoutDashboard, Monitor } from 'lucide-react';
+import { CalendarDays, Droplets, LogIn, Menu, Phone, X, LayoutDashboard } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { getTenantDisplayName, getTenantPhone } from '@/hooks/useStorefront';
-import { getAppTagline } from '@/lib/branding';
 import type { StorefrontProfile } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/AuthProvider';
@@ -16,18 +15,15 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const { isAuthenticated } = useAuth();
-    
+
     const businessName = getTenantDisplayName(profile);
     const contactPhone = getTenantPhone(profile);
     const logoUrl = profile?.branding?.logo_url;
-    const tagline = profile?.branding?.tagline ?? getAppTagline();
-
-    const primaryColor = 'var(--brand-primary)';
-    const secondaryColor = 'var(--brand-secondary)';
+    const tagline = profile?.branding?.tagline ?? 'عناية سيارات احترافية';
 
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+            setIsScrolled(window.scrollY > 12);
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
@@ -45,127 +41,86 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
     return (
         <header
             className={cn(
-                'fixed top-0 z-50 w-full transition-all duration-500',
-                isScrolled 
-                    ? 'border-b border-gray-100 bg-white/95 backdrop-blur-md shadow-sm py-3' 
-                    : 'bg-white/90 backdrop-blur-sm py-6 shadow-sm'
+                'sf-header relative fixed top-0 z-50 w-full transition-[padding] duration-300',
+                isScrolled ? 'py-2.5' : 'py-3.5',
             )}
         >
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 lg:px-8">
-                <Link to="/" className="flex items-center gap-4 group">
-                    <div className="relative">
-                        <div
-                            className={cn(
-                                "flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-300 group-hover:shadow-lg",
-                                !logoUrl && "text-white shadow-lg"
-                            )}
-                            style={{ backgroundColor: !logoUrl ? primaryColor : 'transparent' }}
-                        >
-                            {logoUrl ? (
-                                <img src={logoUrl} alt={businessName} className="h-full w-full object-contain" />
-                            ) : (
-                                <Droplets className="h-6 w-6" />
-                            )}
-                        </div>
+                <Link to="/" className="flex items-center gap-3 group">
+                    <div
+                        className={cn(
+                            'flex h-11 w-11 items-center justify-center rounded-lg shrink-0',
+                            !logoUrl && 'text-white',
+                        )}
+                        style={{ backgroundColor: logoUrl ? 'transparent' : 'var(--brand-primary)' }}
+                    >
+                        {logoUrl ? (
+                            <img src={logoUrl} alt={businessName} className="h-full w-full object-contain" />
+                        ) : (
+                            <Droplets className="h-5 w-5" />
+                        )}
                     </div>
-                    <div className="flex flex-col">
-                        <span className={cn(
-                            "text-xl font-bold tracking-tight transition-colors duration-300",
-                            "text-primary"
-                        )}>
+                    <div className="flex flex-col min-w-0">
+                        <span className="text-lg font-bold tracking-tight text-[var(--inst-text)] truncate">
                             {businessName}
                         </span>
-                        <span className={cn(
-                            "text-[10px] font-medium uppercase tracking-[0.2em]",
-                            "text-gray-600"
-                        )}>
-                            {tagline ?? 'Professional Car Care'}
+                        <span className="text-[11px] font-semibold text-[var(--inst-muted)] truncate">
+                            {tagline}
                         </span>
                     </div>
                 </Link>
 
-                <nav className="hidden items-center gap-2 lg:flex">
+                <nav className="hidden items-center gap-0.5 lg:flex">
                     {navItems.map((item) => (
                         <NavLink
                             key={item.to}
                             to={item.to}
-                            className={({ isActive }) => cn(
-                                'relative px-5 py-2 text-sm font-medium transition-all duration-300 hover:text-brand-secondary',
-                                isActive 
-                                    ? 'text-brand-primary'
-                                    : 'text-gray-600',
-                                isActive && "after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-0.5 after:w-4 after:bg-brand-secondary after:rounded-full"
-                            )}
+                            className={({ isActive }) =>
+                                cn(
+                                    'relative px-3.5 py-2 text-[13px] font-semibold transition-colors',
+                                    isActive
+                                        ? 'text-[var(--brand-primary)]'
+                                        : 'text-[var(--inst-text)]/75 hover:text-[var(--brand-primary)]',
+                                    isActive &&
+                                        'after:absolute after:bottom-0 after:inset-x-3 after:h-0.5 after:bg-[var(--brand-secondary)] after:rounded-full',
+                                )
+                            }
                         >
                             {item.label}
                         </NavLink>
                     ))}
                 </nav>
 
-                <div className="hidden items-center gap-6 lg:flex">
-                    <a 
+                <div className="hidden items-center gap-4 lg:flex">
+                    <a
                         href={`tel:${contactPhone}`}
-                        className={cn(
-                            "flex items-center text-sm font-medium transition-colors duration-300",
-                            "text-gray-600 hover:text-brand-secondary"
-                        )}
+                        className="flex items-center text-[13px] font-semibold text-[var(--inst-text)]/80 hover:text-[var(--brand-primary)]"
                     >
-                        <Phone className="me-2 h-4 w-4 opacity-50" />
+                        <Phone className="me-1.5 h-4 w-4 text-[var(--brand-primary)]" />
                         {contactPhone}
                     </a>
-                    
-                    <div className="flex items-center gap-3">
-                        {isAuthenticated ? (
-                            <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                asChild
-                                className={cn(
-                                    "font-medium rounded-lg px-4",
-                                    "text-gray-600 hover:text-brand-secondary hover:bg-brand-secondary-10"
-                                )}
-                            >
-                                <Link to="/dashboard">
-                                    لوحة التحكم
-                                </Link>
-                            </Button>
-                        ) : (
-                            <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                asChild
-                                className={cn(
-                                    "font-medium rounded-lg px-4",
-                                    "text-gray-600 hover:text-brand-secondary hover:bg-brand-secondary-10"
-                                )}
-                            >
-                                <Link to="/login">
-                                    دخول
-                                </Link>
-                            </Button>
-                        )}
 
-                        <Button 
-                            size="sm" 
-                            asChild 
-                            className="rounded-lg font-bold px-6 shadow-md transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-                            style={{ backgroundColor: secondaryColor }}
-                        >
-                            <Link to="/book">
-                                احجز الآن
-                            </Link>
+                    {isAuthenticated ? (
+                        <Button variant="ghost" size="sm" asChild className="font-semibold text-[var(--inst-text)]">
+                            <Link to="/dashboard">لوحة التحكم</Link>
                         </Button>
-                    </div>
+                    ) : (
+                        <Button variant="ghost" size="sm" asChild className="font-semibold text-[var(--inst-text)]">
+                            <Link to="/login">دخول</Link>
+                        </Button>
+                    )}
+
+                    <Button size="sm" asChild className="sf-cta-accent rounded-lg font-bold px-5 h-10 shadow-none">
+                        <Link to="/book">احجز الآن</Link>
+                    </Button>
                 </div>
 
                 <Button
                     variant="ghost"
                     size="icon"
-                    className={cn(
-                        "lg:hidden rounded-xl",
-                        "text-brand-secondary hover:bg-brand-secondary-10"
-                    )}
+                    className="lg:hidden rounded-lg text-[var(--inst-text)]"
                     onClick={() => setMobileOpen((open) => !open)}
+                    aria-label={mobileOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
                 >
                     {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                 </Button>
@@ -173,57 +128,58 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
 
             <div
                 className={cn(
-                    'fixed inset-x-0 top-[72px] bottom-0 z-50 bg-white lg:hidden transition-all duration-300 ease-in-out',
-                    mobileOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0',
+                    'fixed inset-x-0 top-[68px] bottom-0 z-50 bg-white lg:hidden transition-all duration-300 ease-in-out border-t border-[var(--inst-border)]',
+                    mobileOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none',
                 )}
             >
-                <nav className="flex flex-col gap-2 p-6 overflow-y-auto h-full">
+                <nav className="flex flex-col gap-1 p-5 overflow-y-auto h-full">
                     {navItems.map((item) => (
                         <NavLink
                             key={item.to}
                             to={item.to}
                             onClick={() => setMobileOpen(false)}
-                            className={({ isActive }) => cn(
-                                "flex items-center justify-between p-4 rounded-2xl text-lg font-black transition-all",
-                                isActive 
-                                    ? "bg-brand-secondary-10 text-brand-secondary" 
-                                    : "text-gray-600 hover:bg-gray-50"
-                            )}
+                            className={({ isActive }) =>
+                                cn(
+                                    'flex items-center p-4 rounded-xl text-base font-bold',
+                                    isActive
+                                        ? 'bg-brand-secondary-10 text-brand-primary'
+                                        : 'text-[var(--inst-text)] hover:bg-[var(--inst-silver)]',
+                                )
+                            }
                         >
                             {item.label}
-                            <Monitor className="h-5 w-5 opacity-20" />
                         </NavLink>
                     ))}
-                    
-                    <div className="mt-8 grid grid-cols-2 gap-3">
+
+                    <div className="mt-6 grid grid-cols-2 gap-3">
                         {isAuthenticated ? (
-                            <Button variant="outline" asChild className="rounded-2xl h-14 font-black border-2 border-brand-secondary-20 text-brand-secondary">
+                            <Button variant="outline" asChild className="rounded-xl h-12 font-bold border-[var(--inst-border)]">
                                 <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
-                                    <LayoutDashboard className="me-2 h-5 w-5" />
+                                    <LayoutDashboard className="me-2 h-4 w-4" />
                                     لوحة التحكم
                                 </Link>
                             </Button>
                         ) : (
-                            <Button variant="outline" asChild className="rounded-2xl h-14 font-black border-2 border-brand-secondary-20 text-brand-secondary">
+                            <Button variant="outline" asChild className="rounded-xl h-12 font-bold border-[var(--inst-border)]">
                                 <Link to="/login" onClick={() => setMobileOpen(false)}>
-                                    <LogIn className="me-2 h-5 w-5" />
-                                    دخول الموظفين
+                                    <LogIn className="me-2 h-4 w-4" />
+                                    دخول
                                 </Link>
                             </Button>
                         )}
-                        <Button asChild className="rounded-2xl h-14 font-black shadow-xl" style={{ backgroundColor: secondaryColor }}>
+                        <Button asChild className="sf-cta-accent rounded-xl h-12 font-bold shadow-none">
                             <Link to="/book" onClick={() => setMobileOpen(false)}>
-                                <CalendarDays className="me-2 h-5 w-5" />
+                                <CalendarDays className="me-2 h-4 w-4" />
                                 احجز موعدك
                             </Link>
                         </Button>
                     </div>
 
-                    <a 
+                    <a
                         href={`tel:${contactPhone}`}
-                        className="mt-auto flex items-center justify-center gap-3 p-6 rounded-3xl bg-brand-secondary-10 text-brand-secondary font-black text-xl"
+                        className="mt-auto flex items-center justify-center gap-3 p-5 rounded-xl bg-[var(--inst-silver)] text-[var(--inst-text)] font-bold"
                     >
-                        <Phone className="h-6 w-6" />
+                        <Phone className="h-5 w-5 text-[var(--brand-primary)]" />
                         {contactPhone}
                     </a>
                 </nav>

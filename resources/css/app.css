@@ -613,4 +613,131 @@
             radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--inst-teal) 10%, transparent) 1px, transparent 0);
         background-size: 26px 26px;
     }
+
+    /* ── Tenant public storefront — institutional luxury chrome ── */
+    .sf-shell {
+        background-color: var(--inst-bg);
+        color: var(--inst-text);
+    }
+
+    .sf-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid var(--inst-border);
+        box-shadow: 0 1px 0 color-mix(in srgb, var(--inst-teal) 6%, transparent);
+    }
+
+    .sf-header::before {
+        content: '';
+        position: absolute;
+        inset-inline: 0;
+        top: 0;
+        height: 3px;
+        background: linear-gradient(
+            90deg,
+            var(--inst-teal) 0%,
+            var(--brand-primary) 52%,
+            var(--brand-secondary) 100%
+        );
+    }
+
+    .sf-hero {
+        background-color: var(--inst-teal);
+        background-image:
+            radial-gradient(ellipse at 12% 0%, color-mix(in srgb, var(--brand-primary) 38%, transparent) 0%, transparent 46%),
+            radial-gradient(ellipse at 100% 80%, color-mix(in srgb, var(--brand-secondary) 18%, transparent) 0%, transparent 42%),
+            linear-gradient(
+                155deg,
+                color-mix(in srgb, var(--inst-teal) 42%, var(--brand-primary-dark)) 0%,
+                var(--inst-teal) 48%,
+                color-mix(in srgb, var(--inst-teal) 82%, #000000) 100%
+            );
+    }
+
+    .sf-hero-grid {
+        background-image:
+            linear-gradient(color-mix(in srgb, #ffffff 7%, transparent) 1px, transparent 1px),
+            linear-gradient(90deg, color-mix(in srgb, #ffffff 7%, transparent) 1px, transparent 1px);
+        background-size: 48px 48px;
+    }
+
+    .sf-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--brand-primary);
+    }
+
+    .sf-kicker::before {
+        content: '';
+        width: 1.35rem;
+        height: 2px;
+        background: var(--brand-secondary);
+    }
+
+    .sf-kicker-light {
+        color: color-mix(in srgb, #ffffff 82%, var(--brand-secondary));
+    }
+
+    .sf-kicker-light::before {
+        background: var(--brand-secondary);
+    }
+
+    .sf-card {
+        background: #ffffff;
+        border: 1px solid var(--inst-border);
+        box-shadow: 0 1px 2px color-mix(in srgb, var(--inst-teal) 8%, transparent);
+    }
+
+    .sf-card-accent {
+        border-inline-start: 4px solid var(--brand-primary);
+    }
+
+    .sf-cta {
+        background-color: var(--brand-primary) !important;
+        background-image: none !important;
+        color: #ffffff !important;
+    }
+
+    .sf-cta:hover {
+        background-color: var(--brand-primary-dark) !important;
+        color: #ffffff !important;
+    }
+
+    .sf-cta-accent {
+        background-color: var(--brand-secondary) !important;
+        background-image: none !important;
+        color: #ffffff !important;
+    }
+
+    .sf-cta-accent:hover {
+        filter: brightness(0.94);
+        color: #ffffff !important;
+    }
+
+    .sf-cta-solid {
+        background-color: #ffffff !important;
+        color: var(--inst-teal) !important;
+        border: none !important;
+    }
+
+    .sf-cta-solid:hover {
+        background-color: var(--inst-silver) !important;
+        color: var(--inst-teal) !important;
+    }
+
+    .sf-section-muted {
+        background-color: var(--inst-silver);
+    }
+
+    .sf-footer {
+        background-color: var(--inst-teal);
+        background-image: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--inst-teal) 70%, var(--brand-primary-dark)) 0%,
+            var(--inst-teal) 40%,
+            color-mix(in srgb, var(--inst-teal) 88%, #000000) 100%
+        );
+    }
 }

@@ -8,9 +8,9 @@ export function BranchesPage() {
     const { data: branches } = useStorefrontBranches();
 
     return (
-        <div className="min-h-screen bg-white" dir="rtl">
+        <div className="sf-shell min-h-screen" dir="rtl">
             <PublicHeader profile={profile} />
-            <main className="pt-40">
+            <main className="pt-24">
                 <BranchesPreview />
             </main>
             <PublicFooter profile={profile} branches={branches} />

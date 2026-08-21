@@ -7,9 +7,9 @@ export function PricingPage() {
     const { data: profile } = useStorefrontProfile();
 
     return (
-        <div className="min-h-screen bg-white" dir="rtl">
+        <div className="sf-shell min-h-screen" dir="rtl">
             <PublicHeader profile={profile} />
-            <main className="pt-40">
+            <main className="pt-24">
                 <PricingPreview />
             </main>
             <PublicFooter profile={profile} />
