@@ -63,32 +63,38 @@ export function MarketingHomePage() {
     };
 
     return (
-        <div className="marketing-surface min-h-screen font-sans text-slate-900" dir="rtl">
+        <div className="min-h-screen bg-[#020617] font-sans text-slate-300 selection:bg-brand-primary selection:text-white" dir="rtl">
             <PlatformHeader />
 
-            <main className="relative z-10 pt-28 sm:pt-36 lg:pt-40">
+            <main className="relative z-10 pt-28 sm:pt-36 lg:pt-44">
+                {/* Background effects */}
+                <div className="absolute inset-0 -z-10 overflow-hidden">
+                    <div className="absolute -top-[10%] left-[10%] size-[500px] rounded-full bg-brand-primary/10 blur-[120px]" />
+                    <div className="absolute top-[20%] -right-[5%] size-[400px] rounded-full bg-brand-secondary/5 blur-[100px]" />
+                </div>
+
                 {/* Hero */}
-                <section className="px-4 pb-16 sm:px-6 lg:px-8 lg:pb-24">
-                    <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:items-center">
-                        <div className="space-y-8 text-right">
-                            <span className="inline-flex items-center gap-2 rounded-full border border-brand-primary/15 bg-white/90 px-4 py-2 text-xs font-black text-brand-primary shadow-sm">
-                                <ShieldCheck className="size-4" />
+                <section className="px-4 pb-20 sm:px-6 lg:px-8 lg:pb-32">
+                    <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-2 lg:items-center">
+                        <div className="space-y-10 text-right">
+                            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-brand-secondary backdrop-blur-md">
+                                <Sparkles className="size-3.5" />
                                 {t('marketing.hero.badge')}
                             </span>
 
-                            <div className="space-y-5">
-                                <h1 className="text-4xl font-black leading-[1.1] tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
+                            <div className="space-y-6">
+                                <h1 className="text-5xl font-black leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
                                     {t('marketing.hero.title')}
                                 </h1>
-                                <p className="max-w-xl text-lg leading-relaxed text-slate-600 sm:text-xl">
+                                <p className="max-w-xl text-lg leading-relaxed text-slate-400 sm:text-xl">
                                     {t('marketing.hero.subtitle')}
                                 </p>
                             </div>
 
-                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                                 <Button
                                     size="lg"
-                                    className="h-13 rounded-2xl bg-brand-primary px-8 text-base font-black text-white shadow-lg shadow-brand-primary/25 hover:bg-brand-primary-dark"
+                                    className="h-14 rounded-2xl bg-brand-primary px-10 text-base font-black text-white shadow-2xl shadow-brand-primary/40 hover:bg-brand-primary/90 hover:scale-[1.02] transition-transform"
                                     asChild
                                 >
                                     <Link to="/register">
@@ -99,7 +105,7 @@ export function MarketingHomePage() {
                                 <Button
                                     size="lg"
                                     variant="outline"
-                                    className="h-13 rounded-2xl border-slate-200 bg-white px-8 text-base font-bold text-slate-700 hover:border-brand-primary/30 hover:bg-brand-primary/5 hover:text-brand-primary"
+                                    className="h-14 rounded-2xl border-white/10 bg-white/5 px-10 text-base font-bold text-white backdrop-blur-md hover:bg-white/10 hover:border-brand-primary/50"
                                     onClick={() => scrollToSection('features')}
                                 >
                                     {t('marketing.hero.ctaSecondary')}
@@ -107,7 +113,7 @@ export function MarketingHomePage() {
                                 <Button
                                     size="lg"
                                     variant="ghost"
-                                    className="h-13 rounded-2xl font-bold text-brand-primary hover:bg-brand-primary/10"
+                                    className="h-14 rounded-2xl font-bold text-slate-400 hover:text-white hover:bg-white/5"
                                     asChild
                                 >
                                     <a href={DEMO_STOREFRONT}>
@@ -116,62 +122,74 @@ export function MarketingHomePage() {
                                 </Button>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                                 {[
                                     { value: t('marketing.stats.orders'), label: t('marketing.stats.ordersLabel') },
-                                    { value: t('marketing.stats.vat'), label: t('marketing.stats.vatLabel') },
+                                    { value: t('marketing.stats.vat'), label: t('marketing.stats.vatLabel'), highlight: true },
                                     { value: t('marketing.stats.branches'), label: t('marketing.stats.branchesLabel') },
                                     { value: t('marketing.stats.loyalty'), label: t('marketing.stats.loyaltyLabel') },
                                 ].map((stat) => (
                                     <div
                                         key={stat.label}
-                                        className="rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm"
+                                        className={cn(
+                                            "rounded-2xl border p-5 backdrop-blur-sm transition-all hover:border-white/20",
+                                            stat.highlight ? "border-brand-primary/30 bg-brand-primary/10" : "border-white/5 bg-white/[0.02]"
+                                        )}
                                     >
-                                        <p className="text-base font-black text-brand-primary sm:text-lg">{stat.value}</p>
-                                        <p className="mt-1 text-[11px] font-bold text-slate-500">{stat.label}</p>
+                                        <p className="text-lg font-black text-white sm:text-xl">{stat.value}</p>
+                                        <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">{stat.label}</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
 
                         {/* Hero visual — simplified dashboard preview */}
-                        <div className="relative">
-                            <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 blur-2xl" />
-                            <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-2xl">
-                                <div className="flex items-center justify-between border-b border-slate-800 bg-brand-primary-dark px-5 py-3 text-white">
-                                    <span className="text-xs font-black">{platformName}</span>
-                                    <span className="rounded-full bg-emerald-500/20 px-3 py-0.5 text-[10px] font-bold text-emerald-300">
-                                        بث مباشر
+                        <div className="relative lg:block">
+                            <div className="absolute -inset-4 rounded-[3rem] bg-gradient-to-br from-brand-primary/30 to-brand-secondary/20 blur-3xl opacity-50" />
+                            <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#0f172a]/80 shadow-2xl backdrop-blur-xl">
+                                <div className="flex items-center justify-between border-b border-white/5 bg-white/[0.02] px-6 py-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex gap-1.5">
+                                            <div className="size-2.5 rounded-full bg-red-500/50" />
+                                            <div className="size-2.5 rounded-full bg-amber-500/50" />
+                                            <div className="size-2.5 rounded-full bg-emerald-500/50" />
+                                        </div>
+                                        <span className="text-xs font-black text-slate-400">{platformName} OS</span>
+                                    </div>
+                                    <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-emerald-400">
+                                        Active Now
                                     </span>
                                 </div>
-                                <div className="space-y-4 p-6">
-                                    <div className="rounded-2xl border border-brand-primary/10 bg-brand-primary/5 p-5">
-                                        <p className="text-xs font-bold text-brand-primary">عمليات اليوم</p>
-                                        <p className="mt-1 text-3xl font-black text-slate-950">548 <span className="text-sm text-slate-400">سيارة</span></p>
+                                <div className="space-y-6 p-8">
+                                    <div className="rounded-3xl border border-white/5 bg-white/[0.03] p-6">
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">عمليات اليوم</p>
+                                        <p className="mt-2 text-4xl font-black text-white">548 <span className="text-sm font-medium text-slate-500">مركبة</span></p>
                                     </div>
-                                    <div className="grid grid-cols-3 gap-3">
+                                    <div className="grid grid-cols-3 gap-4">
                                         {[
-                                            { label: 'انتظار', value: '6', tone: 'amber' },
-                                            { label: 'غسيل', value: '4', tone: 'sky' },
-                                            { label: 'مكتمل', value: '42', tone: 'emerald' },
+                                            { label: 'انتظار', value: '6', color: 'amber' },
+                                            { label: 'غسيل', value: '4', color: 'sky' },
+                                            { label: 'مكتمل', value: '42', color: 'emerald' },
                                         ].map((item) => (
                                             <div
                                                 key={item.label}
-                                                className={cn(
-                                                    'rounded-xl p-3 text-center',
-                                                    item.tone === 'amber' && 'bg-amber-50 text-amber-700',
-                                                    item.tone === 'sky' && 'bg-sky-50 text-sky-700',
-                                                    item.tone === 'emerald' && 'bg-emerald-50 text-emerald-700',
-                                                )}
+                                                className="rounded-2xl bg-white/[0.03] border border-white/5 p-4 text-center"
                                             >
-                                                <p className="text-[10px] font-bold">{item.label}</p>
-                                                <p className="text-xl font-black">{item.value}</p>
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">{item.label}</p>
+                                                <p className={cn(
+                                                    "text-2xl font-black mt-1",
+                                                    item.color === 'amber' && 'text-amber-400',
+                                                    item.color === 'sky' && 'text-sky-400',
+                                                    item.color === 'emerald' && 'text-emerald-400',
+                                                )}>{item.value}</p>
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-xs font-bold text-emerald-800">
-                                        <BadgePercent className="size-4" />
-                                        ض.ق.م 5% — فواتير جاهزة للامتثال
+                                    <div className="flex items-center gap-3 rounded-2xl border border-white/5 bg-white/[0.02] px-5 py-4 text-xs font-bold text-slate-400">
+                                        <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
+                                            <BadgePercent className="size-4" />
+                                        </div>
+                                        فواتير ضريبية فورية بنسبة 5% — امتثال تام
                                     </div>
                                 </div>
                             </div>
@@ -180,20 +198,20 @@ export function MarketingHomePage() {
                 </section>
 
                 {/* Trust strip */}
-                <section className="border-y border-slate-200/80 bg-white py-10">
-                    <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:grid-cols-2 lg:grid-cols-4 sm:px-6 lg:px-8">
+                <section className="border-y border-white/5 bg-white/[0.01] py-12">
+                    <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:grid-cols-2 lg:grid-cols-4 sm:px-6 lg:px-8">
                         {trustKeys.map((key) => {
                             const Icon = trustIcons[key];
                             return (
-                                <div key={key} className="flex items-start gap-4 text-right">
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
-                                        <Icon className="size-6" />
+                                <div key={key} className="flex items-start gap-5 text-right">
+                                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
+                                        <Icon className="size-7" />
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-black text-slate-900">
+                                        <h3 className="text-base font-black text-white">
                                             {t(`marketing.trust.${key}.title`)}
                                         </h3>
-                                        <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                                        <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
                                             {t(`marketing.trust.${key}.description`)}
                                         </p>
                                     </div>
@@ -204,32 +222,32 @@ export function MarketingHomePage() {
                 </section>
 
                 {/* Features */}
-                <section id="features" className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+                <section id="features" className="px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
                     <div className="mx-auto max-w-7xl">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
+                        <div className="mx-auto max-w-3xl text-center">
+                            <h2 className="text-4xl font-black text-white sm:text-5xl">
                                 {t('marketing.features.title')}
                             </h2>
-                            <p className="mt-4 text-lg text-slate-600">
+                            <p className="mt-6 text-lg text-slate-400 leading-relaxed">
                                 {t('marketing.features.subtitle')}
                             </p>
                         </div>
 
-                        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        <div className="mt-20 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                             {featureKeys.map((key) => {
                                 const Icon = featureIcons[key];
                                 return (
                                     <div
                                         key={key}
-                                        className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-brand-primary/20 hover:shadow-md"
+                                        className="group relative overflow-hidden rounded-[2rem] border border-white/5 bg-white/[0.02] p-8 transition-all hover:-translate-y-2 hover:border-brand-primary/30 hover:bg-white/[0.04]"
                                     >
-                                        <div className="flex size-12 items-center justify-center rounded-xl bg-brand-primary text-white">
-                                            <Icon className="size-6" />
+                                        <div className="flex size-14 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-xl shadow-brand-primary/20 group-hover:scale-110 transition-transform">
+                                            <Icon className="size-7" />
                                         </div>
-                                        <h3 className="mt-5 text-lg font-black text-slate-950">
+                                        <h3 className="mt-8 text-xl font-black text-white">
                                             {t(`marketing.features.${key}.title`)}
                                         </h3>
-                                        <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                                        <p className="mt-3 text-base leading-relaxed text-slate-500">
                                             {t(`marketing.features.${key}.description`)}
                                         </p>
                                     </div>
@@ -239,24 +257,67 @@ export function MarketingHomePage() {
                     </div>
                 </section>
 
+                {/* Pricing / Free Proposition */}
+                <section className="px-4 py-24 sm:px-6 lg:px-8 relative overflow-hidden">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] bg-brand-primary/10 blur-[150px] -z-10" />
+                    <div className="mx-auto max-w-5xl rounded-[3rem] border border-brand-primary/30 bg-gradient-to-b from-brand-primary/10 to-transparent p-12 text-center shadow-2xl backdrop-blur-xl sm:p-20">
+                        <div className="mx-auto mb-8 flex size-20 items-center justify-center rounded-3xl bg-brand-primary text-white shadow-2xl shadow-brand-primary/30">
+                            <BadgePercent className="size-10" />
+                        </div>
+                        <h2 className="text-4xl font-black text-white sm:text-5xl">
+                            {t('marketing.pricing.title')}
+                        </h2>
+                        <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-400 leading-relaxed">
+                            {t('marketing.pricing.subtitle')}
+                        </p>
+                        
+                        <div className="mt-12 inline-flex flex-col items-center">
+                            <span className="text-[120px] font-black leading-none text-white tracking-tighter sm:text-[160px]">
+                                0
+                            </span>
+                            <span className="text-2xl font-black text-brand-secondary -mt-4 uppercase tracking-[0.2em]">
+                                OMR / FOREVER
+                            </span>
+                        </div>
+
+                        <div className="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row">
+                            <Button size="lg" className="h-16 rounded-2xl bg-white px-12 text-lg font-black text-[#020617] hover:bg-slate-100 hover:scale-[1.05] transition-all" asChild>
+                                <Link to="/register">{t('marketing.pricing.free.cta')}</Link>
+                            </Button>
+                            <Button size="lg" variant="outline" className="h-16 rounded-2xl border-white/20 bg-white/5 px-12 text-lg font-bold text-white backdrop-blur-md hover:bg-white/10" asChild>
+                                <a href={DEMO_STOREFRONT}>جرّب العرض التجريبي</a>
+                            </Button>
+                        </div>
+
+                        <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm font-bold text-slate-500">
+                            {['لا حدود للفروع', 'دعم فني متميز', 'تحديثات مجانية للأبد', 'فواتير ضريبية قانونية'].map((item) => (
+                                <span key={item} className="flex items-center gap-2">
+                                    <CheckCircle2 className="size-4 text-brand-secondary" />
+                                    {item}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
                 {/* How it works */}
-                <section className="bg-brand-primary-dark px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
+                <section className="bg-white/[0.02] border-y border-white/5 px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
                     <div className="mx-auto max-w-7xl">
                         <div className="text-center">
-                            <h2 className="text-3xl font-black sm:text-4xl">{t('marketing.howItWorks.title')}</h2>
-                            <p className="mt-3 text-slate-300">{t('marketing.howItWorks.subtitle')}</p>
+                            <h2 className="text-4xl font-black text-white sm:text-5xl">{t('marketing.howItWorks.title')}</h2>
+                            <p className="mt-4 text-lg text-slate-400">{t('marketing.howItWorks.subtitle')}</p>
                         </div>
-                        <div className="mt-12 grid gap-6 md:grid-cols-3">
+                        <div className="mt-20 grid gap-8 md:grid-cols-3">
                             {stepKeys.map((key, index) => (
                                 <div
                                     key={key}
-                                    className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
+                                    className="relative rounded-[2rem] border border-white/5 bg-[#0f172a]/50 p-10 backdrop-blur-sm"
                                 >
-                                    <span className="flex size-10 items-center justify-center rounded-xl bg-brand-secondary text-brand-primary-dark text-sm font-black">
+                                    <span className="absolute -top-6 right-10 flex size-14 items-center justify-center rounded-2xl bg-brand-primary text-white text-xl font-black shadow-xl shadow-brand-primary/20">
                                         0{index + 1}
                                     </span>
-                                    <h3 className="mt-4 text-lg font-black">{t(`marketing.howItWorks.${key}.title`)}</h3>
-                                    <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                                    <h3 className="mt-4 text-2xl font-black text-white">{t(`marketing.howItWorks.${key}.title`)}</h3>
+                                    <p className="mt-4 text-base leading-relaxed text-slate-500">
                                         {t(`marketing.howItWorks.${key}.description`)}
                                     </p>
                                 </div>
@@ -265,57 +326,38 @@ export function MarketingHomePage() {
                     </div>
                 </section>
 
-                {/* Pricing teaser */}
-                <section className="px-4 py-20 sm:px-6 lg:px-8">
-                    <div className="mx-auto max-w-4xl rounded-[2rem] border border-brand-primary/15 bg-white p-8 text-center shadow-lg sm:p-12">
-                        <BadgePercent className="mx-auto size-10 text-brand-primary" />
-                        <h2 className="mt-4 text-2xl font-black text-slate-950 sm:text-3xl">
-                            {t('marketing.pricing.title')}
-                        </h2>
-                        <p className="mx-auto mt-3 max-w-xl text-slate-600">
-                            {t('marketing.pricing.subtitle')}
-                        </p>
-                        <p className="mt-4 text-sm font-bold text-brand-primary">
-                            {t('marketing.footer.vatNote')} — {platformName}
-                        </p>
-                        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                            <Button size="lg" className="rounded-2xl bg-brand-primary font-black hover:bg-brand-primary-dark" asChild>
-                                <Link to="/pricing">استعراض الباقات</Link>
-                            </Button>
-                            <Button size="lg" variant="outline" className="rounded-2xl font-bold" asChild>
-                                <Link to="/register">{t('marketing.nav.getStarted')}</Link>
-                            </Button>
-                        </div>
-                    </div>
-                </section>
-
                 {/* Testimonials */}
-                <section className="border-y border-slate-200/80 bg-slate-50/70 px-4 py-20 sm:px-6 lg:px-8">
+                <section className="px-4 py-24 sm:px-6 lg:px-8">
                     <div className="mx-auto max-w-7xl">
                         <div className="text-center">
-                            <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
+                            <h2 className="text-4xl font-black text-white sm:text-5xl">
                                 {t('marketing.testimonials.title', brand)}
                             </h2>
-                            <p className="mt-3 text-slate-600">{t('marketing.testimonials.subtitle')}</p>
+                            <p className="mt-4 text-lg text-slate-400">{t('marketing.testimonials.subtitle')}</p>
                         </div>
-                        <div className="mt-12 grid gap-6 md:grid-cols-3">
+                        <div className="mt-20 grid gap-8 md:grid-cols-3">
                             {testimonialKeys.map((key) => (
-                                <div key={key} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                                    <div className="flex gap-1 text-amber-400">
+                                <div key={key} className="rounded-[2rem] border border-white/5 bg-white/[0.02] p-8 shadow-2xl">
+                                    <div className="flex gap-1.5 text-brand-secondary">
                                         {Array.from({ length: 5 }).map((_, i) => (
-                                            <Star key={i} className="size-4 fill-amber-400" />
+                                            <Star key={i} className="size-4 fill-brand-secondary" />
                                         ))}
                                     </div>
-                                    <p className="mt-4 text-sm leading-relaxed text-slate-700 italic">
+                                    <p className="mt-6 text-lg leading-relaxed text-slate-300 italic">
                                         &ldquo;{t(`marketing.testimonials.${key}.quote`)}&rdquo;
                                     </p>
-                                    <div className="mt-5 border-t border-slate-100 pt-4">
-                                        <p className="text-sm font-black text-slate-950">
-                                            {t(`marketing.testimonials.${key}.author`)}
-                                        </p>
-                                        <p className="text-xs font-bold text-brand-primary">
-                                            {t(`marketing.testimonials.${key}.business`)}
-                                        </p>
+                                    <div className="mt-8 flex items-center gap-4 border-t border-white/5 pt-6">
+                                        <div className="size-12 rounded-2xl bg-brand-primary/20 flex items-center justify-center text-brand-primary text-xl font-black">
+                                            {t(`marketing.testimonials.${key}.author`).charAt(0)}
+                                        </div>
+                                        <div>
+                                            <p className="text-base font-black text-white">
+                                                {t(`marketing.testimonials.${key}.author`)}
+                                            </p>
+                                            <p className="text-sm font-bold text-brand-secondary">
+                                                {t(`marketing.testimonials.${key}.business`)}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -324,23 +366,25 @@ export function MarketingHomePage() {
                 </section>
 
                 {/* FAQ */}
-                <section className="px-4 py-20 sm:px-6 lg:px-8">
+                <section className="px-4 py-24 sm:px-6 lg:px-8 border-t border-white/5">
                     <div className="mx-auto max-w-3xl">
                         <div className="text-center">
-                            <HelpCircle className="mx-auto size-8 text-brand-primary" />
-                            <h2 className="mt-3 text-3xl font-black text-slate-950">{t('marketing.faq.title')}</h2>
+                            <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl bg-white/5 text-brand-primary">
+                                <HelpCircle className="size-8" />
+                            </div>
+                            <h2 className="text-4xl font-black text-white">{t('marketing.faq.title')}</h2>
                         </div>
-                        <Accordion type="single" collapsible className="mt-10 space-y-3">
+                        <Accordion type="single" collapsible className="mt-16 space-y-4">
                             {faqKeys.map((key) => (
                                 <AccordionItem
                                     key={key}
                                     value={key}
-                                    className="overflow-hidden rounded-2xl border border-slate-200 bg-white px-5"
+                                    className="overflow-hidden rounded-[1.5rem] border border-white/5 bg-white/[0.01] px-6 transition-all hover:bg-white/[0.03]"
                                 >
-                                    <AccordionTrigger className="py-4 text-right text-base font-black text-slate-950 hover:no-underline hover:text-brand-primary">
+                                    <AccordionTrigger className="py-6 text-right text-lg font-black text-white hover:no-underline hover:text-brand-secondary">
                                         {t(`marketing.faq.${key}.question`)}
                                     </AccordionTrigger>
-                                    <AccordionContent className="pb-4 text-right text-sm leading-relaxed text-slate-600">
+                                    <AccordionContent className="pb-6 text-right text-base leading-relaxed text-slate-400">
                                         {t(`marketing.faq.${key}.answer`, brand)}
                                     </AccordionContent>
                                 </AccordionItem>
@@ -350,39 +394,45 @@ export function MarketingHomePage() {
                 </section>
 
                 {/* Final CTA */}
-                <section className="px-4 pb-20 sm:px-6 lg:px-8">
-                    <div className="mx-auto max-w-4xl rounded-[2rem] bg-gradient-to-br from-brand-primary to-brand-primary-dark p-10 text-center text-white shadow-2xl sm:p-14">
-                        <h2 className="text-3xl font-black sm:text-4xl">{t('marketing.cta.title')}</h2>
-                        <p className="mx-auto mt-4 max-w-xl text-slate-200">
-                            {t('marketing.cta.subtitle', brand)}
-                        </p>
-                        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                            <Button
-                                size="lg"
-                                className="h-13 rounded-2xl bg-white px-8 font-black text-brand-primary hover:bg-slate-100"
-                                asChild
-                            >
-                                <Link to="/register">
-                                    {t('marketing.cta.button')}
-                                    <ArrowLeft className="me-2 size-5" />
-                                </Link>
-                            </Button>
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="h-13 rounded-2xl border-white/30 bg-white/10 px-8 font-bold text-white hover:bg-white/20"
-                                asChild
-                            >
-                                <a href={DEMO_STOREFRONT}>جرّب العرض التجريبي</a>
-                            </Button>
-                        </div>
-                        <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs font-bold text-slate-300">
-                            {['امتثال ض.ق.م 5%', 'تفعيل فوري', 'دعم محلي', 'فروع متعددة'].map((item) => (
-                                <span key={item} className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1">
-                                    <CheckCircle2 className="size-3.5 text-emerald-400" />
-                                    {item}
-                                </span>
-                            ))}
+                <section className="px-4 pb-32 pt-24 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-5xl overflow-hidden rounded-[3.5rem] bg-brand-primary relative p-12 text-center shadow-3xl sm:p-20">
+                        {/* Decorative background for CTA */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-brand-primary-dark/50 to-transparent" />
+                        <div className="absolute -top-24 -right-24 size-[300px] rounded-full bg-white/10 blur-3xl" />
+                        
+                        <div className="relative z-10">
+                            <h2 className="text-4xl font-black text-white sm:text-6xl">{t('marketing.cta.title')}</h2>
+                            <p className="mx-auto mt-6 max-w-xl text-xl text-white/80 font-medium">
+                                {t('marketing.cta.subtitle', brand)}
+                            </p>
+                            <div className="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row">
+                                <Button
+                                    size="lg"
+                                    className="h-16 rounded-2xl bg-white px-12 text-lg font-black text-brand-primary hover:bg-slate-50 hover:scale-[1.05] transition-all"
+                                    asChild
+                                >
+                                    <Link to="/register">
+                                        {t('marketing.cta.button')}
+                                        <ArrowLeft className="me-2 size-5" />
+                                    </Link>
+                                </Button>
+                                <Button
+                                    size="lg"
+                                    variant="outline"
+                                    className="h-16 rounded-2xl border-white/30 bg-white/10 px-12 text-lg font-bold text-white hover:bg-white/20 backdrop-blur-sm"
+                                    asChild
+                                >
+                                    <a href={DEMO_STOREFRONT}>جرّب العرض التجريبي</a>
+                                </Button>
+                            </div>
+                            <div className="mt-10 flex flex-wrap items-center justify-center gap-4 text-xs font-black uppercase tracking-widest text-white/60">
+                                {['امتثال ض.ق.م 5%', 'تفعيل فوري', 'دعم محلي', 'فروع لا محدودة'].map((item) => (
+                                    <span key={item} className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2">
+                                        <CheckCircle2 className="size-3.5 text-white" />
+                                        {item}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -392,3 +442,4 @@ export function MarketingHomePage() {
         </div>
     );
 }
+

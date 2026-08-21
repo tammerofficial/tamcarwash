@@ -2,60 +2,57 @@ import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { CheckCircle2, HelpCircle, ShieldCheck, Sparkles } from 'lucide-react';
+import { CheckCircle2, HelpCircle, ShieldCheck } from 'lucide-react';
 import { t } from '@/lib/i18n';
-import { cn } from '@/lib/utils';
 import { PlatformHeader } from '@/components/marketing/PlatformHeader';
 import { PlatformFooter } from '@/components/marketing/PlatformFooter';
 
-const pricingPlans = ['starter', 'pro', 'enterprise'] as const;
-
-function registerHref(plan?: (typeof pricingPlans)[number]): string {
-    return plan ? `/register?plan=${plan}` : '/register';
-}
-
 export function PricingPage() {
     const trustPoints = [
-        'لا رسوم خفية',
-        'ترقية سلسة بين الباقات',
-        'تجربة مناسبة للشركات متعددة الفروع',
+        'مجاني بالكامل للأبد',
+        'لا رسوم خفية أو عمولات',
+        'دعم فني متميز ومجاني',
     ];
 
     return (
-        <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(92,178,255,0.1),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(10,75,120,0.08),transparent_28%),linear-gradient(180deg,#f8fbfe_0%,#eef5fb_46%,#f8fbfe_100%)] font-sans text-slate-900" dir="rtl">
+        <div className="min-h-screen bg-[#020617] font-sans text-slate-300 selection:bg-brand-primary selection:text-white" dir="rtl">
             <PlatformHeader />
 
             <main className="relative overflow-hidden pt-32 lg:pt-40">
-                <div className="pointer-events-none absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(var(--brand-primary) 1px, transparent 1px), linear-gradient(90deg, var(--brand-primary) 1px, transparent 1px)', backgroundSize: '96px 96px' }} />
+                {/* Background effects */}
+                <div className="absolute inset-0 -z-10 overflow-hidden">
+                    <div className="absolute top-0 right-0 size-[600px] rounded-full bg-brand-primary/5 blur-[120px]" />
+                    <div className="absolute bottom-0 left-0 size-[500px] rounded-full bg-brand-secondary/5 blur-[100px]" />
+                </div>
 
                 <section className="relative z-10 px-6 pb-20 lg:px-8 lg:pb-28">
                     <div className="mx-auto max-w-5xl text-right">
                         <div className="flex flex-wrap items-center gap-3">
-                            <Badge className="rounded-full bg-brand-primary px-4 py-2 text-[10px] font-black uppercase tracking-[0.35em] text-white hover:bg-brand-primary-dark">
+                            <Badge className="rounded-full bg-brand-primary px-4 py-2 text-[10px] font-black uppercase tracking-[0.35em] text-white">
                                 {t('marketing.nav.pricing')}
                             </Badge>
-                            <span className="rounded-full border border-brand-primary/15 bg-white/85 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-brand-primary shadow-sm backdrop-blur-xl">
-                                رسوم الخدمة
+                            <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-brand-secondary shadow-sm backdrop-blur-xl">
+                                استثمارك صفر
                             </span>
                         </div>
 
                         <div className="mt-8 space-y-5">
-                            <h1 className="text-4xl font-black tracking-tight text-slate-950 md:text-5xl lg:text-6xl">
+                            <h1 className="text-5xl font-black tracking-tight text-white md:text-6xl lg:text-7xl">
                                 {t('marketing.pricingPage.title')}
                             </h1>
-                            <p className="max-w-3xl text-lg leading-[1.95] text-slate-600 md:text-2xl">
+                            <p className="max-w-3xl text-lg leading-relaxed text-slate-400 md:text-2xl">
                                 {t('marketing.pricingPage.subtitle')}
                             </p>
                         </div>
 
-                        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                        <div className="mt-12 grid gap-6 sm:grid-cols-3">
                             {trustPoints.map((item) => (
-                                <div key={item} className="rounded-[1.5rem] border border-slate-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-xl">
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex size-10 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary">
-                                            <ShieldCheck className="size-5" />
+                                <div key={item} className="rounded-[1.5rem] border border-white/5 bg-white/[0.02] p-6 shadow-2xl backdrop-blur-xl">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex size-12 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
+                                            <ShieldCheck className="size-6" />
                                         </div>
-                                        <p className="text-sm font-black text-slate-800">{item}</p>
+                                        <p className="text-base font-black text-white">{item}</p>
                                     </div>
                                 </div>
                             ))}
@@ -63,106 +60,78 @@ export function PricingPage() {
                     </div>
                 </section>
 
-                <section className="relative z-10 px-6 py-20 lg:px-8 lg:py-28">
-                    <div className="mx-auto max-w-7xl">
-                        <div className="grid gap-6 lg:grid-cols-3 lg:items-end">
-                            {pricingPlans.map((plan) => {
-                                const isPro = plan === 'pro';
+                <section className="relative z-10 px-6 py-20 lg:px-8 lg:py-32">
+                    <div className="mx-auto max-w-4xl">
+                        <div className="relative overflow-hidden rounded-[3rem] border border-brand-primary/30 bg-gradient-to-b from-brand-primary/10 to-transparent p-12 text-center shadow-3xl backdrop-blur-2xl sm:p-20">
+                            <div className="absolute top-0 right-0 p-8">
+                                <Badge className="rounded-full bg-brand-secondary px-4 py-2 text-[10px] font-black uppercase tracking-[0.32em] text-[#020617]">
+                                    متاح الآن
+                                </Badge>
+                            </div>
 
-                                return (
-                                    <div
-                                        key={plan}
-                                        className={cn(
-                                            'relative flex h-full flex-col rounded-[2rem] border p-8 shadow-[0_20px_60px_rgba(15,23,42,0.08)] transition-all duration-300',
-                                            isPro
-                                                ? 'z-10 border-brand-primary/20 bg-white lg:scale-[1.03]'
-                                                : 'border-slate-200/80 bg-white/92 hover:-translate-y-1 hover:shadow-[0_24px_80px_rgba(15,23,42,0.12)]',
-                                        )}
-                                    >
-                                        {isPro && (
-                                            <div className="absolute -top-4 inset-x-0 flex justify-center">
-                                                <Badge className="rounded-full bg-brand-primary px-4 py-2 text-[10px] font-black uppercase tracking-[0.32em] text-white hover:bg-brand-primary-dark">
-                                                    {t('marketing.pricing.pro.badge')}
-                                                </Badge>
-                                            </div>
-                                        )}
+                            <div className="mb-12">
+                                <h3 className="text-5xl font-black tracking-tight text-white sm:text-6xl">
+                                    باقة النخبة
+                                </h3>
+                                <p className="mx-auto mt-6 max-w-xl text-lg text-slate-400 leading-relaxed">
+                                    نظام متكامل، فروع لا محدودة، وكل المميزات الاحترافية متاحة لك مجاناً للأبد.
+                                </p>
+                            </div>
 
-                                        <div className="mb-8 text-right">
-                                            <div className="flex items-center justify-between gap-3">
-                                                <h3 className="text-3xl font-black tracking-tight text-slate-950">
-                                                    {t(`marketing.pricing.${plan}.name`)}
-                                                </h3>
-                                                <div className="flex size-11 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary">
-                                                    <Sparkles className="size-5" />
-                                                </div>
-                                            </div>
-                                            <div className="mt-4 h-1 w-16 rounded-full bg-brand-secondary" />
-                                            <p className="mt-5 text-sm leading-7 text-slate-600">
-                                                {t(`marketing.pricing.${plan}.description`)}
-                                            </p>
+                            <div className="mb-12 border-y border-white/5 py-12">
+                                <div className="flex flex-col items-center justify-center gap-4">
+                                    <span className="text-[120px] font-black leading-none text-white tracking-tighter sm:text-[180px]">
+                                        0
+                                    </span>
+                                    <span className="text-2xl font-black text-brand-secondary uppercase tracking-[0.3em]">
+                                        ر.ع / للأبد
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="grid gap-6 sm:grid-cols-2 text-right mb-12">
+                                {[
+                                    'booking', 'queue', 'invoices', 'branches', 
+                                    'reports', 'workers', 'customers', 'loyalty'
+                                ].map((featureKey) => (
+                                    <div key={featureKey} className="flex items-center justify-end gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+                                        <span className="text-base font-bold text-slate-300">
+                                            {t(`marketing.features.${featureKey}.title`)}
+                                        </span>
+                                        <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand-primary text-white">
+                                            <CheckCircle2 className="size-4" />
                                         </div>
-
-                                        <div className="mb-8 border-b border-slate-100 pb-8 text-right">
-                                            <div className="flex items-baseline justify-end gap-3">
-                                                <span className={cn('text-5xl font-black tracking-tight md:text-6xl', isPro ? 'text-brand-primary' : 'text-slate-950')}>
-                                                    {t(`marketing.pricing.${plan}.price`)}
-                                                </span>
-                                                <span className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400">
-                                                    {t(`marketing.pricing.${plan}.period`)}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <ul className="mb-10 flex-1 space-y-4 text-right">
-                                            {[
-                                                plan === 'starter' ? 'booking' : plan === 'pro' ? 'branches' : 'loyalty',
-                                                'invoices',
-                                                'reports',
-                                                'workers',
-                                                'customers',
-                                            ].map((featureKey) => (
-                                                <li key={featureKey} className="flex items-center justify-end gap-3">
-                                                    <span className="text-sm font-black tracking-wide text-slate-700">
-                                                        {t(`marketing.features.${featureKey}.title`)}
-                                                    </span>
-                                                    <div className="flex size-6 shrink-0 items-center justify-center rounded-md border border-brand-primary/15 bg-brand-primary text-white">
-                                                        <CheckCircle2 className="size-4" />
-                                                    </div>
-                                                </li>
-                                            ))}
-                                        </ul>
-
-                                        <Button
-                                            size="lg"
-                                            className={cn(
-                                                'h-14 w-full rounded-full text-base font-black transition-transform hover:scale-[1.01]',
-                                                isPro
-                                                    ? 'bg-brand-primary text-white hover:bg-brand-primary-dark'
-                                                    : 'border border-brand-primary/10 bg-slate-50 text-slate-900 hover:bg-brand-primary/5 hover:text-brand-primary',
-                                            )}
-                                            asChild
-                                        >
-                                            <Link to={registerHref(plan)}>{t(`marketing.pricing.${plan}.cta`)}</Link>
-                                        </Button>
                                     </div>
-                                );
-                            })}
+                                ))}
+                            </div>
+
+                            <Button
+                                size="lg"
+                                className="h-20 w-full max-w-md rounded-[2rem] bg-white text-xl font-black text-[#020617] transition-all hover:bg-slate-100 hover:scale-[1.02] shadow-2xl"
+                                asChild
+                            >
+                                <Link to="/register">{t('marketing.pricing.free.cta')}</Link>
+                            </Button>
+                            
+                            <p className="mt-8 text-sm font-bold text-slate-500 uppercase tracking-widest">
+                                لا يلزم وجود بطاقة ائتمان — ابدأ فوراً
+                            </p>
                         </div>
                     </div>
                 </section>
 
-                <section className="relative z-10 px-6 py-20 lg:px-8 lg:py-28">
-                    <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.98fr_1.02fr] lg:items-stretch">
-                        <div className="rounded-[2.25rem] border border-slate-200/80 bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.08)] lg:p-10">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-brand-primary/15 bg-brand-primary/6 px-4 py-2 text-[11px] font-black uppercase tracking-[0.35em] text-brand-primary">
-                                <HelpCircle className="size-4 text-brand-secondary" />
-                                {t('marketing.pricingPage.faqTitle')}
+                <section className="relative z-10 px-6 py-20 lg:px-8 lg:py-32">
+                    <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
+                        <div className="rounded-[2.5rem] border border-white/5 bg-white/[0.02] p-10 shadow-2xl backdrop-blur-xl lg:p-14">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-brand-primary/20 bg-brand-primary/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.35em] text-brand-secondary">
+                                <HelpCircle className="size-4" />
+                                الأسئلة الشائعة
                             </div>
-                            <h2 className="mt-6 text-3xl font-black tracking-tight text-slate-950 md:text-5xl">
+                            <h2 className="mt-8 text-4xl font-black tracking-tight text-white md:text-5xl">
                                 {t('marketing.pricingPage.faqTitle')}
                             </h2>
-                            <p className="mt-6 text-base leading-8 text-slate-600 md:text-lg">
-                                إجابات قصيرة وواضحة تساعدك على اختيار الباقة المناسبة بسرعة، من دون التباس أو مفاجآت.
+                            <p className="mt-6 text-lg leading-relaxed text-slate-400">
+                                إجابات واضحة تساعدك على فهم كيف نقدم نظاماً احترافياً مجاناً بالكامل.
                             </p>
                         </div>
 
@@ -171,41 +140,20 @@ export function PricingPage() {
                                 <AccordionItem
                                     key={i}
                                     value={`q${i}`}
-                                    className="rounded-[1.5rem] border border-slate-200/80 bg-white px-6 shadow-sm transition-all hover:shadow-md"
+                                    className="rounded-[2rem] border border-white/5 bg-white/[0.01] px-8 shadow-sm transition-all hover:bg-white/[0.03]"
                                 >
-                                    <AccordionTrigger className="py-6 text-right text-lg font-black text-slate-950 hover:no-underline data-[state=open]:text-brand-primary md:text-xl">
-                                        <div className="flex w-full items-center justify-end gap-3">
+                                    <AccordionTrigger className="py-8 text-right text-xl font-black text-white hover:no-underline data-[state=open]:text-brand-secondary">
+                                        <div className="flex w-full items-center justify-end gap-4">
                                             <span>{t(`marketing.pricingPage.q${i}`)}</span>
-                                            <HelpCircle className="size-5 text-brand-secondary" />
+                                            <HelpCircle className="size-6 text-brand-primary" />
                                         </div>
                                     </AccordionTrigger>
-                                    <AccordionContent className="pb-6 text-right text-base leading-8 text-slate-600 md:text-lg">
+                                    <AccordionContent className="pb-8 text-right text-lg leading-relaxed text-slate-400">
                                         {t(`marketing.pricingPage.a${i}`)}
                                     </AccordionContent>
                                 </AccordionItem>
                             ))}
                         </Accordion>
-                    </div>
-                </section>
-
-                <section className="relative z-10 px-6 py-20 lg:px-8 lg:py-28">
-                    <div className="mx-auto max-w-5xl rounded-[2.5rem] border border-slate-200/80 bg-white p-8 text-center shadow-[0_24px_70px_rgba(15,23,42,0.1)] md:p-14">
-                        <div className="mx-auto max-w-3xl space-y-6">
-                            <h2 className="text-3xl font-black tracking-tight text-slate-950 md:text-5xl">
-                                {t('marketing.cta.title')}
-                            </h2>
-                            <p className="text-lg leading-8 text-slate-600 md:text-xl">
-                                {t('marketing.cta.subtitle', { name: 'تمير واش', year: new Date().getFullYear() })}
-                            </p>
-                        </div>
-                        <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-                            <Button size="lg" className="h-14 rounded-full bg-brand-primary px-8 text-base font-black text-white shadow-lg shadow-brand-primary/20 hover:bg-brand-primary-dark" asChild>
-                                <Link to="/register">{t('marketing.cta.button')}</Link>
-                            </Button>
-                            <Button size="lg" variant="outline" className="h-14 rounded-full border-brand-primary/15 bg-white px-8 text-base font-black text-brand-primary hover:bg-brand-primary/5" asChild>
-                                <Link to="/why-us">{t('marketing.nav.whyUs')}</Link>
-                            </Button>
-                        </div>
                     </div>
                 </section>
             </main>

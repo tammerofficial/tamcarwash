@@ -80,26 +80,26 @@ export function PlatformFooter() {
 
                         {/* Quick Start Card */}
                         <div className="rounded-[2.5rem] border-2 border-sky-500/20 bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 p-8 sm:p-10 shadow-2xl">
-                            <div className="flex items-center justify-between border-b border-slate-800 pb-6">
+                            <div className="flex items-center justify-between border-b border-white/5 pb-8">
                                 <div>
-                                    <span className="text-[11px] font-black uppercase tracking-[0.3em] text-sky-400">
+                                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-secondary">
                                         ابدأ الآن
                                     </span>
-                                    <h3 className="mt-2 text-2xl font-black text-white">ابدأ تجربة الـ 14 يوماً مجاناً</h3>
+                                    <h3 className="mt-2 text-3xl font-black text-white">ابدأ رحلتك مجاناً للأبد</h3>
                                 </div>
-                                <div className="flex size-14 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-400 border border-sky-500/20 shadow-inner">
-                                    <Sparkles className="size-7 animate-pulse" />
+                                <div className="flex size-16 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary border border-brand-primary/20 shadow-inner">
+                                    <Sparkles className="size-8 animate-pulse text-brand-secondary" />
                                 </div>
                             </div>
 
-                            <p className="mt-6 text-sm leading-relaxed text-slate-400 font-bold">
-                                حسابك يُفعَّل فوراً مع جميع الميزات: الطابور المباشر، الفواتير، ونظام الولاء المتقدم.
+                            <p className="mt-8 text-base leading-relaxed text-slate-400 font-bold">
+                                سجل منشأتك الآن واحصل على كل الميزات الاحترافية مجاناً بالكامل وبدون أي عوائق.
                             </p>
 
-                            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+                            <div className="mt-12 flex flex-col gap-4 sm:flex-row">
                                 <Button
                                     size="lg"
-                                    className="h-14 flex-1 rounded-[1.25rem] bg-gradient-to-r from-sky-500 to-[#0284c7] font-black text-white shadow-2xl shadow-sky-950/40 hover:from-sky-400 hover:to-sky-600 hover:scale-[1.03] transition-all text-base"
+                                    className="h-16 flex-1 rounded-2xl bg-white font-black text-[#020617] shadow-2xl hover:bg-slate-50 hover:scale-[1.03] transition-all text-lg"
                                     asChild
                                 >
                                     <Link to="/register">
@@ -110,10 +110,10 @@ export function PlatformFooter() {
                                 <Button
                                     size="lg"
                                     variant="outline"
-                                    className="h-14 rounded-[1.25rem] border-2 border-slate-700 bg-slate-800/50 text-base font-black text-slate-200 hover:bg-slate-700 hover:text-white transition-all"
+                                    className="h-16 rounded-2xl border-white/10 bg-white/5 text-lg font-black text-white hover:bg-white/10 transition-all"
                                     asChild
                                 >
-                                    <Link to="/pricing">الباقات</Link>
+                                    <Link to="/pricing">تفاصيل الباقة</Link>
                                 </Button>
                             </div>
                         </div>

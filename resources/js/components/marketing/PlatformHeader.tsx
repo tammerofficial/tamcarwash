@@ -99,52 +99,49 @@ export function PlatformHeader() {
                 className={cn(
                     'transition-all duration-500 border-b',
                     scrolled || location.pathname !== '/'
-                        ? 'border-slate-200 bg-white/95 py-3 shadow-[0_20px_50px_rgba(10,75,120,0.12)] backdrop-blur-2xl'
-                        : 'border-slate-200/60 bg-white/90 py-5 shadow-sm backdrop-blur-xl',
+                        ? 'border-white/5 bg-[#020617]/90 py-3 shadow-2xl backdrop-blur-2xl'
+                        : 'border-white/5 bg-transparent py-5 shadow-sm',
                 )}
             >
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                     {/* Brand Logo */}
                     <Link to="/" className="group flex items-center gap-4">
-                        <div className="relative flex size-13 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-[#0A4B78] to-[#0284c7] text-white shadow-2xl shadow-sky-950/40 transition-all duration-500 group-hover:scale-105 group-hover:rotate-2 group-hover:shadow-sky-600/50">
-                            <Droplets className="size-7 text-sky-200 transition-transform group-hover:rotate-6" />
-                            <div className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-white shadow-md">
-                                <Sparkles className="size-3 text-white" />
+                        <div className="relative flex size-12 items-center justify-center rounded-[1rem] bg-brand-primary text-white shadow-2xl shadow-brand-primary/20 transition-all duration-500 group-hover:scale-105 group-hover:shadow-brand-primary/40">
+                            <Droplets className="size-6 text-sky-200 transition-transform group-hover:rotate-6" />
+                            <div className="absolute -bottom-1 -right-1 flex size-4 items-center justify-center rounded-full bg-brand-secondary ring-2 ring-[#020617] shadow-md">
+                                <Sparkles className="size-2.5 text-[#020617]" />
                             </div>
                         </div>
                         <div className="flex flex-col text-right">
                             <div className="flex items-center gap-2">
-                                <span className="text-2xl font-black leading-none tracking-tighter text-slate-950 uppercase">
+                                <span className="text-xl font-black leading-none tracking-tight text-white uppercase sm:text-2xl">
                                     {platformName}
                                 </span>
-                                <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-slate-600 border border-slate-200">
+                                <span className="rounded-md bg-white/5 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-brand-secondary border border-white/10">
                                     عُمان
                                 </span>
                             </div>
-                            <span className="mt-1.5 text-[11px] font-black uppercase tracking-[0.25em] text-[#0A4B78] opacity-80">
+                            <span className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 group-hover:text-brand-primary transition-colors">
                                 {brandTagline}
                             </span>
                         </div>
                     </Link>
 
                     {/* Desktop Navigation Links */}
-                    <nav className="hidden items-center gap-2 rounded-full border-2 border-slate-100 bg-slate-50/50 p-1.5 shadow-inner lg:flex">
+                    <nav className="hidden items-center gap-2 rounded-2xl border border-white/5 bg-white/[0.02] p-1 shadow-inner lg:flex">
                         {navItems.map((item) => (
                             <button
                                 key={item.name}
                                 type="button"
                                 onClick={() => handleNavClick(item)}
                                 className={cn(
-                                    'relative rounded-full px-6 py-2.5 text-[13px] font-black transition-all duration-300 uppercase tracking-wide',
+                                    'relative rounded-xl px-6 py-2 text-[12px] font-black transition-all duration-300 uppercase tracking-wide',
                                     isNavItemActive(item)
-                                        ? 'bg-white text-slate-950 shadow-md ring-1 ring-slate-200'
-                                        : 'text-slate-500 hover:text-slate-950 hover:bg-white/80',
+                                        ? 'bg-white/10 text-white shadow-md border border-white/10'
+                                        : 'text-slate-500 hover:text-white hover:bg-white/5',
                                 )}
                             >
                                 {t(`marketing.nav.${item.name}`)}
-                                {isNavItemActive(item) && (
-                                    <span className="absolute inset-x-6 -bottom-1 h-0.5 rounded-full bg-[#0A4B78] shadow-[0_0_10px_rgba(10,75,120,0.5)]" />
-                                )}
                             </button>
                         ))}
                     </nav>
@@ -153,13 +150,13 @@ export function PlatformHeader() {
                     <div className="hidden items-center gap-4 md:flex">
                         <Button
                             variant="ghost"
-                            className="rounded-xl px-6 font-black text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-950 text-sm"
+                            className="rounded-xl px-6 font-black text-slate-400 transition-all hover:bg-white/5 hover:text-white text-sm"
                             asChild
                         >
                             <Link to="/login">{t('marketing.nav.login')}</Link>
                         </Button>
                         <Button
-                            className="group relative overflow-hidden rounded-xl bg-slate-950 px-7 py-6 font-black text-white shadow-2xl shadow-slate-950/20 transition-all duration-500 hover:shadow-sky-900/40 hover:scale-[1.05] hover:bg-[#0A4B78] text-sm"
+                            className="group relative overflow-hidden rounded-xl bg-white px-7 py-6 font-black text-[#020617] shadow-2xl transition-all duration-500 hover:scale-[1.05] hover:bg-slate-100 text-sm"
                             asChild
                         >
                             <Link to="/register">
@@ -171,7 +168,7 @@ export function PlatformHeader() {
 
                     {/* Mobile Menu Button */}
                     <button
-                        className="flex size-10 items-center justify-center rounded-xl border border-slate-200 bg-white p-2 text-slate-800 shadow-sm transition-colors hover:bg-slate-50 md:hidden"
+                        className="flex size-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 p-2 text-white shadow-sm transition-colors hover:bg-white/10 md:hidden"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         aria-label={mobileMenuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
                     >
@@ -182,23 +179,23 @@ export function PlatformHeader() {
 
             {/* Mobile Dropdown Menu */}
             {mobileMenuOpen && (
-                <div className="border-b border-slate-200 bg-white/98 p-6 shadow-2xl backdrop-blur-2xl animate-in slide-in-from-top-3 duration-200 md:hidden">
-                    <div className="mb-4 flex items-center justify-between rounded-2xl border border-sky-100 bg-sky-50/70 p-4">
+                <div className="border-b border-white/5 bg-[#020617]/98 p-6 shadow-2xl backdrop-blur-3xl animate-in slide-in-from-top-3 duration-200 md:hidden">
+                    <div className="mb-4 flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.02] p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-xl bg-[#0A4B78] text-white">
+                            <div className="flex size-10 items-center justify-center rounded-xl bg-brand-primary text-white">
                                 <Droplets className="size-5" />
                             </div>
                             <div className="text-right">
-                                <p className="text-sm font-black text-slate-950">{platformName}</p>
-                                <p className="text-[11px] font-bold text-sky-800">{brandTagline}</p>
+                                <p className="text-sm font-black text-white">{platformName}</p>
+                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{brandTagline}</p>
                             </div>
                         </div>
-                        <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800">
+                        <span className="rounded-full bg-brand-primary/10 px-2.5 py-0.5 text-[9px] font-bold text-brand-secondary border border-brand-primary/20">
                             سحابي • عُمان
                         </span>
                     </div>
 
-                    <div className="flex flex-col gap-1.5">
+                    <div className="flex flex-col gap-1.5 text-right">
                         {navItems.map((item) => (
                             <button
                                 key={item.name}
@@ -207,22 +204,22 @@ export function PlatformHeader() {
                                 className={cn(
                                     'flex items-center justify-between rounded-xl px-4 py-3 text-right text-base font-bold transition-colors',
                                     isNavItemActive(item)
-                                        ? 'bg-sky-50 text-[#0A4B78]'
-                                        : 'text-slate-700 hover:bg-slate-50',
+                                        ? 'bg-white/10 text-brand-secondary'
+                                        : 'text-slate-400 hover:bg-white/5',
                                 )}
                             >
                                 <span>{t(`marketing.nav.${item.name}`)}</span>
-                                {isNavItemActive(item) && <CheckCircle2 className="size-4 text-[#0A4B78]" />}
+                                {isNavItemActive(item) && <CheckCircle2 className="size-4 text-brand-secondary" />}
                             </button>
                         ))}
                     </div>
 
-                    <Separator className="my-4" />
+                    <Separator className="my-4 bg-white/5" />
 
                     <div className="flex flex-col gap-3">
                         <Button
                             variant="outline"
-                            className="h-12 w-full justify-center rounded-xl border-slate-300 font-bold text-slate-800"
+                            className="h-12 w-full justify-center rounded-xl border-white/10 bg-white/5 font-bold text-white"
                             asChild
                         >
                             <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
@@ -230,19 +227,15 @@ export function PlatformHeader() {
                             </Link>
                         </Button>
                         <Button
-                            className="h-12 w-full justify-center rounded-xl bg-gradient-to-r from-[#0A4B78] to-[#0284c7] font-bold text-white shadow-md"
+                            className="h-12 w-full justify-center rounded-xl bg-white font-bold text-[#020617] shadow-md"
                             asChild
                         >
                             <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                                <span>{t('marketing.nav.getStarted')}</span>
+                                <span>ابدأ الآن مجاناً</span>
                                 <ArrowLeft className="me-2 size-4" />
                             </Link>
                         </Button>
                     </div>
-
-                    <p className="mt-4 text-center text-[11px] font-bold text-slate-400">
-                        {platformName} • النظام السحابي المعتمد لمغاسل سلطنة عُمان
-                    </p>
                 </div>
             )}
         </header>
