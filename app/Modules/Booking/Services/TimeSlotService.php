@@ -3,6 +3,7 @@
 namespace App\Modules\Booking\Services;
 
 use App\Modules\Booking\Models\TimeSlot;
+use App\Modules\Branches\Models\Branch;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -11,6 +12,8 @@ class TimeSlotService
 {
     public function getAvailableSlots(int $branchId, Carbon $date): array
     {
+        $this->ensureDailySlots($branchId, $date);
+
         return TimeSlot::query()
             ->where('branch_id', $branchId)
             ->whereDate('slot_date', $date)
@@ -85,5 +88,65 @@ class TimeSlotService
         }
 
         return $created;
+    }
+
+    /**
+     * Lazily materialize hourly slots from branch working hours when none exist yet.
+     */
+    public function ensureDailySlots(int $branchId, Carbon $date): void
+    {
+        $hasSlots = TimeSlot::query()
+            ->where('branch_id', $branchId)
+            ->whereDate('slot_date', $date)
+            ->exists();
+
+        if ($hasSlots) {
+            return;
+        }
+
+        $branch = Branch::query()->with('workingHours')->find($branchId);
+
+        if (! $branch) {
+            return;
+        }
+
+        $workingHour = $branch->workingHours->firstWhere('day_of_week', $date->dayOfWeek);
+
+        if (! $workingHour || $workingHour->is_closed) {
+            return;
+        }
+
+        $opensAt = Carbon::parse($workingHour->opens_at);
+        $closesAt = Carbon::parse($workingHour->closes_at);
+        $capacity = max(1, (int) $branch->capacity_per_hour);
+        $slots = [];
+        $cursor = $opensAt->copy();
+
+        while ($cursor->copy()->addHour()->lte($closesAt)) {
+            $startTime = $cursor->format('H:i');
+            $endTime = $cursor->copy()->addHour()->format('H:i');
+
+            if ($date->isToday()) {
+                $slotStart = $date->copy()->setTimeFromTimeString($startTime);
+
+                if ($slotStart->lte(now())) {
+                    $cursor->addHour();
+
+                    continue;
+                }
+            }
+
+            $slots[] = [
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'capacity' => $capacity,
+            ];
+
+            $cursor->addHour();
+        }
+
+        if ($slots !== []) {
+            $this->generateSlots($branchId, $date, $slots);
+        }
     }
 }

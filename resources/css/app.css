@@ -85,9 +85,9 @@
     --admin-sidebar-active-foreground: 0 0% 100%;
 
     /* Tenant storefront branding (homepage/marketing) - Government Professional Blue */
-    --brand-primary: #003D5C;
-    --brand-secondary: #4A90E2;
-    --brand-primary-dark: #001F35;
+    --brand-primary: #0A4B78;
+    --brand-secondary: #5CB2FF;
+    --brand-primary-dark: #072E49;
 }
 
 .dark {
@@ -298,5 +298,25 @@
 
     .to-brand-primary-dark {
         --tw-gradient-to: var(--brand-primary-dark) var(--tw-gradient-to-position);
+    }
+
+    .marketing-surface {
+        background:
+            radial-gradient(circle at top right, color-mix(in srgb, var(--brand-primary) 14%, transparent) 0%, transparent 40%),
+            radial-gradient(circle at bottom left, color-mix(in srgb, var(--brand-secondary) 16%, transparent) 0%, transparent 32%),
+            hsl(var(--background));
+    }
+
+    .marketing-grid-overlay {
+        background-image:
+            linear-gradient(color-mix(in srgb, var(--brand-primary) 24%, transparent) 1px, transparent 1px),
+            linear-gradient(90deg, color-mix(in srgb, var(--brand-primary) 24%, transparent) 1px, transparent 1px);
+        background-size: 96px 96px;
+    }
+
+    .marketing-glass {
+        background: color-mix(in srgb, white 78%, transparent);
+        border: 1px solid color-mix(in srgb, var(--brand-primary) 14%, transparent);
+        backdrop-filter: blur(18px);
     }
 }

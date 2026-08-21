@@ -1,204 +1,177 @@
 import { Link } from 'react-router-dom';
 import {
-    BarChart3,
+    ArrowLeft,
+    BadgePercent,
     Building2,
     CalendarDays,
-    Car,
-    Check,
-    Droplets,
-    ListOrdered,
+    CheckCircle2,
+    Clock3,
+    HelpCircle,
     Receipt,
-    Shield,
+    ShieldCheck,
     Sparkles,
     Star,
-    Users,
-    Zap,
+    TrendingUp,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from '@/components/ui/accordion';
-import { MarketingCredits } from '@/components/marketing/MarketingCredits';
-import { Separator } from '@/components/ui/separator';
+import { PlatformHeader } from '@/components/marketing/PlatformHeader';
+import { PlatformFooter } from '@/components/marketing/PlatformFooter';
 import { t } from '@/lib/i18n';
+import { getPlatformName } from '@/lib/branding';
 import { cn } from '@/lib/utils';
+
+const DEMO_STOREFRONT = '/alwadi-wash2df/';
+
+const featureKeys = ['booking', 'queue', 'invoices', 'branches', 'reports', 'loyalty'] as const;
 
 const featureIcons = {
     booking: CalendarDays,
-    queue: ListOrdered,
+    queue: Clock3,
     invoices: Receipt,
     branches: Building2,
-    customers: Users,
-    reports: BarChart3,
-    workers: Shield,
-    multiTenant: Zap,
+    reports: TrendingUp,
+    loyalty: Sparkles,
 } as const;
 
-const featureKeys = [
-    'booking',
-    'queue',
-    'invoices',
-    'branches',
-    'customers',
-    'reports',
-    'workers',
-    'multiTenant',
-] as const;
+const trustKeys = ['vat', 'activation', 'omann', 'security'] as const;
 
-const stepNumbers = ['1', '2', '3'] as const;
+const trustIcons = {
+    vat: BadgePercent,
+    activation: Sparkles,
+    omann: ShieldCheck,
+    security: CheckCircle2,
+} as const;
 
-const pricingPlans = ['starter', 'pro', 'enterprise'] as const;
+const stepKeys = ['step1', 'step2', 'step3'] as const;
 
 const testimonialKeys = ['t1', 't2', 't3'] as const;
 
-const faqKeys = ['q1', 'q2', 'q3', 'q4', 'q5'] as const;
-
-function scrollTo(id: string) {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-}
+const faqKeys = ['q1', 'q2', 'q3', 'q4'] as const;
 
 export function MarketingHomePage() {
-    const year = new Date().getFullYear();
+    const platformName = getPlatformName();
+    const brand = { name: platformName };
+
+    const scrollToSection = (id: string) => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    };
 
     return (
-        <div className="min-h-screen bg-background" dir="rtl">
-            {/* Navbar */}
-            <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-lg">
-                <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-                    <Link to="/" className="flex items-center gap-2.5">
-                        <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md">
-                            <Droplets className="size-5" />
-                        </div>
-                        <span className="text-lg font-bold tracking-tight">{t('marketing.brand')}</span>
-                    </Link>
+        <div className="marketing-surface min-h-screen font-sans text-slate-900" dir="rtl">
+            <PlatformHeader />
 
-                    <nav className="hidden items-center gap-8 md:flex">
-                        <button
-                            type="button"
-                            onClick={() => scrollTo('features')}
-                            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                        >
-                            {t('marketing.nav.features')}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => scrollTo('pricing')}
-                            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                        >
-                            {t('marketing.nav.pricing')}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => scrollTo('about')}
-                            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                        >
-                            {t('marketing.nav.about')}
-                        </button>
-                    </nav>
-
-                    <div className="flex items-center gap-2 sm:gap-3">
-                        <Button variant="ghost" size="sm" asChild>
-                            <Link to="/login">{t('marketing.nav.login')}</Link>
-                        </Button>
-                        <Button size="sm" asChild>
-                            <Link to="/register">{t('marketing.nav.getStarted')}</Link>
-                        </Button>
-                    </div>
-                </div>
-            </header>
-
-            <main>
+            <main className="relative z-10 pt-28 sm:pt-36 lg:pt-40">
                 {/* Hero */}
-                <section className="relative overflow-hidden">
-                    <div
-                        className="pointer-events-none absolute inset-0"
-                        style={{
-                            background:
-                                'radial-gradient(ellipse 80% 60% at 50% -10%, hsl(var(--primary) / 0.18), transparent), radial-gradient(ellipse 50% 40% at 90% 20%, hsl(var(--chart-2) / 0.12), transparent)',
-                        }}
-                    />
-                    <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:py-28">
-                        <div className="space-y-8">
-                            <Badge
-                                variant="secondary"
-                                className="border border-primary/20 bg-accent px-3 py-1 text-accent-foreground"
-                            >
-                                <Sparkles className="me-1.5 size-3.5" />
+                <section className="px-4 pb-16 sm:px-6 lg:px-8 lg:pb-24">
+                    <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:items-center">
+                        <div className="space-y-8 text-right">
+                            <span className="inline-flex items-center gap-2 rounded-full border border-brand-primary/15 bg-white/90 px-4 py-2 text-xs font-black text-brand-primary shadow-sm">
+                                <ShieldCheck className="size-4" />
                                 {t('marketing.hero.badge')}
-                            </Badge>
+                            </span>
 
-                            <div className="space-y-4">
-                                <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-[3.25rem] lg:leading-[1.15]">
+                            <div className="space-y-5">
+                                <h1 className="text-4xl font-black leading-[1.1] tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
                                     {t('marketing.hero.title')}
                                 </h1>
-                                <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
+                                <p className="max-w-xl text-lg leading-relaxed text-slate-600 sm:text-xl">
                                     {t('marketing.hero.subtitle')}
                                 </p>
                             </div>
 
-                            <div className="flex flex-col gap-3 sm:flex-row">
-                                <Button size="lg" className="shadow-lg shadow-primary/20" asChild>
-                                    <Link to="/register">{t('marketing.hero.ctaPrimary')}</Link>
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                                <Button
+                                    size="lg"
+                                    className="h-13 rounded-2xl bg-brand-primary px-8 text-base font-black text-white shadow-lg shadow-brand-primary/25 hover:bg-brand-primary-dark"
+                                    asChild
+                                >
+                                    <Link to="/register">
+                                        {t('marketing.hero.ctaPrimary')}
+                                        <ArrowLeft className="me-2 size-5" />
+                                    </Link>
                                 </Button>
-                                <Button size="lg" variant="outline" onClick={() => scrollTo('features')}>
+                                <Button
+                                    size="lg"
+                                    variant="outline"
+                                    className="h-13 rounded-2xl border-slate-200 bg-white px-8 text-base font-bold text-slate-700 hover:border-brand-primary/30 hover:bg-brand-primary/5 hover:text-brand-primary"
+                                    onClick={() => scrollToSection('features')}
+                                >
                                     {t('marketing.hero.ctaSecondary')}
                                 </Button>
+                                <Button
+                                    size="lg"
+                                    variant="ghost"
+                                    className="h-13 rounded-2xl font-bold text-brand-primary hover:bg-brand-primary/10"
+                                    asChild
+                                >
+                                    <a href={DEMO_STOREFRONT}>
+                                        جرّب العرض التجريبي
+                                    </a>
+                                </Button>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                                {[
+                                    { value: t('marketing.stats.orders'), label: t('marketing.stats.ordersLabel') },
+                                    { value: t('marketing.stats.vat'), label: t('marketing.stats.vatLabel') },
+                                    { value: t('marketing.stats.branches'), label: t('marketing.stats.branchesLabel') },
+                                    { value: t('marketing.stats.loyalty'), label: t('marketing.stats.loyaltyLabel') },
+                                ].map((stat) => (
+                                    <div
+                                        key={stat.label}
+                                        className="rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm"
+                                    >
+                                        <p className="text-base font-black text-brand-primary sm:text-lg">{stat.value}</p>
+                                        <p className="mt-1 text-[11px] font-bold text-slate-500">{stat.label}</p>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
-                        {/* Hero visual */}
-                        <div className="relative mx-auto w-full max-w-lg lg:max-w-none">
-                            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-primary/20 via-transparent to-chart-2/20 blur-2xl" />
-                            <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-card shadow-2xl">
-                                <div className="border-b border-border bg-muted/50 px-4 py-3">
-                                    <div className="flex items-center gap-2">
-                                        <div className="size-2.5 rounded-full bg-destructive/70" />
-                                        <div className="size-2.5 rounded-full bg-chart-3/70" />
-                                        <div className="size-2.5 rounded-full bg-chart-2/70" />
-                                        <span className="ms-2 text-xs text-muted-foreground">
-                                            {t('marketing.brand')} — لوحة التحكم
-                                        </span>
-                                    </div>
+                        {/* Hero visual — simplified dashboard preview */}
+                        <div className="relative">
+                            <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 blur-2xl" />
+                            <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-2xl">
+                                <div className="flex items-center justify-between border-b border-slate-800 bg-brand-primary-dark px-5 py-3 text-white">
+                                    <span className="text-xs font-black">{platformName}</span>
+                                    <span className="rounded-full bg-emerald-500/20 px-3 py-0.5 text-[10px] font-bold text-emerald-300">
+                                        بث مباشر
+                                    </span>
                                 </div>
                                 <div className="space-y-4 p-6">
+                                    <div className="rounded-2xl border border-brand-primary/10 bg-brand-primary/5 p-5">
+                                        <p className="text-xs font-bold text-brand-primary">عمليات اليوم</p>
+                                        <p className="mt-1 text-3xl font-black text-slate-950">548 <span className="text-sm text-slate-400">سيارة</span></p>
+                                    </div>
                                     <div className="grid grid-cols-3 gap-3">
                                         {[
-                                            { label: 'طلبات اليوم', value: '127' },
-                                            { label: 'في الطابور', value: '8' },
-                                            { label: 'الإيرادات', value: '1,240 ر.ع' },
-                                        ].map((stat) => (
+                                            { label: 'انتظار', value: '6', tone: 'amber' },
+                                            { label: 'غسيل', value: '4', tone: 'sky' },
+                                            { label: 'مكتمل', value: '42', tone: 'emerald' },
+                                        ].map((item) => (
                                             <div
-                                                key={stat.label}
-                                                className="rounded-xl border border-border bg-background p-3 text-center"
+                                                key={item.label}
+                                                className={cn(
+                                                    'rounded-xl p-3 text-center',
+                                                    item.tone === 'amber' && 'bg-amber-50 text-amber-700',
+                                                    item.tone === 'sky' && 'bg-sky-50 text-sky-700',
+                                                    item.tone === 'emerald' && 'bg-emerald-50 text-emerald-700',
+                                                )}
                                             >
-                                                <p className="text-lg font-bold text-primary">{stat.value}</p>
-                                                <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+                                                <p className="text-[10px] font-bold">{item.label}</p>
+                                                <p className="text-xl font-black">{item.value}</p>
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="space-y-2">
-                                        {[1, 2, 3].map((i) => (
-                                            <div
-                                                key={i}
-                                                className="flex items-center gap-3 rounded-lg border border-border bg-background p-3"
-                                            >
-                                                <div className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-primary">
-                                                    <Car className="size-4" />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <div className="h-2 w-24 rounded bg-muted" />
-                                                    <div className="mt-1.5 h-1.5 w-16 rounded bg-muted/70" />
-                                                </div>
-                                                <Badge variant="secondary" className="text-[10px]">
-                                                    #{100 + i}
-                                                </Badge>
-                                            </div>
-                                        ))}
+                                    <div className="flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-xs font-bold text-emerald-800">
+                                        <BadgePercent className="size-4" />
+                                        ض.ق.م 5% — فواتير جاهزة للامتثال
                                     </div>
                                 </div>
                             </div>
@@ -206,85 +179,85 @@ export function MarketingHomePage() {
                     </div>
                 </section>
 
-                {/* Stats bar */}
-                <section className="border-y border-border bg-muted/40">
-                    <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 lg:grid-cols-4">
-                        {[
-                            { value: t('marketing.stats.orders'), label: t('marketing.stats.ordersLabel') },
-                            { value: t('marketing.stats.vat'), label: t('marketing.stats.vatLabel') },
-                            { value: t('marketing.stats.branches'), label: t('marketing.stats.branchesLabel') },
-                            { value: t('marketing.stats.tenants'), label: t('marketing.stats.tenantsLabel') },
-                        ].map((stat) => (
-                            <div key={stat.value} className="text-center">
-                                <p className="text-xl font-bold text-primary sm:text-2xl">{stat.value}</p>
-                                <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Features */}
-                <section id="features" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-                    <div className="mx-auto mb-14 max-w-2xl text-center">
-                        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                            {t('marketing.features.title')}
-                        </h2>
-                        <p className="mt-4 text-lg text-muted-foreground">{t('marketing.features.subtitle')}</p>
-                    </div>
-
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                        {featureKeys.map((key) => {
-                            const Icon = featureIcons[key];
+                {/* Trust strip */}
+                <section className="border-y border-slate-200/80 bg-white py-10">
+                    <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:grid-cols-2 lg:grid-cols-4 sm:px-6 lg:px-8">
+                        {trustKeys.map((key) => {
+                            const Icon = trustIcons[key];
                             return (
-                                <Card
-                                    key={key}
-                                    className="group border-border/80 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
-                                >
-                                    <CardHeader className="pb-3">
-                                        <div className="mb-2 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                                            <Icon className="size-5" />
-                                        </div>
-                                        <CardTitle className="text-base">
-                                            {t(`marketing.features.${key}.title`)}
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <CardDescription className="text-sm leading-relaxed">
-                                            {t(`marketing.features.${key}.description`)}
-                                        </CardDescription>
-                                    </CardContent>
-                                </Card>
+                                <div key={key} className="flex items-start gap-4 text-right">
+                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
+                                        <Icon className="size-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-black text-slate-900">
+                                            {t(`marketing.trust.${key}.title`)}
+                                        </h3>
+                                        <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                                            {t(`marketing.trust.${key}.description`)}
+                                        </p>
+                                    </div>
+                                </div>
                             );
                         })}
                     </div>
                 </section>
 
-                {/* How it works */}
-                <section id="about" className="bg-muted/30 py-20">
-                    <div className="mx-auto max-w-6xl px-4 sm:px-6">
-                        <div className="mx-auto mb-14 max-w-2xl text-center">
-                            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                                {t('marketing.howItWorks.title')}
+                {/* Features */}
+                <section id="features" className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+                    <div className="mx-auto max-w-7xl">
+                        <div className="mx-auto max-w-2xl text-center">
+                            <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
+                                {t('marketing.features.title')}
                             </h2>
-                            <p className="mt-4 text-lg text-muted-foreground">
-                                {t('marketing.howItWorks.subtitle')}
+                            <p className="mt-4 text-lg text-slate-600">
+                                {t('marketing.features.subtitle')}
                             </p>
                         </div>
 
-                        <div className="grid gap-8 md:grid-cols-3">
-                            {stepNumbers.map((step, index) => (
-                                <div key={step} className="relative text-center">
-                                    {index < 2 && (
-                                        <div className="absolute top-8 hidden h-0.5 w-full bg-gradient-to-l from-primary/40 to-transparent md:block md:w-[calc(100%+2rem)] md:-start-[calc(50%+2rem)]" />
-                                    )}
-                                    <div className="relative mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-primary text-2xl font-bold text-primary-foreground shadow-lg shadow-primary/25">
-                                        {step}
+                        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            {featureKeys.map((key) => {
+                                const Icon = featureIcons[key];
+                                return (
+                                    <div
+                                        key={key}
+                                        className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-brand-primary/20 hover:shadow-md"
+                                    >
+                                        <div className="flex size-12 items-center justify-center rounded-xl bg-brand-primary text-white">
+                                            <Icon className="size-6" />
+                                        </div>
+                                        <h3 className="mt-5 text-lg font-black text-slate-950">
+                                            {t(`marketing.features.${key}.title`)}
+                                        </h3>
+                                        <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                                            {t(`marketing.features.${key}.description`)}
+                                        </p>
                                     </div>
-                                    <h3 className="mb-2 text-lg font-semibold">
-                                        {t(`marketing.howItWorks.step${step}.title`)}
-                                    </h3>
-                                    <p className="text-sm leading-relaxed text-muted-foreground">
-                                        {t(`marketing.howItWorks.step${step}.description`)}
+                                );
+                            })}
+                        </div>
+                    </div>
+                </section>
+
+                {/* How it works */}
+                <section className="bg-brand-primary-dark px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
+                    <div className="mx-auto max-w-7xl">
+                        <div className="text-center">
+                            <h2 className="text-3xl font-black sm:text-4xl">{t('marketing.howItWorks.title')}</h2>
+                            <p className="mt-3 text-slate-300">{t('marketing.howItWorks.subtitle')}</p>
+                        </div>
+                        <div className="mt-12 grid gap-6 md:grid-cols-3">
+                            {stepKeys.map((key, index) => (
+                                <div
+                                    key={key}
+                                    className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
+                                >
+                                    <span className="flex size-10 items-center justify-center rounded-xl bg-brand-secondary text-brand-primary-dark text-sm font-black">
+                                        0{index + 1}
+                                    </span>
+                                    <h3 className="mt-4 text-lg font-black">{t(`marketing.howItWorks.${key}.title`)}</h3>
+                                    <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                                        {t(`marketing.howItWorks.${key}.description`)}
                                     </p>
                                 </div>
                             ))}
@@ -292,216 +265,130 @@ export function MarketingHomePage() {
                     </div>
                 </section>
 
-                {/* Pricing */}
-                <section id="pricing" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-                    <div className="mx-auto mb-14 max-w-2xl text-center">
-                        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                {/* Pricing teaser */}
+                <section className="px-4 py-20 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-4xl rounded-[2rem] border border-brand-primary/15 bg-white p-8 text-center shadow-lg sm:p-12">
+                        <BadgePercent className="mx-auto size-10 text-brand-primary" />
+                        <h2 className="mt-4 text-2xl font-black text-slate-950 sm:text-3xl">
                             {t('marketing.pricing.title')}
                         </h2>
-                        <p className="mt-4 text-lg text-muted-foreground">{t('marketing.pricing.subtitle')}</p>
-                    </div>
-
-                    <div className="grid gap-6 lg:grid-cols-3">
-                        {pricingPlans.map((plan) => {
-                            const isPro = plan === 'pro';
-                            return (
-                                <Card
-                                    key={plan}
-                                    className={cn(
-                                        'relative flex flex-col',
-                                        isPro && 'border-primary shadow-xl shadow-primary/10 lg:scale-105',
-                                    )}
-                                >
-                                    {isPro && (
-                                        <Badge className="absolute -top-3 start-1/2 -translate-x-1/2 px-3">
-                                            {t('marketing.pricing.pro.badge')}
-                                        </Badge>
-                                    )}
-                                    <CardHeader>
-                                        <CardTitle>{t(`marketing.pricing.${plan}.name`)}</CardTitle>
-                                        <CardDescription>{t(`marketing.pricing.${plan}.description`)}</CardDescription>
-                                        <div className="pt-4">
-                                            <span className="text-4xl font-bold">
-                                                {t(`marketing.pricing.${plan}.price`)}
-                                            </span>
-                                            <span className="ms-1 text-sm text-muted-foreground">
-                                                {t(`marketing.pricing.${plan}.period`)}
-                                            </span>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent className="flex-1">
-                                        <ul className="space-y-2 text-sm text-muted-foreground">
-                                            <li className="flex items-center gap-2">
-                                                <Check className="size-4 text-primary" />
-                                                {t(`marketing.features.${plan === 'starter' ? 'booking' : plan === 'pro' ? 'branches' : 'multiTenant'}.title`)}
-                                            </li>
-                                            <li className="flex items-center gap-2">
-                                                <Check className="size-4 text-primary" />
-                                                {t('marketing.features.invoices.title')}
-                                            </li>
-                                            <li className="flex items-center gap-2">
-                                                <Check className="size-4 text-primary" />
-                                                {t('marketing.features.reports.title')}
-                                            </li>
-                                        </ul>
-                                    </CardContent>
-                                    <CardFooter>
-                                        <Button className="w-full" variant={isPro ? 'default' : 'outline'} asChild>
-                                            <Link to={plan === 'enterprise' ? '/login' : '/register'}>
-                                                {t(`marketing.pricing.${plan}.cta`)}
-                                            </Link>
-                                        </Button>
-                                    </CardFooter>
-                                </Card>
-                            );
-                        })}
+                        <p className="mx-auto mt-3 max-w-xl text-slate-600">
+                            {t('marketing.pricing.subtitle')}
+                        </p>
+                        <p className="mt-4 text-sm font-bold text-brand-primary">
+                            {t('marketing.footer.vatNote')} — {platformName}
+                        </p>
+                        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                            <Button size="lg" className="rounded-2xl bg-brand-primary font-black hover:bg-brand-primary-dark" asChild>
+                                <Link to="/pricing">استعراض الباقات</Link>
+                            </Button>
+                            <Button size="lg" variant="outline" className="rounded-2xl font-bold" asChild>
+                                <Link to="/register">{t('marketing.nav.getStarted')}</Link>
+                            </Button>
+                        </div>
                     </div>
                 </section>
 
                 {/* Testimonials */}
-                <section className="bg-muted/30 py-20">
-                    <div className="mx-auto max-w-6xl px-4 sm:px-6">
-                        <div className="mx-auto mb-14 max-w-2xl text-center">
-                            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                                {t('marketing.testimonials.title')}
+                <section className="border-y border-slate-200/80 bg-slate-50/70 px-4 py-20 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-7xl">
+                        <div className="text-center">
+                            <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
+                                {t('marketing.testimonials.title', brand)}
                             </h2>
-                            <p className="mt-4 text-lg text-muted-foreground">
-                                {t('marketing.testimonials.subtitle')}
-                            </p>
+                            <p className="mt-3 text-slate-600">{t('marketing.testimonials.subtitle')}</p>
                         </div>
-
-                        <div className="grid gap-6 md:grid-cols-3">
+                        <div className="mt-12 grid gap-6 md:grid-cols-3">
                             {testimonialKeys.map((key) => (
-                                <Card key={key} className="border-border/80">
-                                    <CardContent className="pt-6">
-                                        <div className="mb-4 flex gap-0.5">
-                                            {Array.from({ length: 5 }).map((_, i) => (
-                                                <Star key={i} className="size-4 fill-chart-3 text-chart-3" />
-                                            ))}
-                                        </div>
-                                        <p className="mb-6 text-sm leading-relaxed">
-                                            &ldquo;{t(`marketing.testimonials.${key}.quote`)}&rdquo;
+                                <div key={key} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                                    <div className="flex gap-1 text-amber-400">
+                                        {Array.from({ length: 5 }).map((_, i) => (
+                                            <Star key={i} className="size-4 fill-amber-400" />
+                                        ))}
+                                    </div>
+                                    <p className="mt-4 text-sm leading-relaxed text-slate-700 italic">
+                                        &ldquo;{t(`marketing.testimonials.${key}.quote`)}&rdquo;
+                                    </p>
+                                    <div className="mt-5 border-t border-slate-100 pt-4">
+                                        <p className="text-sm font-black text-slate-950">
+                                            {t(`marketing.testimonials.${key}.author`)}
                                         </p>
-                                        <div>
-                                            <p className="font-semibold">{t(`marketing.testimonials.${key}.author`)}</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {t(`marketing.testimonials.${key}.business`)}
-                                            </p>
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                                        <p className="text-xs font-bold text-brand-primary">
+                                            {t(`marketing.testimonials.${key}.business`)}
+                                        </p>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </div>
                 </section>
 
                 {/* FAQ */}
-                <section className="mx-auto max-w-3xl px-4 py-20 sm:px-6">
-                    <div className="mb-10 text-center">
-                        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('marketing.faq.title')}</h2>
+                <section className="px-4 py-20 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-3xl">
+                        <div className="text-center">
+                            <HelpCircle className="mx-auto size-8 text-brand-primary" />
+                            <h2 className="mt-3 text-3xl font-black text-slate-950">{t('marketing.faq.title')}</h2>
+                        </div>
+                        <Accordion type="single" collapsible className="mt-10 space-y-3">
+                            {faqKeys.map((key) => (
+                                <AccordionItem
+                                    key={key}
+                                    value={key}
+                                    className="overflow-hidden rounded-2xl border border-slate-200 bg-white px-5"
+                                >
+                                    <AccordionTrigger className="py-4 text-right text-base font-black text-slate-950 hover:no-underline hover:text-brand-primary">
+                                        {t(`marketing.faq.${key}.question`)}
+                                    </AccordionTrigger>
+                                    <AccordionContent className="pb-4 text-right text-sm leading-relaxed text-slate-600">
+                                        {t(`marketing.faq.${key}.answer`, brand)}
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
                     </div>
-
-                    <Accordion type="single" collapsible className="w-full">
-                        {faqKeys.map((key) => (
-                            <AccordionItem key={key} value={key}>
-                                <AccordionTrigger className="text-base">
-                                    {t(`marketing.faq.${key}.question`)}
-                                </AccordionTrigger>
-                                <AccordionContent>{t(`marketing.faq.${key}.answer`)}</AccordionContent>
-                            </AccordionItem>
-                        ))}
-                    </Accordion>
                 </section>
 
-                {/* CTA banner */}
-                <section className="mx-4 mb-20 sm:mx-6">
-                    <div
-                        className="mx-auto max-w-6xl overflow-hidden rounded-2xl px-6 py-16 text-center shadow-2xl sm:px-12"
-                        style={{
-                            background:
-                                'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.85) 50%, hsl(var(--chart-2)) 100%)',
-                        }}
-                    >
-                        <h2 className="text-3xl font-bold text-primary-foreground sm:text-4xl">
-                            {t('marketing.cta.title')}
-                        </h2>
-                        <p className="mx-auto mt-4 max-w-xl text-primary-foreground/90">
-                            {t('marketing.cta.subtitle')}
+                {/* Final CTA */}
+                <section className="px-4 pb-20 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-4xl rounded-[2rem] bg-gradient-to-br from-brand-primary to-brand-primary-dark p-10 text-center text-white shadow-2xl sm:p-14">
+                        <h2 className="text-3xl font-black sm:text-4xl">{t('marketing.cta.title')}</h2>
+                        <p className="mx-auto mt-4 max-w-xl text-slate-200">
+                            {t('marketing.cta.subtitle', brand)}
                         </p>
-                        <Button
-                            size="lg"
-                            variant="secondary"
-                            className="mt-8 shadow-lg"
-                            asChild
-                        >
-                            <Link to="/register">{t('marketing.cta.button')}</Link>
-                        </Button>
+                        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                            <Button
+                                size="lg"
+                                className="h-13 rounded-2xl bg-white px-8 font-black text-brand-primary hover:bg-slate-100"
+                                asChild
+                            >
+                                <Link to="/register">
+                                    {t('marketing.cta.button')}
+                                    <ArrowLeft className="me-2 size-5" />
+                                </Link>
+                            </Button>
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="h-13 rounded-2xl border-white/30 bg-white/10 px-8 font-bold text-white hover:bg-white/20"
+                                asChild
+                            >
+                                <a href={DEMO_STOREFRONT}>جرّب العرض التجريبي</a>
+                            </Button>
+                        </div>
+                        <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs font-bold text-slate-300">
+                            {['امتثال ض.ق.م 5%', 'تفعيل فوري', 'دعم محلي', 'فروع متعددة'].map((item) => (
+                                <span key={item} className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1">
+                                    <CheckCircle2 className="size-3.5 text-emerald-400" />
+                                    {item}
+                                </span>
+                            ))}
+                        </div>
                     </div>
                 </section>
             </main>
 
-            {/* Footer */}
-            <footer className="border-t border-border bg-muted/20">
-                <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-                    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                        <div className="lg:col-span-1">
-                            <Link to="/" className="flex items-center gap-2">
-                                <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                                    <Droplets className="size-4" />
-                                </div>
-                                <span className="font-bold">{t('marketing.brand')}</span>
-                            </Link>
-                            <p className="mt-3 text-sm text-muted-foreground">{t('marketing.footer.tagline')}</p>
-                        </div>
-
-                        <div>
-                            <h4 className="mb-3 text-sm font-semibold">{t('marketing.footer.product')}</h4>
-                            <ul className="space-y-2 text-sm text-muted-foreground">
-                                <li>
-                                    <button type="button" onClick={() => scrollTo('features')} className="hover:text-foreground">
-                                        {t('marketing.nav.features')}
-                                    </button>
-                                </li>
-                                <li>
-                                    <button type="button" onClick={() => scrollTo('pricing')} className="hover:text-foreground">
-                                        {t('marketing.nav.pricing')}
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 className="mb-3 text-sm font-semibold">{t('marketing.footer.company')}</h4>
-                            <ul className="space-y-2 text-sm text-muted-foreground">
-                                <li>
-                                    <button type="button" onClick={() => scrollTo('about')} className="hover:text-foreground">
-                                        {t('marketing.nav.about')}
-                                    </button>
-                                </li>
-                                <li>
-                                    <Link to="/login" className="hover:text-foreground">
-                                        {t('marketing.nav.login')}
-                                    </Link>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 className="mb-3 text-sm font-semibold">{t('marketing.footer.legal')}</h4>
-                            <p className="text-sm text-muted-foreground">{t('marketing.footer.vatNote')}</p>
-                        </div>
-                    </div>
-
-                    <Separator className="my-8" />
-
-                    <div className="space-y-2 text-center">
-                        <p className="text-sm text-muted-foreground">
-                            {t('marketing.footer.copyright').replace('{year}', String(year))}
-                        </p>
-                        <MarketingCredits />
-                    </div>
-                </div>
-            </footer>
+            <PlatformFooter />
         </div>
     );
 }

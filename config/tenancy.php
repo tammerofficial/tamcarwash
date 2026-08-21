@@ -41,6 +41,27 @@ return [
         FILTER_VALIDATE_BOOL
     ),
 
+    /*
+    | Show quick-login buttons on tenant/landlord login pages. Defaults to true in
+    | local; enable on Forge with ALLOW_QUICK_LOGIN=true when demo users are seeded.
+    */
+    'allow_quick_login' => filter_var(
+        env('ALLOW_QUICK_LOGIN', env('APP_ENV') === 'local'),
+        FILTER_VALIDATE_BOOL
+    ),
+
+    /*
+    | Landlord platform super admin — seeded idempotently on every production deploy.
+    | Set LANDLORD_ADMIN_* in Forge → Environment (never commit real passwords).
+    | Local dev falls back to admin@tammer.test / password when unset.
+    */
+    'landlord_admin' => [
+        'email' => env('LANDLORD_ADMIN_EMAIL'),
+        'password' => env('LANDLORD_ADMIN_PASSWORD'),
+        'name' => env('LANDLORD_ADMIN_NAME', 'مدير المنصة'),
+        'role' => env('LANDLORD_ADMIN_ROLE', 'admin'),
+    ],
+
     'tenant_database_prefix' => env('TENANT_DB_PREFIX', 'tamcarwash_tenant_'),
 
     'tenant_migrations_path' => database_path('migrations/tenant'),

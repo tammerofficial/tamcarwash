@@ -4,6 +4,7 @@ import { MarketingCredits } from '@/components/marketing/MarketingCredits';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ARABIC_DAYS, getBranchAddress, getTenantBranding, getTenantDisplayName, getTenantPhone } from '@/hooks/useStorefront';
+import { getPlatformName } from '@/lib/branding';
 import type { StorefrontBranch, StorefrontProfile } from '@/types/api';
 
 interface TenantMarketingFooterProps {
@@ -161,7 +162,7 @@ export function TenantMarketingFooter({ profile, branches }: TenantMarketingFoot
                         <p>
                             © {year} {businessName}. جميع الحقوق محفوظة.
                         </p>
-                        <p>مدعوم من تمير واش</p>
+                        <p>مدعوم من {getPlatformName()}</p>
                     </div>
                     <MarketingCredits />
                 </div>

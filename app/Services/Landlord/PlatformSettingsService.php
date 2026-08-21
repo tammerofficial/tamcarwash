@@ -106,7 +106,8 @@ class PlatformSettingsService
     protected function defaults(): array
     {
         return [
-            'platform_name' => config('app.name', 'Tammer Wash'),
+            'platform_name' => config('tammer.platform.name', 'تمير واش'),
+            'platform_tagline' => config('tammer.platform.tagline', 'Enterprise SaaS'),
             'platform_domain' => config('tenancy.platform_domain'),
             'tenancy_mode' => config('tenancy.subdirectory_enabled', true) ? 'subdirectory' : 'subdomain',
             'trial_days' => 14,

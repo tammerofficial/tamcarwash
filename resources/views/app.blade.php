@@ -2,6 +2,7 @@
     use App\Models\Landlord\Tenant;
     use App\Services\Landlord\PlatformSettingsService;
     use App\Support\BrandingHelper;
+    use App\Support\PlatformBrandingHelper;
 
     $host = request()->getHost();
     $path = trim(request()->path(), '/');
@@ -47,10 +48,6 @@
         }
     }
 
-    if (! $isLandlord && ! $tenant && in_array($host, $centralDomains, true) && blank($path)) {
-        $isLandlord = true;
-    }
-
     $tenancyMode = 'subdirectory';
 
     try {
@@ -80,6 +77,8 @@
         'phone' => config('tammer.contact.phone', '+965 18XXXXXX'),
         'address' => config('tammer.contact.address', 'العاصمة ، الكويت'),
     ];
+
+    $brandingContext = PlatformBrandingHelper::resolveForContext($tenant, $isLandlord);
 @endphp
 <!DOCTYPE html>
 <html lang="ar" dir="rtl"@if($tenant) data-tenant="{{ $tenant->slug }}"@endif>
@@ -88,14 +87,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ rescue(fn () => csrf_token(), '') }}">
 
-        <title>{{ config('app.name', 'Tammer Wash') }}</title>
+        <title>{{ PlatformBrandingHelper::documentTitle($tenant, $isLandlord) }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=ibm-plex-sans-arabic:400,500,600,700" rel="stylesheet" />
 
         <script>
             window.__TAMMER__ = {
-                appName: @json(config('app.name', 'Tammer Wash')),
+                appName: @json($brandingContext['appName']),
+                tagline: @json($brandingContext['tagline']),
+                platform: @json($brandingContext['platform']),
                 apiBaseUrl: @json(url('/api/v1')),
                 landlordApiBaseUrl: @json(url('/api/landlord/v1')),
                 sanctumUrl: @json(url('/sanctum/csrf-cookie')),
@@ -106,7 +107,7 @@
                 subdirectoryEnabled: @json(config('tenancy.subdirectory_enabled', false)),
                 reservedPaths: @json(config('tenancy.reserved_paths', [])),
                 subdirectorySlug: @json($subdirectorySlug),
-                allowQuickLogin: @json(app()->environment('local')),
+                allowQuickLogin: @json(config('tenancy.allow_quick_login')),
                 platformDomain: @json(config('tenancy.platform_domain')),
                 defaultContact: @json($defaultContact),
             };

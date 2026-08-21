@@ -25,6 +25,7 @@ class SettingsController extends ApiController
     {
         $validated = $request->validate([
             'business_name' => ['sometimes', 'string', 'max:255'],
+            'tagline' => ['sometimes', 'nullable', 'string', 'max:255'],
             'vat_enabled' => ['sometimes', 'boolean'],
             'vat_rate' => ['sometimes', 'numeric', 'min:0', 'max:100'],
             'vat_inclusive' => ['sometimes', 'boolean'],
@@ -55,6 +56,10 @@ class SettingsController extends ApiController
 
             if (isset($validated['business_name'])) {
                 $tenant->name = $validated['business_name'];
+            }
+
+            if (array_key_exists('tagline', $validated)) {
+                $settings['tagline'] = $validated['tagline'];
             }
 
             $tenant->settings = $settings;
@@ -91,8 +96,11 @@ class SettingsController extends ApiController
         $tenant = app(TenantContext::class)->get();
         $settings = $tenant?->settings ?? [];
 
+        $branding = BrandingHelper::resolve($settings, $tenant?->metadata ?? []);
+
         return [
-            'business_name' => $tenant?->name ?? config('app.name'),
+            'business_name' => $tenant?->name ?? config('tammer.platform.name', 'تمير واش'),
+            'tagline' => $branding['tagline'],
             'tenant_slug' => $tenant?->slug,
             'vat_enabled' => (bool) $taxSettings->vat_enabled,
             'vat_rate' => (float) $taxSettings->vat_rate,

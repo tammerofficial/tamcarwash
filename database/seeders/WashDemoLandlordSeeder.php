@@ -126,6 +126,10 @@ class WashDemoLandlordSeeder extends IdempotentSeeder
             }
 
             $this->seedSubscriptions($tenant, $spec, $plans, $created, $updated);
+
+            if (in_array($spec['slug'], ['alwadi-wash', 'alwadi-wash2df'], true)) {
+                $this->seedAlwadiBranding($tenant, $updated);
+            }
         }
 
         $this->logResult(static::class, compact('created', 'updated') + [
@@ -270,5 +274,31 @@ class WashDemoLandlordSeeder extends IdempotentSeeder
             ]
         );
         $created++;
+    }
+
+    protected function seedAlwadiBranding(Tenant $tenant, int &$updated): void
+    {
+        $settings = array_merge($tenant->settings ?? [], [
+            'primary_color' => '#0d6e6e',
+            'secondary_color' => '#0d9488',
+            'tagline' => 'غسيل سيارات احترافي — مسقط · صحار · صحم',
+            'about' => 'مغسلة الوادي للسيارات — خدمة غسيل وتلميع ونانو سيراميك منذ 2018. فروعنا في الخوير وصحار وصحم.',
+            'social' => [
+                'instagram' => 'https://instagram.com/alwadi_wash',
+                'whatsapp' => 'https://wa.me/96824567890',
+                'facebook' => 'https://facebook.com/alwadiwash',
+            ],
+        ]);
+
+        $metadata = array_merge($tenant->metadata ?? [], [
+            'demo_scenario' => 'alwadi_wash',
+            'branding_seeded_at' => now()->toIso8601String(),
+        ]);
+
+        $tenant->update([
+            'settings' => $settings,
+            'metadata' => $metadata,
+        ]);
+        $updated++;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Modules\Queue\Services;
 
 use App\Modules\Booking\Models\Booking;
+use App\Modules\Branches\Models\Branch;
 use App\Modules\Queue\Enums\QueueEntryStatus;
 use App\Modules\Queue\Enums\QueueSource;
 use App\Modules\Queue\Events\QueueEntryCalled;
@@ -189,6 +190,76 @@ class QueueService
             'estimated_wait_minutes' => $this->calculateEstimatedWait($branchId, $date),
             'entries' => $entries,
         ];
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getPublicBranchSummaries(): array
+    {
+        return Branch::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get()
+            ->map(function (Branch $branch) {
+                $screen = $this->getScreenData($branch->id);
+                $entries = $screen['entries'];
+
+                $inProgressCount = $entries
+                    ->filter(fn (QueueEntry $entry) => in_array($entry->status, [
+                        QueueEntryStatus::Arrived,
+                        QueueEntryStatus::InService,
+                        QueueEntryStatus::Ready,
+                    ], true))
+                    ->count();
+
+                $waitingCount = (int) $screen['waiting_count'];
+                $capacity = max(1, (int) ($branch->capacity_per_hour ?? 10));
+                $loadPercent = min(100, (int) round((($waitingCount + $inProgressCount) / $capacity) * 100));
+
+                return [
+                    'branch_id' => $branch->id,
+                    'branch_name' => $branch->name,
+                    'city' => $branch->city,
+                    'waiting_count' => $waitingCount,
+                    'in_progress_count' => $inProgressCount,
+                    'estimated_wait_minutes' => (int) $screen['estimated_wait_minutes'],
+                    'load_percent' => $loadPercent,
+                    'status_label' => $this->publicLoadStatusLabel($loadPercent),
+                    'current_number' => $screen['current_number'],
+                ];
+            })
+            ->values()
+            ->all();
+    }
+
+    protected function publicLoadStatusLabel(int $loadPercent): string
+    {
+        return match (true) {
+            $loadPercent >= 70 => 'مزدحم',
+            $loadPercent >= 40 => 'مزدحم قليلاً',
+            default => 'متاح الآن',
+        };
+    }
+
+    public function calculateQueuePosition(QueueEntry $entry): ?int
+    {
+        if ($entry->status !== QueueEntryStatus::Waiting) {
+            return null;
+        }
+
+        return QueueEntry::query()
+            ->where('branch_id', $entry->branch_id)
+            ->whereDate('queue_date', $entry->queue_date)
+            ->where('status', QueueEntryStatus::Waiting)
+            ->where(function ($query) use ($entry) {
+                $query->where('priority', '>', $entry->priority)
+                    ->orWhere(function ($nested) use ($entry) {
+                        $nested->where('priority', $entry->priority)
+                            ->where('queue_number', '<', $entry->queue_number);
+                    });
+            })
+            ->count() + 1;
     }
 
     public function getAnalytics(int $branchId, Carbon $from, Carbon $to): array

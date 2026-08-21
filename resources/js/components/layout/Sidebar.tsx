@@ -21,31 +21,76 @@ import {
     Banknote,
     Wrench,
     Palette,
+    type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { t } from '@/lib/i18n';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { appConfig } from '@/lib/api';
+import { getAppName, getAppTagline } from '@/lib/branding';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/providers/AuthProvider';
 
-const navItems = [
-    { to: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard, end: true, roles: ['owner', 'manager', 'cashier', 'worker'] },
-    { to: '/cashier', label: t('nav.cashier'), icon: Banknote, roles: ['owner', 'manager', 'cashier'] },
-    { to: '/worker', label: t('nav.worker'), icon: Wrench, roles: ['owner', 'manager', 'worker'] },
-    { to: '/branches', label: t('nav.branches'), icon: Building2, roles: ['owner', 'manager'] },
-    { to: '/customers', label: t('nav.customers'), icon: Users, roles: ['owner', 'manager', 'cashier'] },
-    { to: '/vehicles', label: t('nav.vehicles'), icon: CarFront, roles: ['owner', 'manager', 'cashier'] },
-    { to: '/services', label: t('nav.services'), icon: Droplets, roles: ['owner', 'manager'] },
-    { to: '/pricing', label: t('nav.pricing'), icon: Tags, roles: ['owner', 'manager'] },
-    { to: '/booking', label: t('nav.booking'), icon: CalendarDays, roles: ['owner', 'manager'] },
-    { to: '/queue', label: t('nav.queue'), icon: ListOrdered, roles: ['owner', 'manager', 'cashier', 'worker'] },
-    { to: '/queue/screen', label: t('nav.queueScreen'), icon: Monitor, roles: ['owner', 'manager', 'cashier'] },
-    { to: '/orders', label: t('nav.orders'), icon: ClipboardList, roles: ['owner', 'manager', 'cashier', 'worker'] },
-    { to: '/invoices', label: t('nav.invoices'), icon: Receipt, roles: ['owner', 'manager', 'cashier'] },
-    { to: '/tax-reports', label: t('nav.taxReports'), icon: CreditCard, roles: ['owner', 'manager'] },
-    { to: '/appearance', label: t('nav.appearance'), icon: Palette, roles: ['owner', 'manager'] },
-    { to: '/settings', label: t('nav.settings'), icon: Settings, roles: ['owner', 'manager'] },
+type NavItem = {
+    to: string;
+    label: string;
+    icon: LucideIcon;
+    end?: boolean;
+    roles?: string[];
+};
+
+type NavSection = {
+    sectionKey: string;
+    sectionLabel: string;
+    items: NavItem[];
+};
+
+const navSections: NavSection[] = [
+    {
+        sectionKey: 'main',
+        sectionLabel: t('nav.sections.main'),
+        items: [
+            { to: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard, end: true, roles: ['owner', 'manager', 'cashier', 'worker'] },
+            { to: '/cashier', label: t('nav.cashier'), icon: Banknote, roles: ['owner', 'manager', 'cashier'] },
+            { to: '/worker', label: t('nav.worker'), icon: Wrench, roles: ['owner', 'manager', 'worker'] },
+        ],
+    },
+    {
+        sectionKey: 'operations',
+        sectionLabel: t('nav.sections.operations'),
+        items: [
+            { to: '/queue', label: t('nav.queue'), icon: ListOrdered, roles: ['owner', 'manager', 'cashier', 'worker'] },
+            { to: '/queue/screen', label: t('nav.queueScreen'), icon: Monitor, roles: ['owner', 'manager', 'cashier'] },
+            { to: '/orders', label: t('nav.orders'), icon: ClipboardList, roles: ['owner', 'manager', 'cashier', 'worker'] },
+            { to: '/booking', label: t('nav.booking'), icon: CalendarDays, roles: ['owner', 'manager'] },
+        ],
+    },
+    {
+        sectionKey: 'masterData',
+        sectionLabel: t('nav.sections.masterData'),
+        items: [
+            { to: '/branches', label: t('nav.branches'), icon: Building2, roles: ['owner', 'manager'] },
+            { to: '/customers', label: t('nav.customers'), icon: Users, roles: ['owner', 'manager', 'cashier'] },
+            { to: '/vehicles', label: t('nav.vehicles'), icon: CarFront, roles: ['owner', 'manager', 'cashier'] },
+            { to: '/services', label: t('nav.services'), icon: Droplets, roles: ['owner', 'manager'] },
+            { to: '/pricing', label: t('nav.pricing'), icon: Tags, roles: ['owner', 'manager'] },
+        ],
+    },
+    {
+        sectionKey: 'finance',
+        sectionLabel: t('nav.sections.finance'),
+        items: [
+            { to: '/invoices', label: t('nav.invoices'), icon: Receipt, roles: ['owner', 'manager', 'cashier'] },
+            { to: '/tax-reports', label: t('nav.taxReports'), icon: CreditCard, roles: ['owner', 'manager'] },
+        ],
+    },
+    {
+        sectionKey: 'system',
+        sectionLabel: t('nav.sections.system'),
+        items: [
+            { to: '/appearance', label: t('nav.appearance'), icon: Palette, roles: ['owner', 'manager'] },
+            { to: '/settings', label: t('nav.settings'), icon: Settings, roles: ['owner', 'manager'] },
+        ],
+    },
 ];
 
 interface SidebarProps {
@@ -67,9 +112,14 @@ export function Sidebar({
 }: SidebarProps) {
     const { user } = useAuth();
     const userRoles = user?.roles ?? [];
-    const visibleNavItems = navItems.filter(
-        (item) => !item.roles || item.roles.some((role) => userRoles.includes(role)),
-    );
+    const visibleSections = navSections
+        .map((section) => ({
+            ...section,
+            items: section.items.filter(
+                (item) => !item.roles || item.roles.some((role) => userRoles.includes(role)),
+            ),
+        }))
+        .filter((section) => section.items.length > 0);
 
     return (
         <aside
@@ -121,8 +171,8 @@ export function Sidebar({
                     </div>
                     {!collapsed && (
                         <div className="space-y-1 animate-in fade-in duration-500">
-                            <p className="admin-sidebar-brand-title">{appConfig.appName}</p>
-                            <p className="admin-sidebar-brand-subtitle">{t('app.tagline')}</p>
+                            <p className="admin-sidebar-brand-title">{getAppName()}</p>
+                            <p className="admin-sidebar-brand-subtitle">{getAppTagline() ?? t('app.tagline')}</p>
                             <p className="admin-sidebar-brand-sultanate">{t('app.sultanate')}</p>
                         </div>
                     )}
@@ -131,39 +181,41 @@ export function Sidebar({
 
             <ScrollArea className="admin-sidebar-nav px-3 pb-6 pt-2">
                 <nav className="space-y-6">
-                    <div className="space-y-1">
-                        {!collapsed && (
-                            <p className="admin-sidebar-section-label">
-                                {t('nav.main')}
-                            </p>
-                        )}
-                        {visibleNavItems.map((item) => (
-                            <NavLink
-                                key={item.to}
-                                to={item.to}
-                                end={item.end}
-                                title={collapsed ? item.label : undefined}
-                                onClick={onNavigate}
-                                dir={collapsed ? undefined : 'ltr'}
-                                className={({ isActive }) =>
-                                    cn(
-                                        'admin-sidebar-nav-item group flex w-full flex-row items-center gap-3 rounded-2xl px-3 py-2.5 transition-all duration-200',
-                                        isActive
-                                            ? 'admin-sidebar-nav-item--active'
-                                            : 'admin-sidebar-nav-item--inactive',
-                                        collapsed ? 'justify-center px-2 py-2.5' : 'justify-end',
-                                    )
-                                }
-                            >
-                                {!collapsed && (
-                                    <span className="min-w-0 flex-1 truncate text-right">{item.label}</span>
-                                )}
-                                <span className="flex w-5 shrink-0 items-center justify-center">
-                                    <item.icon className="h-[1.125rem] w-[1.125rem] shrink-0 stroke-[1.5]" />
-                                </span>
-                            </NavLink>
-                        ))}
-                    </div>
+                    {visibleSections.map((section) => (
+                        <div key={section.sectionKey} className="space-y-1">
+                            {!collapsed && (
+                                <p className="admin-sidebar-section-label">
+                                    {section.sectionLabel}
+                                </p>
+                            )}
+                            {section.items.map((item) => (
+                                <NavLink
+                                    key={item.to}
+                                    to={item.to}
+                                    end={item.end}
+                                    title={collapsed ? item.label : undefined}
+                                    onClick={onNavigate}
+                                    dir={collapsed ? undefined : 'ltr'}
+                                    className={({ isActive }) =>
+                                        cn(
+                                            'admin-sidebar-nav-item group flex w-full flex-row items-center gap-3 rounded-2xl px-3 py-2.5 transition-all duration-200',
+                                            isActive
+                                                ? 'admin-sidebar-nav-item--active'
+                                                : 'admin-sidebar-nav-item--inactive',
+                                            collapsed ? 'justify-center px-2 py-2.5' : 'justify-end',
+                                        )
+                                    }
+                                >
+                                    {!collapsed && (
+                                        <span className="min-w-0 flex-1 truncate text-right">{item.label}</span>
+                                    )}
+                                    <span className="flex w-5 shrink-0 items-center justify-center">
+                                        <item.icon className="h-[1.125rem] w-[1.125rem] shrink-0 stroke-[1.5]" />
+                                    </span>
+                                </NavLink>
+                            ))}
+                        </div>
+                    ))}
                 </nav>
             </ScrollArea>
             

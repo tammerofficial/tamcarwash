@@ -27,6 +27,8 @@ Route::get('/health', fn () => response()->json([
 Route::post('/tenants/register', [TenantRegistrationController::class, 'register'])
     ->middleware('throttle:5,1');
 
+Route::get('/plans', [PlanController::class, 'index']);
+
 Route::prefix('auth')->group(function () {
     Route::post('login', [PlatformAuthController::class, 'login']);
     Route::middleware('auth:platform')->group(function () {
@@ -41,12 +43,21 @@ Route::middleware('auth:platform')->group(function () {
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
 
     Route::get('/tenants', [TenantManagementController::class, 'index']);
+    Route::post('/tenants', [TenantManagementController::class, 'store']);
     Route::get('/tenants/{tenant}', [TenantManagementController::class, 'show']);
     Route::patch('/tenants/{tenant}', [TenantManagementController::class, 'update']);
-
-    Route::get('/plans', [PlanController::class, 'index']);
+    Route::delete('/tenants/{tenant}', [TenantManagementController::class, 'destroy']);
 
     Route::get('/subscriptions', [SubscriptionController::class, 'index']);
+    Route::get('/subscriptions/{subscription}', [SubscriptionController::class, 'show']);
+    Route::patch('/subscriptions/{subscription}', [SubscriptionController::class, 'update']);
+    Route::post('/subscriptions/{subscription}/cancel', [SubscriptionController::class, 'cancel']);
+    Route::post('/subscriptions/{subscription}/reactivate', [SubscriptionController::class, 'reactivate']);
+
+    Route::post('/plans', [PlanController::class, 'store']);
+    Route::get('/plans/{plan}', [PlanController::class, 'show']);
+    Route::patch('/plans/{plan}', [PlanController::class, 'update']);
+    Route::delete('/plans/{plan}', [PlanController::class, 'destroy']);
 
     Route::get('/settings', [PlatformSettingsController::class, 'show']);
     Route::put('/settings', [PlatformSettingsController::class, 'update']);

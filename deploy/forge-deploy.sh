@@ -76,6 +76,8 @@ set_env_if_missing TENANT_DB_PREFIX tamcarwash_tenant_
 set_env TENANCY_PLATFORM_DOMAIN tamcarwash.on-forge.com
 set_env TENANCY_CENTRAL_DOMAINS tamcarwash.on-forge.com
 set_env TENANCY_SUBDIRECTORY_ENABLED true
+set_env TENANCY_SEED_DEMO_USERS true
+set_env ALLOW_QUICK_LOGIN true
 set_env SANCTUM_STATEFUL_DOMAINS tamcarwash.on-forge.com
 
 # Session / Cache / Queue — file/sync (no Redis on this server)
@@ -204,6 +206,13 @@ if [ "${SEED_EXIT}" -ne 0 ]; then
     echo "WARNING: production seeding failed (exit ${SEED_EXIT}) — check storage/logs/laravel.log"
     echo "  Verify LANDLORD_DB_DATABASE matches a database this user can access:"
     echo "    DB_USERNAME=${DB_USER:-?} LANDLORD_DB_DATABASE=${DB_NAME:-?} DB_DATABASE=${FORGE_DB_NAME:-?}"
+fi
+
+LANDLORD_ADMIN_EMAIL=$(read_env_var LANDLORD_ADMIN_EMAIL)
+LANDLORD_ADMIN_PASSWORD=$(read_env_var LANDLORD_ADMIN_PASSWORD)
+if [ -z "${LANDLORD_ADMIN_EMAIL}" ] || [ -z "${LANDLORD_ADMIN_PASSWORD}" ]; then
+    echo "WARNING: Set LANDLORD_ADMIN_EMAIL and LANDLORD_ADMIN_PASSWORD in Forge → Environment for landlord super admin (/landlord/login)."
+    echo "  See deploy/.env.forge for documentation. First deploy may bootstrap demo admin@tammer.test once."
 fi
 
 echo "Deploy finished OK."

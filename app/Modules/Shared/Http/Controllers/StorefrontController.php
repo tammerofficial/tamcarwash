@@ -13,6 +13,7 @@ use App\Modules\Branches\Models\Branch;
 use App\Modules\Customers\Models\Customer;
 use App\Modules\Finance\Models\TaxSetting;
 use App\Modules\Finance\Services\VatCalculatorService;
+use App\Modules\Orders\Services\OrderService;
 use App\Modules\Queue\Services\QueueService;
 use App\Modules\Services\Http\Resources\ServiceResource;
 use App\Modules\Services\Models\Service;
@@ -34,6 +35,7 @@ class StorefrontController extends ApiController
         protected BookingService $bookingService,
         protected TimeSlotService $timeSlotService,
         protected QueueService $queueService,
+        protected OrderService $orderService,
         protected VatCalculatorService $vatCalculator,
     ) {}
 
@@ -219,6 +221,64 @@ class StorefrontController extends ApiController
         } catch (RuntimeException $e) {
             return $this->error($e->getMessage(), 422);
         }
+    }
+
+    public function queueStatus(Request $request): JsonResponse
+    {
+        $tenant = $this->requireTenant();
+
+        if ($tenant instanceof JsonResponse) {
+            return $tenant;
+        }
+
+        if ($request->filled('branch_id')) {
+            $branchId = $request->integer('branch_id');
+            $screen = $this->queueService->getScreenData($branchId);
+            $summaries = $this->queueService->getPublicBranchSummaries();
+
+            $summary = collect($summaries)->firstWhere('branch_id', $branchId);
+
+            if (! $summary) {
+                return $this->error('الفرع غير موجود.', 404, 'branch_not_found');
+            }
+
+            return $this->success(array_merge($summary, [
+                'queue_date' => $screen['queue_date'],
+                'current_status' => $screen['current_status']?->value,
+            ]));
+        }
+
+        return $this->success([
+            'branches' => $this->queueService->getPublicBranchSummaries(),
+            'updated_at' => now()->toIso8601String(),
+        ]);
+    }
+
+    public function trackOrder(Request $request): JsonResponse
+    {
+        $tenant = $this->requireTenant();
+
+        if ($tenant instanceof JsonResponse) {
+            return $tenant;
+        }
+
+        $validated = $request->validate([
+            'number' => ['required', 'string', 'max:64'],
+        ], [
+            'number.required' => 'رقم الفاتورة مطلوب.',
+        ]);
+
+        $result = $this->orderService->trackPublic($validated['number']);
+
+        if (! $result) {
+            return $this->error(
+                'لم يتم العثور على طلب بهذا الرقم. تأكد من رقم الفاتورة المطبوع على إيصال الكاشير.',
+                404,
+                'order_not_found'
+            );
+        }
+
+        return $this->success($result);
     }
 
     protected function requireTenant(): Tenant|JsonResponse

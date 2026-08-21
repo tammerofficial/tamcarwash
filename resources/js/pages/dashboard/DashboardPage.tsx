@@ -38,6 +38,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getAppTagline } from '@/lib/branding';
 import { t } from '@/lib/i18n';
 import type { ApiResponse, DashboardStats } from '@/types/api';
 import { formatCurrency, cn, formatNumber } from '@/lib/utils';
@@ -122,7 +123,7 @@ export function DashboardPage() {
                     </div>
                     <h1 className="text-4xl font-black text-foreground tracking-tight mb-2">{t('dashboard.title')}</h1>
                     <p className="text-muted-foreground font-bold flex items-center gap-2">
-                        {t('app.tagline')}
+                        {getAppTagline() ?? t('app.tagline')}
                     </p>
                 </div>
                 

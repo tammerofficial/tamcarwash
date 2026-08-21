@@ -29,12 +29,12 @@ export function getDocumentTitle(): string {
 }
 
 /** Professional government deep blue primary */
-export const DEFAULT_BRAND_PRIMARY = '#003D5C';
+export const DEFAULT_BRAND_PRIMARY = '#0A4B78';
 
 /** Bright light blue accent for institutional design */
-export const DEFAULT_BRAND_SECONDARY = '#4A90E2';
+export const DEFAULT_BRAND_SECONDARY = '#5CB2FF';
 
-export const DEFAULT_BRAND_PRIMARY_DARK = '#001F35';
+export const DEFAULT_BRAND_PRIMARY_DARK = '#072E49';
 
 export interface ResolvedTenantBranding {
     logoUrl: string | null;

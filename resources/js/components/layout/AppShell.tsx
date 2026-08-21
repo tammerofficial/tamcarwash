@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
 import { cn } from '@/lib/utils';
+import { getAppName } from '@/lib/branding';
 
 export function AppShell() {
     const [collapsed, setCollapsed] = useState(false);
@@ -58,7 +59,7 @@ export function AppShell() {
                 <footer className="border-t border-border/40 bg-white/50 px-6 py-6 lg:px-8 text-center sm:text-start">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                            &copy; {new Date().getFullYear()} {import.meta.env.VITE_APP_NAME || 'Tammer Wash'}. All Rights Reserved.
+                            &copy; {new Date().getFullYear()} {getAppName()}. All Rights Reserved.
                         </p>
                         <div className="flex items-center gap-6">
                             <a href="#" className="text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">Privacy Policy</a>

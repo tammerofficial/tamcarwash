@@ -5,6 +5,7 @@ import { ar } from 'date-fns/locale';
 import { Clock } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { api, appConfig, endpoints } from '@/lib/api';
+import { getAppName } from '@/lib/branding';
 import { useStorefrontBranches } from '@/hooks/useStorefront';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -64,7 +65,7 @@ export function QueueDisplayPage() {
             <header className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
                 <div>
                     <h1 className="text-4xl font-black lg:text-5xl">طابور {branchName}</h1>
-                    <p className="mt-2 text-xl text-white/60">Tammer Wash — سلطنة عُمان</p>
+                    <p className="mt-2 text-xl text-white/60">{getAppName()} — سلطنة عُمان</p>
                 </div>
                 <div className="text-start">
                     <p className="text-lg text-white/60">{format(new Date(), 'EEEE dd MMMM yyyy', { locale: ar })}</p>

@@ -7,7 +7,15 @@ import { LandlordAuthProvider } from '@/providers/LandlordAuthProvider';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterTenantPage } from '@/pages/auth/RegisterTenantPage';
 import { MarketingHomePage } from '@/pages/marketing/MarketingHomePage';
+import { AboutPage } from '@/pages/marketing/AboutPage';
+import { PricingPage as PlatformPricingPage } from '@/pages/marketing/PricingPage';
+import { WhyUsPage } from '@/pages/marketing/WhyUsPage';
 import { HomePage } from '@/pages/public/HomePage';
+import { QueuePage as PublicQueuePage } from '@/pages/public/QueuePage';
+import { TrackPage } from '@/pages/public/TrackPage';
+import { ServicesPage as PublicServicesPage } from '@/pages/public/ServicesPage';
+import { BranchesPage as PublicBranchesPage } from '@/pages/public/BranchesPage';
+import { PricingPage as PublicPricingPage } from '@/pages/public/PricingPage';
 import { PublicBookingPage } from '@/pages/booking/PublicBookingPage';
 import { DashboardPage } from '@/pages/dashboard/DashboardPage';
 import { BranchesPage } from '@/pages/branches/BranchesPage';
@@ -31,10 +39,13 @@ import { AppearancePage } from '@/pages/settings/AppearancePage';
 import { LandlordLoginPage } from '@/pages/landlord/LandlordLoginPage';
 import { LandlordDashboardPage } from '@/pages/landlord/LandlordDashboardPage';
 import { LandlordTenantsPage } from '@/pages/landlord/LandlordTenantsPage';
+import { LandlordTenantDetailPage } from '@/pages/landlord/LandlordTenantDetailPage';
 import { LandlordSubscriptionsPage } from '@/pages/landlord/LandlordSubscriptionsPage';
+import { LandlordSubscriptionDetailPage } from '@/pages/landlord/LandlordSubscriptionDetailPage';
 import { LandlordPlansPage } from '@/pages/landlord/LandlordPlansPage';
+import { LandlordPlanDetailPage } from '@/pages/landlord/LandlordPlanDetailPage';
 import { LandlordSettingsPage } from '@/pages/landlord/LandlordSettingsPage';
-import { getRouterBasename, isLandlordContext, isTenantContext } from '@/lib/tenancy';
+import { getRouterBasename, isLandlordAdminContext, isTenantContext, resolveTenantSlug } from '@/lib/tenancy';
 
 function TenantRoutes() {
     const tenantPublic = isTenantContext();
@@ -44,6 +55,12 @@ function TenantRoutes() {
             <Route element={<MarketingRoute />}>
                 <Route index element={tenantPublic ? <HomePage /> : <MarketingHomePage />} />
                 <Route path="/booking" element={<PublicBookingPage />} />
+                <Route path="/book" element={<PublicBookingPage />} />
+                <Route path="/queue" element={<PublicQueuePage />} />
+                <Route path="/track" element={<TrackPage />} />
+                <Route path="/services" element={<PublicServicesPage />} />
+                <Route path="/branches" element={<PublicBranchesPage />} />
+                <Route path="/pricing" element={<PublicPricingPage />} />
                 <Route path="/queue/display" element={<QueueDisplayPage />} />
                 <Route path="/tv/queue" element={<TvQueuePage />} />
                 <Route path="/tv/status" element={<TvStatusPage />} />
@@ -80,10 +97,29 @@ function TenantRoutes() {
     );
 }
 
-function LandlordRoutes() {
+function PlatformRoutes() {
+    const dedicatedAdminHost =
+        isLandlordAdminContext() && ! window.location.pathname.startsWith('/landlord');
+
     return (
         <LandlordAuthProvider>
             <Routes>
+                {dedicatedAdminHost ? (
+                    <Route path="/" element={<Navigate to="/landlord/dashboard" replace />} />
+                ) : (
+                    <Route element={<MarketingRoute />}>
+                        <Route index element={<MarketingHomePage />} />
+                        <Route path="/about" element={<AboutPage />} />
+                        <Route path="/pricing" element={<PlatformPricingPage />} />
+                        <Route path="/why-us" element={<WhyUsPage />} />
+                    </Route>
+                )}
+
+                <Route element={<GuestRoute />}>
+                    <Route path="/register" element={<RegisterTenantPage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                </Route>
+
                 <Route element={<LandlordGuestRoute />}>
                     <Route path="/landlord/login" element={<LandlordLoginPage />} />
                 </Route>
@@ -92,34 +128,34 @@ function LandlordRoutes() {
                     <Route element={<LandlordShell />}>
                         <Route path="/landlord/dashboard" element={<LandlordDashboardPage />} />
                         <Route path="/landlord/tenants" element={<LandlordTenantsPage />} />
+                        <Route path="/landlord/tenants/:id" element={<LandlordTenantDetailPage />} />
                         <Route path="/landlord/subscriptions" element={<LandlordSubscriptionsPage />} />
+                        <Route path="/landlord/subscriptions/:id" element={<LandlordSubscriptionDetailPage />} />
                         <Route path="/landlord/plans" element={<LandlordPlansPage />} />
+                        <Route path="/landlord/plans/:id" element={<LandlordPlanDetailPage />} />
                         <Route path="/landlord/settings" element={<LandlordSettingsPage />} />
                     </Route>
                 </Route>
 
-                <Route path="/" element={<Navigate to="/landlord/dashboard" replace />} />
                 <Route path="/landlord" element={<Navigate to="/landlord/dashboard" replace />} />
-                <Route path="/landlord/*" element={<Navigate to="/landlord/dashboard" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </LandlordAuthProvider>
     );
 }
 
 export function AppRoutes() {
-    const landlord = isLandlordContext();
-
-    if (landlord) {
+    if (resolveTenantSlug() !== null) {
         return (
-            <BrowserRouter>
-                <LandlordRoutes />
+            <BrowserRouter basename={getRouterBasename()}>
+                <TenantRoutes />
             </BrowserRouter>
         );
     }
 
     return (
-        <BrowserRouter basename={getRouterBasename()}>
-            <TenantRoutes />
+        <BrowserRouter>
+            <PlatformRoutes />
         </BrowserRouter>
     );
 }

@@ -3,6 +3,7 @@ import { CalendarDays, Droplets, LogIn, Menu, Phone, X, LayoutDashboard, Monitor
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { getTenantDisplayName, getTenantPhone } from '@/hooks/useStorefront';
+import { getAppTagline } from '@/lib/branding';
 import type { StorefrontProfile } from '@/types/api';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/AuthProvider';
@@ -19,6 +20,7 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
     const businessName = getTenantDisplayName(profile);
     const contactPhone = getTenantPhone(profile);
     const logoUrl = profile?.branding?.logo_url;
+    const tagline = profile?.branding?.tagline ?? getAppTagline();
 
     const primaryColor = 'var(--brand-primary)';
     const secondaryColor = 'var(--brand-secondary)';
@@ -46,7 +48,7 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
                 'fixed top-0 z-50 w-full transition-all duration-500',
                 isScrolled 
                     ? 'border-b border-gray-100 bg-white/95 backdrop-blur-md shadow-sm py-3' 
-                    : 'bg-transparent py-6'
+                    : 'bg-white/90 backdrop-blur-sm py-6 shadow-sm'
             )}
         >
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 lg:px-8">
@@ -69,15 +71,15 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
                     <div className="flex flex-col">
                         <span className={cn(
                             "text-xl font-bold tracking-tight transition-colors duration-300",
-                            isScrolled ? "text-primary" : "text-white"
+                            "text-primary"
                         )}>
                             {businessName}
                         </span>
                         <span className={cn(
                             "text-[10px] font-medium uppercase tracking-[0.2em]",
-                            isScrolled ? "text-brand-secondary-60" : "text-white/60"
+                            "text-gray-600"
                         )}>
-                            Professional Car Care
+                            {tagline ?? 'Professional Car Care'}
                         </span>
                     </div>
                 </Link>
@@ -90,8 +92,8 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
                             className={({ isActive }) => cn(
                                 'relative px-5 py-2 text-sm font-medium transition-all duration-300 hover:text-brand-secondary',
                                 isActive 
-                                    ? (isScrolled ? 'text-brand-primary' : 'text-brand-secondary')
-                                    : (isScrolled ? 'text-gray-600' : 'text-white/80'),
+                                    ? 'text-brand-primary'
+                                    : 'text-gray-600',
                                 isActive && "after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-0.5 after:w-4 after:bg-brand-secondary after:rounded-full"
                             )}
                         >
@@ -105,7 +107,7 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
                         href={`tel:${contactPhone}`}
                         className={cn(
                             "flex items-center text-sm font-medium transition-colors duration-300",
-                            isScrolled ? "text-gray-600 hover:text-brand-secondary" : "text-white/80 hover:text-white"
+                            "text-gray-600 hover:text-brand-secondary"
                         )}
                     >
                         <Phone className="me-2 h-4 w-4 opacity-50" />
@@ -120,9 +122,7 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
                                 asChild
                                 className={cn(
                                     "font-medium rounded-lg px-4",
-                                    isScrolled 
-                                        ? "text-gray-600 hover:text-brand-secondary hover:bg-brand-secondary-10" 
-                                        : "text-white hover:bg-white/10"
+                                    "text-gray-600 hover:text-brand-secondary hover:bg-brand-secondary-10"
                                 )}
                             >
                                 <Link to="/dashboard">
@@ -136,9 +136,7 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
                                 asChild
                                 className={cn(
                                     "font-medium rounded-lg px-4",
-                                    isScrolled 
-                                        ? "text-gray-600 hover:text-brand-secondary hover:bg-brand-secondary-10" 
-                                        : "text-white hover:bg-white/10"
+                                    "text-gray-600 hover:text-brand-secondary hover:bg-brand-secondary-10"
                                 )}
                             >
                                 <Link to="/login">
@@ -165,7 +163,7 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
                     size="icon"
                     className={cn(
                         "lg:hidden rounded-xl",
-                        isScrolled ? "text-brand-secondary hover:bg-brand-secondary-10" : "text-white hover:bg-white/10"
+                        "text-brand-secondary hover:bg-brand-secondary-10"
                     )}
                     onClick={() => setMobileOpen((open) => !open)}
                 >

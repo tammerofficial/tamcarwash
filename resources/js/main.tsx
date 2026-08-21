@@ -5,9 +5,10 @@ import { QueryProvider } from '@/providers/QueryProvider';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { BranchProvider } from '@/providers/BranchProvider';
 import { AppRoutes } from '@/routes';
-import { initTenantBrandingFromConfig } from '@/lib/branding';
+import { initTenantBrandingFromConfig, initDocumentTitle } from '@/lib/branding';
 
 initTenantBrandingFromConfig();
+initDocumentTitle();
 
 const rootElement = document.getElementById('app');
 

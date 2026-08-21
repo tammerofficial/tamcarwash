@@ -2,8 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { api, appConfig, endpoints } from '@/lib/api';
 import type {
     ApiResponse,
+    OrderTrackingResult,
     StorefrontBranch,
     StorefrontProfile,
+    StorefrontQueueStatusPayload,
     StorefrontService,
     TenantBrandingPayload,
 } from '@/types/api';
@@ -80,6 +82,24 @@ export function useStorefrontBranches() {
         retry: false,
         staleTime: 60_000,
     });
+}
+
+export function useStorefrontQueueStatus() {
+    return useQuery({
+        queryKey: ['storefront', 'queue-status'],
+        queryFn: async () => {
+            const response = await api.get<ApiResponse<StorefrontQueueStatusPayload>>(endpoints.storefront.queueStatus);
+            return response.data;
+        },
+        refetchInterval: 15_000,
+        retry: false,
+        staleTime: 10_000,
+    });
+}
+
+export async function trackStorefrontOrder(number: string): Promise<OrderTrackingResult> {
+    const response = await api.get<ApiResponse<OrderTrackingResult>>(endpoints.storefront.track, { number });
+    return response.data;
 }
 
 export { getTenantBranding, applyBrandingCssVariables, applyTenantBrandingPayload, brandingPayloadToResolved, DEFAULT_BRAND_PRIMARY, DEFAULT_BRAND_SECONDARY } from '@/lib/branding';

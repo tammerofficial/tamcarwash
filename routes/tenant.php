@@ -65,6 +65,8 @@ Route::prefix('storefront')->group(function () {
     Route::get('branches', [StorefrontController::class, 'branches']);
     Route::get('time-slots/available', [StorefrontController::class, 'availableTimeSlots']);
     Route::post('bookings', [StorefrontController::class, 'storeBooking']);
+    Route::get('queue-status', [StorefrontController::class, 'queueStatus']);
+    Route::get('track', [StorefrontController::class, 'trackOrder']);
 });
 
 Route::middleware('auth:tenant')->group(function () {

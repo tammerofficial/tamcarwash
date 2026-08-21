@@ -14,6 +14,7 @@ type TenancyMode = 'subdirectory' | 'subdomain';
 
 interface PlatformSettings {
     platform_name: string;
+    platform_tagline?: string | null;
     platform_domain: string;
     tenancy_mode: TenancyMode;
     trial_days: number;
@@ -30,6 +31,7 @@ export function LandlordSettingsPage() {
     const form = useForm<PlatformSettings>({
         values: data?.data ?? {
             platform_name: '',
+            platform_tagline: '',
             platform_domain: '',
             tenancy_mode: 'subdirectory',
             trial_days: 14,
@@ -42,6 +44,7 @@ export function LandlordSettingsPage() {
         onSuccess: () => {
             toast.success('تم حفظ الإعدادات');
             queryClient.invalidateQueries({ queryKey: ['landlord-settings'] });
+            window.location.reload();
         },
         onError: () => toast.error('تعذر حفظ الإعدادات'),
     });
@@ -73,7 +76,20 @@ export function LandlordSettingsPage() {
                                     <FormItem>
                                         <FormLabel>اسم المنصة</FormLabel>
                                         <FormControl>
-                                            <Input {...field} />
+                                            <Input {...field} placeholder="تمير واش" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="platform_tagline"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>الشعار / الوصف المختصر</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} value={field.value ?? ''} placeholder="Enterprise SaaS" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

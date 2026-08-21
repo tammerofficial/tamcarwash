@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { 
-    Play, 
     Star, 
     Droplets, 
     ShieldCheck, 
@@ -42,11 +41,18 @@ export function PublicHero() {
                                     احجز موعدك الآن
                                 </Link>
                             </Button>
-                            
-                            <Button variant="outline" size="lg" className="h-14 px-8 rounded-xl text-lg font-bold border-white/20 bg-white/5 text-white hover:bg-white/10 w-full sm:w-auto backdrop-blur-sm transition-all">
-                                <Play className="me-3 h-4 w-4 fill-white text-white" />
-                                تعرف علينا
+
+                            <Button variant="outline" size="lg" asChild className="h-14 px-8 rounded-xl text-lg font-bold border-white/20 bg-white/5 text-white hover:bg-white/10 w-full sm:w-auto backdrop-blur-sm transition-all">
+                                <Link to="/track">
+                                    تتبع طلبي
+                                </Link>
                             </Button>
+                        </div>
+
+                        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm">
+                            <Link to="/queue" className="text-white/70 hover:text-brand-secondary transition-colors font-medium">
+                                حالة الطابور المباشرة ←
+                            </Link>
                         </div>
 
                         <div className="pt-10 flex flex-wrap items-center justify-center lg:justify-start gap-10 opacity-70">

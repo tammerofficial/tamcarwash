@@ -105,7 +105,11 @@ class WashDemoScenarioService
             'invoices' => \App\Modules\Finance\Models\Invoice::query()->count(),
             'expenses' => Schema::hasTable('expenses') ? \App\Modules\Finance\Models\Expense::query()->count() : 0,
             'bookings_today' => \App\Modules\Booking\Models\Booking::query()->whereDate('scheduled_date', today())->count(),
+            'bookings_total' => \App\Modules\Booking\Models\Booking::query()->count(),
             'queue_waiting' => \App\Modules\Queue\Models\QueueEntry::query()->where('status', 'waiting')->whereDate('queue_date', today())->count(),
+            'queue_today' => \App\Modules\Queue\Models\QueueEntry::query()->whereDate('queue_date', today())->count(),
+            'orders_active' => \App\Modules\Orders\Models\Order::query()->whereNotIn('status', ['completed', 'cancelled'])->count(),
+            'invoices_today' => \App\Modules\Finance\Models\Invoice::query()->whereDate('issue_date', today())->count(),
         ];
     }
 }

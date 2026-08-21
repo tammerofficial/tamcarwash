@@ -239,6 +239,45 @@ export interface QueueScreenData {
     entries: QueueEntry[];
 }
 
+export interface StorefrontQueueBranchStatus {
+    branch_id: number;
+    branch_name: string;
+    city?: string;
+    waiting_count: number;
+    in_progress_count: number;
+    estimated_wait_minutes: number;
+    load_percent: number;
+    status_label: string;
+    current_number?: number | string | null;
+}
+
+export interface StorefrontQueueStatusPayload {
+    branches: StorefrontQueueBranchStatus[];
+    updated_at: string;
+}
+
+export interface OrderTrackingTimelineStep {
+    title: string;
+    time: string | null;
+    state: 'completed' | 'current' | 'pending';
+}
+
+export interface OrderTrackingResult {
+    tracking_number: string;
+    order_number: string;
+    invoice_number?: string | null;
+    status: OrderStatus;
+    status_label: string;
+    branch_id: number;
+    branch_name?: string | null;
+    vehicle_plate_masked?: string | null;
+    queue_number?: number | string | null;
+    queue_position?: number | null;
+    estimated_wait_minutes?: number;
+    timeline: OrderTrackingTimelineStep[];
+    updated_at?: string;
+}
+
 export interface OrderScreenEntry {
     id: number;
     order_number: string;
@@ -484,6 +523,7 @@ export interface RegisterTenantResponse {
 
 export interface TenantSettings {
     business_name: string;
+    tagline?: string | null;
     tenant_slug?: string;
     vat_enabled: boolean;
     vat_rate: number;

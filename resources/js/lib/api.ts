@@ -36,7 +36,12 @@ function resolveCsrfToken(): string {
 function readTammerConfig() {
     return (
         window.__TAMMER__ ?? {
-            appName: import.meta.env.VITE_APP_NAME ?? 'Tammer Wash',
+            appName: import.meta.env.VITE_APP_NAME ?? 'تمير واش',
+            tagline: 'Enterprise SaaS',
+            platform: {
+                name: import.meta.env.VITE_APP_NAME ?? 'تمير واش',
+                tagline: 'Enterprise SaaS',
+            },
             apiBaseUrl: '/api/v1',
             landlordApiBaseUrl: '/api/landlord/v1',
             sanctumUrl: '/sanctum/csrf-cookie',
@@ -90,8 +95,13 @@ export const endpoints = {
         user: 'auth/user',
         dashboardStats: 'dashboard/stats',
         tenants: 'tenants',
+        tenant: (id: string) => `tenants/${id}`,
         subscriptions: 'subscriptions',
+        subscription: (id: string) => `subscriptions/${id}`,
+        subscriptionCancel: (id: string) => `subscriptions/${id}/cancel`,
+        subscriptionReactivate: (id: string) => `subscriptions/${id}/reactivate`,
         plans: 'plans',
+        plan: (id: string) => `plans/${id}`,
         settings: 'settings',
     },
     dashboard: {
@@ -157,6 +167,8 @@ export const endpoints = {
         branches: 'storefront/branches',
         timeSlots: 'storefront/time-slots/available',
         bookings: 'storefront/bookings',
+        queueStatus: 'storefront/queue-status',
+        track: 'storefront/track',
     },
 } as const;
 
@@ -276,6 +288,10 @@ class ApiClient {
         params?: Record<string, string | number | boolean | undefined>,
         options?: { tenantSlug?: string | null; baseUrl?: 'tenant' | 'landlord'; headers?: HeadersInit },
     ): Promise<T> {
+        if (! readXsrfTokenFromCookie()) {
+            await this.ensureCsrfCookie();
+        }
+
         const base = options?.baseUrl === 'landlord' ? this.getLandlordBaseUrl() : this.baseUrl;
         const normalized = endpoint.replace(/^\//, '');
         const url = new URL(`${base}/${normalized}`, window.location.origin);

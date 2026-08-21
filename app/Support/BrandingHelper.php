@@ -6,11 +6,11 @@ use App\Models\Landlord\Tenant;
 
 class BrandingHelper
 {
-    public const DEFAULT_PRIMARY = '#004d4d';
+    public const DEFAULT_PRIMARY = '#0f172a';
 
-    public const DEFAULT_SECONDARY = '#14b8a6';
+    public const DEFAULT_SECONDARY = '#0d9488';
 
-    public const DEFAULT_PRIMARY_DARK = '#002d2d';
+    public const DEFAULT_PRIMARY_DARK = '#020617';
 
     public static function defaults(): array
     {

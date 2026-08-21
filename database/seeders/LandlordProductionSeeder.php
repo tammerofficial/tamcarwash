@@ -73,6 +73,34 @@ class LandlordProductionSeeder extends IdempotentSeeder
 
         $this->callSilent(PlatformUserSeeder::class);
 
+        $this->seedPlatformBranding($created, $updated);
+
         $this->logResult(static::class, compact('created', 'updated') + ['skipped' => 0]);
+    }
+
+    protected function seedPlatformBranding(int &$created, int &$updated): void
+    {
+        if (! Schema::connection('landlord')->hasTable('platform_settings')) {
+            return;
+        }
+
+        $defaults = [
+            'platform_name' => config('tammer.platform.name', 'تمير واش'),
+            'platform_tagline' => config('tammer.platform.tagline', 'Enterprise SaaS'),
+        ];
+
+        foreach ($defaults as $key => $value) {
+            $existing = \App\Models\Landlord\PlatformSetting::query()->where('key', $key)->first();
+
+            if ($existing) {
+                continue;
+            }
+
+            \App\Models\Landlord\PlatformSetting::query()->create([
+                'key' => $key,
+                'value' => $value,
+            ]);
+            $created++;
+        }
     }
 }

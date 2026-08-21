@@ -11,6 +11,11 @@ export interface TenantBranding {
 
 export interface TammerAppConfig {
     appName: string;
+    tagline?: string | null;
+    platform?: {
+        name: string;
+        tagline: string;
+    };
     apiBaseUrl: string;
     landlordApiBaseUrl: string;
     sanctumUrl: string;

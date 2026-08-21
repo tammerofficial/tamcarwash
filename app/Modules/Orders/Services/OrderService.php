@@ -10,7 +10,9 @@ use App\Modules\Orders\Events\OrderCreated;
 use App\Modules\Orders\Events\OrderStatusChanged;
 use App\Modules\Orders\Events\OrderWorkerAssigned;
 use App\Modules\Orders\Jobs\SendOrderStatusNotificationJob;
+use App\Modules\Finance\Models\Invoice;
 use App\Modules\Finance\Models\TaxSetting;
+use App\Modules\Queue\Services\QueueService;
 use App\Modules\Orders\Models\Order;
 use App\Modules\Orders\Models\OrderItem;
 use App\Modules\Queue\Enums\QueueEntryStatus;
@@ -306,6 +308,136 @@ class OrderService
     protected function generateOrderNumber(): string
     {
         return 'ORD-'.now()->format('Ymd').'-'.Str::upper(Str::random(6));
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function trackPublic(string $reference): ?array
+    {
+        $reference = trim($reference);
+
+        if ($reference === '') {
+            return null;
+        }
+
+        $order = Order::query()
+            ->with(['vehicle', 'branch', 'queueEntry', 'items'])
+            ->where('order_number', $reference)
+            ->first();
+
+        if (! $order) {
+            $invoice = Invoice::query()->where('invoice_number', $reference)->first();
+
+            if ($invoice?->order_id) {
+                $order = Order::query()
+                    ->with(['vehicle', 'branch', 'queueEntry', 'items'])
+                    ->find($invoice->order_id);
+            }
+        }
+
+        if (! $order) {
+            return null;
+        }
+
+        /** @var QueueService $queueService */
+        $queueService = app(QueueService::class);
+
+        $queueEntry = $order->queueEntry;
+        $queuePosition = $queueEntry ? $queueService->calculateQueuePosition($queueEntry) : null;
+        $estimatedWait = $queueEntry?->estimated_wait_minutes
+            ?? $queueService->calculateEstimatedWait((int) $order->branch_id);
+
+        $invoiceNumber = Invoice::query()
+            ->where('order_id', $order->id)
+            ->value('invoice_number');
+
+        return [
+            'tracking_number' => $reference,
+            'order_number' => $order->order_number,
+            'invoice_number' => $invoiceNumber,
+            'status' => $order->status->value,
+            'status_label' => $order->status->label(),
+            'branch_id' => $order->branch_id,
+            'branch_name' => $order->branch?->name,
+            'vehicle_plate_masked' => $this->maskPlateNumber($order->vehicle?->plate_number),
+            'queue_number' => $queueEntry?->queue_number,
+            'queue_position' => $queuePosition,
+            'estimated_wait_minutes' => $estimatedWait,
+            'timeline' => $this->buildPublicTrackingTimeline($order),
+            'updated_at' => $order->updated_at?->toIso8601String(),
+        ];
+    }
+
+    /**
+     * @return array<int, array{title: string, time: string|null, state: string}>
+     */
+    protected function buildPublicTrackingTimeline(Order $order): array
+    {
+        $steps = [
+            ['status' => OrderStatus::CheckedIn, 'title' => 'تم استلام السيارة'],
+            ['status' => OrderStatus::Queued, 'title' => 'في الطابور'],
+            ['status' => OrderStatus::InService, 'title' => 'بدء عملية الغسيل'],
+            ['status' => OrderStatus::QualityCheck, 'title' => 'فحص الجودة'],
+            ['status' => OrderStatus::Ready, 'title' => 'جاهزة للاستلام'],
+            ['status' => OrderStatus::Completed, 'title' => 'تم التسليم'],
+        ];
+
+        $statusOrder = array_map(fn (array $step) => $step['status']->value, $steps);
+        $currentIndex = array_search($order->status->value, $statusOrder, true);
+
+        if ($order->status === OrderStatus::Cancelled) {
+            return [];
+        }
+
+        return array_map(function (array $step) use ($order, $statusOrder, $currentIndex) {
+            $stepIndex = array_search($step['status']->value, $statusOrder, true);
+            $column = $step['status']->timestampColumn();
+            $timestamp = $column ? $order->{$column} : null;
+
+            if ($timestamp instanceof \DateTimeInterface) {
+                $state = 'completed';
+                $time = Carbon::parse($timestamp)->timezone(config('app.timezone'))->format('g:i A');
+            } elseif ($currentIndex !== false && $stepIndex === $currentIndex) {
+                $state = 'current';
+                $time = 'قيد التنفيذ';
+            } elseif ($currentIndex !== false && $stepIndex !== false && $stepIndex < $currentIndex) {
+                $state = 'completed';
+                $time = null;
+            } else {
+                $state = 'pending';
+                $time = null;
+            }
+
+            return [
+                'title' => $step['title'],
+                'time' => $time,
+                'state' => $state,
+            ];
+        }, $steps);
+    }
+
+    protected function maskPlateNumber(?string $plate): ?string
+    {
+        if ($plate === null || $plate === '') {
+            return null;
+        }
+
+        $chars = preg_split('//u', $plate, -1, PREG_SPLIT_NO_EMPTY);
+
+        if ($chars === false || count($chars) < 3) {
+            return $plate;
+        }
+
+        $lastIndex = count($chars) - 1;
+
+        for ($index = 1; $index < $lastIndex; $index++) {
+            if ($chars[$index] !== ' ') {
+                $chars[$index] = '•';
+            }
+        }
+
+        return implode('', $chars);
     }
 
     /**

@@ -7,8 +7,8 @@ return [
     ],
 
     'branding' => [
-        'primary_color' => '#003D5C',
-        'secondary_color' => '#4A90E2',
+        'primary_color' => '#0A4B78',
+        'secondary_color' => '#5CB2FF',
     ],
 
     'contact' => [

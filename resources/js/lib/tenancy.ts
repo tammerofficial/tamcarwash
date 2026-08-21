@@ -29,7 +29,12 @@ const DEFAULT_RESERVED_PATHS = [
 function readConfig(): TammerAppConfig {
     return (
         window.__TAMMER__ ?? {
-            appName: 'Tammer Wash',
+            appName: 'تمير واش',
+            tagline: 'Enterprise SaaS',
+            platform: {
+                name: 'تمير واش',
+                tagline: 'Enterprise SaaS',
+            },
             apiBaseUrl: '/api/v1',
             landlordApiBaseUrl: '/api/landlord/v1',
             sanctumUrl: '/sanctum/csrf-cookie',
@@ -50,6 +55,26 @@ export function isLandlordContext(): boolean {
     }
 
     return window.location.pathname.startsWith('/landlord');
+}
+
+/** Central platform marketing + signup at `/` (not tenant, not landlord admin host). */
+export function isPlatformMarketingContext(): boolean {
+    if (resolveTenantSlug() !== null) {
+        return false;
+    }
+
+    return ! isLandlordAdminContext();
+}
+
+/** Landlord admin UI — `/landlord/*` or dedicated admin/platform hosts. */
+export function isLandlordAdminContext(): boolean {
+    if (window.location.pathname.startsWith('/landlord')) {
+        return true;
+    }
+
+    const config = readConfig();
+
+    return config.isLandlord && resolveTenantSlug() === null;
 }
 
 export function detectTenantSlugFromSubdomain(): string | null {
@@ -194,6 +219,24 @@ export function getTenantPublicHomeHref(): string {
 /** Alias for getTenantPublicHomeHref — full path to tenant public home. */
 export function getTenantPublicUrl(): string {
     return getTenantPublicHomeHref();
+}
+
+/** Full browser URL/path to tenant dashboard after signup or login from central domain. */
+export function getTenantDashboardHref(slug: string): string {
+    const config = readConfig();
+    const normalizedSlug = slug.toLowerCase();
+
+    if (detectTenantSlugFromSubdomain()) {
+        return '/dashboard';
+    }
+
+    if (config.subdirectoryEnabled) {
+        return `/${normalizedSlug}/dashboard`;
+    }
+
+    const platformDomain = config.platformDomain ?? window.location.hostname;
+
+    return `${window.location.protocol}//${normalizedSlug}.${platformDomain}/dashboard`;
 }
 
 /** Use React Router Link when basename already scopes routes to the tenant. */

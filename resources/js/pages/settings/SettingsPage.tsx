@@ -20,6 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const settingsSchema = z.object({
     business_name: z.string().min(2, 'اسم المنشأة مطلوب'),
+    tagline: z.string().max(255).optional().nullable(),
     vat_enabled: z.boolean(),
     vat_rate: z.coerce.number().min(0).max(100),
     vat_inclusive: z.boolean(),
@@ -66,6 +67,7 @@ export function SettingsPage() {
         resolver: zodResolver(settingsSchema),
         defaultValues: {
             business_name: '',
+            tagline: '',
             vat_enabled: true,
             vat_rate: 5,
             vat_inclusive: false,
@@ -115,6 +117,7 @@ export function SettingsPage() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['settings'] });
             toast.success(t('settings.saveSuccess'));
+            window.location.reload();
         },
         onError: () => toast.error(t('settings.saveError')),
     });
@@ -174,6 +177,20 @@ export function SettingsPage() {
                                                 <FormLabel>{t('settings.businessName')}</FormLabel>
                                                 <FormControl>
                                                     <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="tagline"
+                                        render={({ field }) => (
+                                            <FormItem className="md:col-span-2">
+                                                <FormLabel>{t('settings.tagline')}</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} value={field.value ?? ''} placeholder="Enterprise SaaS" />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>

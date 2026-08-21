@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { useLandlordAuth } from '@/providers/LandlordAuthProvider';
 import { cn } from '@/lib/utils';
 import { t } from '@/lib/i18n';
+import { getAppName, getAppTagline } from '@/lib/branding';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -30,12 +31,38 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-const navItems = [
-    { to: '/landlord/dashboard', label: t('landlord.nav.dashboard'), icon: LayoutDashboard },
-    { to: '/landlord/tenants', label: t('landlord.nav.tenants'), icon: Users },
-    { to: '/landlord/subscriptions', label: t('landlord.nav.subscriptions'), icon: CreditCard },
-    { to: '/landlord/plans', label: t('landlord.nav.plans'), icon: Building2 },
-    { to: '/landlord/settings', label: t('landlord.nav.settings'), icon: Settings },
+import { type LucideIcon } from 'lucide-react';
+
+type LandlordNavItem = {
+    to: string;
+    label: string;
+    icon: LucideIcon;
+};
+
+type LandlordNavSection = {
+    sectionKey: string;
+    sectionLabel: string;
+    items: LandlordNavItem[];
+};
+
+const navSections: LandlordNavSection[] = [
+    {
+        sectionKey: 'management',
+        sectionLabel: t('nav.sections.management'),
+        items: [
+            { to: '/landlord/dashboard', label: t('landlord.nav.dashboard'), icon: LayoutDashboard },
+            { to: '/landlord/tenants', label: t('landlord.nav.tenants'), icon: Users },
+            { to: '/landlord/subscriptions', label: t('landlord.nav.subscriptions'), icon: CreditCard },
+            { to: '/landlord/plans', label: t('landlord.nav.plans'), icon: Building2 },
+        ],
+    },
+    {
+        sectionKey: 'system',
+        sectionLabel: t('nav.sections.system'),
+        items: [
+            { to: '/landlord/settings', label: t('landlord.nav.settings'), icon: Settings },
+        ],
+    },
 ];
 
 export function LandlordShell({ children }: { children?: ReactNode }) {
@@ -97,8 +124,8 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
                         </div>
                         {!collapsed && (
                             <div className="space-y-1 animate-in fade-in duration-500 text-center">
-                                <p className="admin-sidebar-brand-title">Tammer Wash</p>
-                                <p className="admin-sidebar-brand-subtitle">{t('auth.landlordPortal')}</p>
+                                <p className="admin-sidebar-brand-title">{getAppName()}</p>
+                                <p className="admin-sidebar-brand-subtitle">{getAppTagline() ?? t('auth.landlordPortal')}</p>
                                 <p className="admin-sidebar-brand-sultanate">{t('app.sultanate')}</p>
                             </div>
                         )}
@@ -106,37 +133,41 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
                 </div>
 
                 <ScrollArea className="admin-sidebar-nav px-3 pb-6 pt-2">
-                    <nav className="space-y-1">
-                        {!collapsed && (
-                            <p className="admin-sidebar-section-label">
-                                {t('nav.main')}
-                            </p>
-                        )}
-                        {navItems.map((item) => {
-                            const isActive = location.pathname.startsWith(item.to);
-                            return (
-                                <Link
-                                    key={item.to}
-                                    to={item.to}
-                                    title={collapsed ? item.label : undefined}
-                                    dir={collapsed ? undefined : 'ltr'}
-                                    className={cn(
-                                        'admin-sidebar-nav-item group flex w-full flex-row items-center gap-3 rounded-2xl px-3 py-2.5 transition-all duration-200',
-                                        isActive
-                                            ? 'admin-sidebar-nav-item--active'
-                                            : 'admin-sidebar-nav-item--inactive',
-                                        collapsed ? 'justify-center px-2 py-2.5' : 'justify-end',
-                                    )}
-                                >
-                                    {!collapsed && (
-                                        <span className="min-w-0 flex-1 truncate text-right">{item.label}</span>
-                                    )}
-                                    <span className="flex w-5 shrink-0 items-center justify-center">
-                                        <item.icon className="h-[1.125rem] w-[1.125rem] shrink-0 stroke-[1.5]" />
-                                    </span>
-                                </Link>
-                            );
-                        })}
+                    <nav className="space-y-6">
+                        {navSections.map((section) => (
+                            <div key={section.sectionKey} className="space-y-1">
+                                {!collapsed && (
+                                    <p className="admin-sidebar-section-label">
+                                        {section.sectionLabel}
+                                    </p>
+                                )}
+                                {section.items.map((item) => {
+                                    const isActive = location.pathname.startsWith(item.to);
+                                    return (
+                                        <Link
+                                            key={item.to}
+                                            to={item.to}
+                                            title={collapsed ? item.label : undefined}
+                                            dir={collapsed ? undefined : 'ltr'}
+                                            className={cn(
+                                                'admin-sidebar-nav-item group flex w-full flex-row items-center gap-3 rounded-2xl px-3 py-2.5 transition-all duration-200',
+                                                isActive
+                                                    ? 'admin-sidebar-nav-item--active'
+                                                    : 'admin-sidebar-nav-item--inactive',
+                                                collapsed ? 'justify-center px-2 py-2.5' : 'justify-end',
+                                            )}
+                                        >
+                                            {!collapsed && (
+                                                <span className="min-w-0 flex-1 truncate text-right">{item.label}</span>
+                                            )}
+                                            <span className="flex w-5 shrink-0 items-center justify-center">
+                                                <item.icon className="h-[1.125rem] w-[1.125rem] shrink-0 stroke-[1.5]" />
+                                            </span>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        ))}
                     </nav>
                 </ScrollArea>
                 
@@ -175,7 +206,7 @@ export function LandlordShell({ children }: { children?: ReactNode }) {
                             </p>
                             <div className="flex items-center gap-2">
                                 <p className="text-lg font-black text-foreground leading-none">
-                                    Tammer Wash Admin
+                                    {getAppName()} Admin
                                 </p>
                             </div>
                         </div>
