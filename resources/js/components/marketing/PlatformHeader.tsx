@@ -73,21 +73,21 @@ export function PlatformHeader() {
     return (
         <header className="fixed left-0 right-0 top-0 z-50 transition-all duration-300" dir="rtl">
             {/* Top Bar / Announcement */}
-            <div className="border-b border-white/5 bg-slate-950 text-[11px] font-black text-slate-300">
+            <div className="border-b border-slate-200 bg-slate-50 text-[11px] font-black text-slate-600">
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6 lg:px-8">
                     <div className="flex items-center gap-3">
-                        <span className="flex size-2 rounded-full bg-emerald-400 ring-4 ring-emerald-400/20 animate-pulse" />
-                        <span className="font-black text-slate-200 uppercase tracking-widest text-[10px]">
+                        <span className="flex size-2 rounded-full bg-cyan-500 ring-4 ring-cyan-500/20 animate-pulse" />
+                        <span className="font-black text-slate-900 uppercase tracking-widest text-[10px]">
                             نظام إدارة مغاسل السيارات في عُمان
                         </span>
                     </div>
                     <div className="flex items-center gap-3 text-[10px]">
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-slate-300 shadow-sm">
-                            <CheckCircle2 className="size-3 text-emerald-400" />
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-600 shadow-sm">
+                            <CheckCircle2 className="size-3 text-cyan-600" />
                             امتثال ضريبي كامل
                         </span>
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-500/20 bg-sky-500/10 px-3 py-1 font-black text-sky-400 shadow-sm">
-                            <Shield className="size-3 text-sky-400" />
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 py-1 font-black text-sky-700 shadow-sm">
+                            <Shield className="size-3 text-sky-600" />
                             أمان وموثوقية
                         </span>
                     </div>
@@ -99,25 +99,25 @@ export function PlatformHeader() {
                 className={cn(
                     'transition-all duration-500 border-b',
                     scrolled || location.pathname !== '/'
-                        ? 'border-white/5 bg-[#020617]/90 py-3 shadow-2xl backdrop-blur-2xl'
-                        : 'border-white/5 bg-transparent py-5 shadow-sm',
+                        ? 'border-white/20 bg-white/70 py-3 shadow-lg backdrop-blur-md'
+                        : 'border-transparent bg-transparent py-5',
                 )}
             >
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                     {/* Brand Logo */}
                     <Link to="/" className="group flex items-center gap-4">
-                        <div className="relative flex size-12 items-center justify-center rounded-[1rem] bg-brand-primary text-white shadow-2xl shadow-brand-primary/20 transition-all duration-500 group-hover:scale-105 group-hover:shadow-brand-primary/40">
-                            <Droplets className="size-6 text-sky-200 transition-transform group-hover:rotate-6" />
-                            <div className="absolute -bottom-1 -right-1 flex size-4 items-center justify-center rounded-full bg-brand-secondary ring-2 ring-[#020617] shadow-md">
-                                <Sparkles className="size-2.5 text-[#020617]" />
+                        <div className="relative flex size-12 items-center justify-center rounded-[1rem] bg-brand-primary text-white shadow-xl shadow-brand-primary/20 transition-all duration-500 group-hover:scale-105 group-hover:shadow-brand-primary/40">
+                            <Droplets className="size-6 text-sky-100 transition-transform group-hover:rotate-6" />
+                            <div className="absolute -bottom-1 -right-1 flex size-4 items-center justify-center rounded-full bg-brand-secondary ring-2 ring-white shadow-md">
+                                <Sparkles className="size-2.5 text-brand-primary" />
                             </div>
                         </div>
                         <div className="flex flex-col text-right">
                             <div className="flex items-center gap-2">
-                                <span className="text-xl font-black leading-none tracking-tight text-white uppercase sm:text-2xl">
+                                <span className="text-xl font-black leading-none tracking-tight text-slate-900 uppercase sm:text-2xl">
                                     {platformName}
                                 </span>
-                                <span className="rounded-md bg-white/5 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-brand-secondary border border-white/10">
+                                <span className="rounded-md bg-sky-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-brand-primary border border-sky-200">
                                     عُمان
                                 </span>
                             </div>
@@ -128,7 +128,7 @@ export function PlatformHeader() {
                     </Link>
 
                     {/* Desktop Navigation Links */}
-                    <nav className="hidden items-center gap-2 rounded-2xl border border-white/5 bg-white/[0.02] p-1 shadow-inner lg:flex">
+                    <nav className="hidden items-center gap-2 rounded-2xl border border-slate-200 bg-white/50 p-1 shadow-sm lg:flex">
                         {navItems.map((item) => (
                             <button
                                 key={item.name}
@@ -137,8 +137,8 @@ export function PlatformHeader() {
                                 className={cn(
                                     'relative rounded-xl px-6 py-2 text-[12px] font-black transition-all duration-300 uppercase tracking-wide',
                                     isNavItemActive(item)
-                                        ? 'bg-white/10 text-white shadow-md border border-white/10'
-                                        : 'text-slate-500 hover:text-white hover:bg-white/5',
+                                        ? 'bg-white text-brand-primary shadow-sm border border-slate-200'
+                                        : 'text-slate-500 hover:text-brand-primary hover:bg-white/80',
                                 )}
                             >
                                 {t(`marketing.nav.${item.name}`)}
@@ -150,13 +150,13 @@ export function PlatformHeader() {
                     <div className="hidden items-center gap-4 md:flex">
                         <Button
                             variant="ghost"
-                            className="rounded-xl px-6 font-black text-slate-400 transition-all hover:bg-white/5 hover:text-white text-sm"
+                            className="rounded-xl px-6 font-black text-slate-600 transition-all hover:bg-slate-100 hover:text-brand-primary text-sm"
                             asChild
                         >
                             <Link to="/login">{t('marketing.nav.login')}</Link>
                         </Button>
                         <Button
-                            className="group relative overflow-hidden rounded-xl bg-white px-7 py-6 font-black text-[#020617] shadow-2xl transition-all duration-500 hover:scale-[1.05] hover:bg-slate-100 text-sm"
+                            className="group relative overflow-hidden rounded-xl bg-brand-primary px-7 py-6 font-black text-white shadow-xl shadow-brand-primary/20 transition-all duration-500 hover:scale-[1.05] hover:bg-brand-primary/90 text-sm"
                             asChild
                         >
                             <Link to="/register">
@@ -168,7 +168,7 @@ export function PlatformHeader() {
 
                     {/* Mobile Menu Button */}
                     <button
-                        className="flex size-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 p-2 text-white shadow-sm transition-colors hover:bg-white/10 md:hidden"
+                        className="flex size-10 items-center justify-center rounded-xl border border-slate-200 bg-white p-2 text-slate-600 shadow-sm transition-colors hover:bg-slate-50 md:hidden"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         aria-label={mobileMenuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
                     >
@@ -179,18 +179,18 @@ export function PlatformHeader() {
 
             {/* Mobile Dropdown Menu */}
             {mobileMenuOpen && (
-                <div className="border-b border-white/5 bg-[#020617]/98 p-6 shadow-2xl backdrop-blur-3xl animate-in slide-in-from-top-3 duration-200 md:hidden">
-                    <div className="mb-4 flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.02] p-4">
+                <div className="border-b border-slate-200 bg-white/95 p-6 shadow-2xl backdrop-blur-xl animate-in slide-in-from-top-3 duration-200 md:hidden">
+                    <div className="mb-4 flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 p-4">
                         <div className="flex items-center gap-3">
                             <div className="flex size-10 items-center justify-center rounded-xl bg-brand-primary text-white">
                                 <Droplets className="size-5" />
                             </div>
                             <div className="text-right">
-                                <p className="text-sm font-black text-white">{platformName}</p>
+                                <p className="text-sm font-black text-slate-900">{platformName}</p>
                                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{brandTagline}</p>
                             </div>
                         </div>
-                        <span className="rounded-full bg-brand-primary/10 px-2.5 py-0.5 text-[9px] font-bold text-brand-secondary border border-brand-primary/20">
+                        <span className="rounded-full bg-brand-primary/10 px-2.5 py-0.5 text-[9px] font-bold text-brand-primary border border-brand-primary/20">
                             سحابي • عُمان
                         </span>
                     </div>
@@ -204,22 +204,22 @@ export function PlatformHeader() {
                                 className={cn(
                                     'flex items-center justify-between rounded-xl px-4 py-3 text-right text-base font-bold transition-colors',
                                     isNavItemActive(item)
-                                        ? 'bg-white/10 text-brand-secondary'
-                                        : 'text-slate-400 hover:bg-white/5',
+                                        ? 'bg-slate-100 text-brand-primary'
+                                        : 'text-slate-600 hover:bg-slate-50',
                                 )}
                             >
                                 <span>{t(`marketing.nav.${item.name}`)}</span>
-                                {isNavItemActive(item) && <CheckCircle2 className="size-4 text-brand-secondary" />}
+                                {isNavItemActive(item) && <CheckCircle2 className="size-4 text-brand-primary" />}
                             </button>
                         ))}
                     </div>
 
-                    <Separator className="my-4 bg-white/5" />
+                    <Separator className="my-4 bg-slate-100" />
 
                     <div className="flex flex-col gap-3">
                         <Button
                             variant="outline"
-                            className="h-12 w-full justify-center rounded-xl border-white/10 bg-white/5 font-bold text-white"
+                            className="h-12 w-full justify-center rounded-xl border-slate-200 bg-white font-bold text-slate-900 hover:bg-slate-50"
                             asChild
                         >
                             <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
@@ -227,7 +227,7 @@ export function PlatformHeader() {
                             </Link>
                         </Button>
                         <Button
-                            className="h-12 w-full justify-center rounded-xl bg-white font-bold text-[#020617] shadow-md"
+                            className="h-12 w-full justify-center rounded-xl bg-brand-primary font-bold text-white shadow-lg shadow-brand-primary/20"
                             asChild
                         >
                             <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
