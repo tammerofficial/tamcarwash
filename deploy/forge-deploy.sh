@@ -61,16 +61,23 @@ FORGE_DB_NAME=$(read_env_var DB_DATABASE)
 if grep -qE '^LANDLORD_DB_DRIVER=sqlite' .env || ! grep -qE '^LANDLORD_DB_DRIVER=' .env; then
     set_env LANDLORD_DB_DRIVER mysql
     set_env LANDLORD_DB_CONNECTION landlord
-    # Prefer Forge-linked database name; fallback to dedicated landlord DB name
-    set_env LANDLORD_DB_DATABASE "${FORGE_DB_NAME:-tamcarwash_landlord}"
     set_env TENANT_DB_DRIVER mysql
     set_env TENANT_DB_CONNECTION tenant
     # Drop local sqlite paths that break production MySQL
     sed -i.bak '/^TENANT_SQLITE_DIRECTORY=/d;/^LANDLORD_DB_DATABASE=.*\.sqlite/d' .env && rm -f .env.bak
 fi
 
-set_env_if_missing LANDLORD_DB_DATABASE "${FORGE_DB_NAME:-tamcarwash_landlord}"
+# Platform schema is always a dedicated DB (not the Forge-linked default DB)
+set_env_if_missing LANDLORD_DB_DATABASE tamcarwash_landlord
 set_env_if_missing TENANT_DB_PREFIX tamcarwash_tenant_
+
+# SSL — required for Forge/DO managed MySQL clusters (port 25060)
+_EARLY_DB_HOST=$(read_env_var DB_HOST)
+_EARLY_DB_PORT=$(read_env_var DB_PORT)
+if [ "${_EARLY_DB_HOST}" != "127.0.0.1" ] && [ "${_EARLY_DB_HOST}" != "localhost" ] || [ "${_EARLY_DB_PORT}" = "25060" ]; then
+    set_env_if_missing MYSQL_ATTR_SSL_CA /etc/ssl/certs/ca-certificates.crt
+    set_env_if_missing MYSQL_SSL_VERIFY_SERVER_CERT false
+fi
 
 # Tenancy domains
 set_env TENANCY_PLATFORM_DOMAIN tamcarwash.on-forge.com
@@ -116,14 +123,29 @@ DB_NAME=$(read_env_var LANDLORD_DB_DATABASE)
 DB_NAME=${DB_NAME:-${FORGE_DB_NAME:-tamcarwash_landlord}}
 TENANT_PREFIX=$(read_env_var TENANT_DB_PREFIX)
 TENANT_PREFIX=${TENANT_PREFIX:-tamcarwash_tenant_}
+DB_HOST=$(read_env_var DB_HOST)
+DB_HOST=${DB_HOST:-127.0.0.1}
+DB_PORT=$(read_env_var DB_PORT)
+DB_PORT=${DB_PORT:-3306}
+MYSQL_SSL_CA=$(read_env_var MYSQL_ATTR_SSL_CA)
+
+is_remote_db() {
+    [ "${DB_HOST}" != "127.0.0.1" ] && [ "${DB_HOST}" != "localhost" ]
+}
 
 mysql_exec() {
     local user="$1" pass="$2"
     shift 2
+    local -a ssl_args=()
+    if [ -n "${MYSQL_SSL_CA}" ] && [ -f "${MYSQL_SSL_CA}" ]; then
+        ssl_args=(--ssl-mode=REQUIRED --ssl-ca="${MYSQL_SSL_CA}")
+    elif is_remote_db; then
+        ssl_args=(--ssl-mode=REQUIRED)
+    fi
     if [ -n "${pass}" ]; then
-        MYSQL_PWD="${pass}" mysql -h 127.0.0.1 -P 3306 -u "${user}" "$@"
+        MYSQL_PWD="${pass}" mysql -h "${DB_HOST}" -P "${DB_PORT}" -u "${user}" "${ssl_args[@]}" "$@"
     else
-        mysql -h 127.0.0.1 -P 3306 -u "${user}" "$@"
+        mysql -h "${DB_HOST}" -P "${DB_PORT}" -u "${user}" "${ssl_args[@]}" "$@"
     fi
 }
 
@@ -161,6 +183,15 @@ FLUSH PRIVILEGES;"
 
     echo "Site user cannot CREATE DATABASE — trying Forge admin (forge/root)..."
 
+    if is_remote_db; then
+        echo "Remote MySQL cluster (${DB_HOST}) — create '${DB_NAME}' manually in Forge/DO if missing."
+        if mysql_can_use_db "${DB_USER}" "${DB_PASS}" "${DB_NAME}"; then
+            echo "Landlord database reachable: ${DB_NAME} (existing privileges)"
+            return 0
+        fi
+        return 1
+    fi
+
     for admin_user in forge root; do
         if mysql_exec "${admin_user}" "" -e "${create_sql}" 2>/dev/null; then
             mysql_exec "${admin_user}" "" -e "${grant_sql}" 2>/dev/null \
@@ -191,20 +222,20 @@ if [ -f package.json ]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 4. Clear stale caches, then rebuild (fixes 500 from old redis/database config)
+# 4. Clear stale caches (fixes 500 from old redis/database config)
 # ---------------------------------------------------------------------------
 php artisan optimize:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan event:cache
 
 # ---------------------------------------------------------------------------
-# 5. Migrations + seeders (forced)
+# 5. Migrations + seeders (forced — runs on every deploy / Quick Deploy)
 # ---------------------------------------------------------------------------
+echo "Running landlord migrations..."
 php artisan migrate --database=landlord --path=database/migrations/landlord --force
+
+echo "Running tenant migrations..."
 php artisan tenants:migrate
 
+echo "Running production seeders (idempotent)..."
 SEED_EXIT=0
 php artisan db:seed --class=ProductionSeeder --force || SEED_EXIT=$?
 
@@ -213,6 +244,14 @@ if [ "${SEED_EXIT}" -ne 0 ]; then
     echo "  Verify LANDLORD_DB_DATABASE matches a database this user can access:"
     echo "    DB_USERNAME=${DB_USER:-?} LANDLORD_DB_DATABASE=${DB_NAME:-?} DB_DATABASE=${FORGE_DB_NAME:-?}"
 fi
+
+# ---------------------------------------------------------------------------
+# 6. Rebuild caches after migrate/seed
+# ---------------------------------------------------------------------------
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
 
 LANDLORD_ADMIN_EMAIL=$(read_env_var LANDLORD_ADMIN_EMAIL)
 LANDLORD_ADMIN_PASSWORD=$(read_env_var LANDLORD_ADMIN_PASSWORD)

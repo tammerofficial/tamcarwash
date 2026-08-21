@@ -98,6 +98,7 @@ class TenantConnectionManager
                     'prefix' => '',
                     'prefix_indexes' => true,
                     'strict' => true,
+                    'options' => config("database.connections.{$connectionName}.options", []),
                 ])
             ));
         }

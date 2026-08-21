@@ -3,6 +3,24 @@
 use Illuminate\Support\Str;
 use Pdo\Mysql;
 
+$mysqlSslOptions = static function (): array {
+    if (! extension_loaded('pdo_mysql')) {
+        return [];
+    }
+
+    $options = [];
+
+    if ($ca = env('MYSQL_ATTR_SSL_CA')) {
+        $options[Mysql::ATTR_SSL_CA] = $ca;
+    }
+
+    if (filter_var(env('MYSQL_SSL_VERIFY_SERVER_CERT', true), FILTER_VALIDATE_BOOL) === false) {
+        $options[Mysql::ATTR_SSL_VERIFY_SERVER_CERT] = false;
+    }
+
+    return $options;
+};
+
 return [
 
     /*
@@ -59,9 +77,7 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            'options' => $mysqlSslOptions(),
         ],
 
         'landlord' => match (env('LANDLORD_DB_DRIVER', 'mysql')) {
@@ -94,9 +110,7 @@ return [
                 'prefix_indexes' => true,
                 'strict' => true,
                 'engine' => null,
-                'options' => extension_loaded('pdo_mysql') ? array_filter([
-                    Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-                ]) : [],
+                'options' => $mysqlSslOptions(),
             ],
         },
 
@@ -127,9 +141,7 @@ return [
                 'prefix_indexes' => true,
                 'strict' => true,
                 'engine' => null,
-                'options' => extension_loaded('pdo_mysql') ? array_filter([
-                    Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-                ]) : [],
+                'options' => $mysqlSslOptions(),
             ],
         },
 
@@ -148,9 +160,7 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            'options' => $mysqlSslOptions(),
         ],
 
         'pgsql' => [

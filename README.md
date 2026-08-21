@@ -338,6 +338,30 @@ Tammer Wash uses **landlord** and **per-tenant** migration paths. Running bare `
 | `SESSION_DOMAIN` | `.tamcarwash.on-forge.com` |
 | `SANCTUM_STATEFUL_DOMAINS` | `tamcarwash.on-forge.com,*.tamcarwash.on-forge.com` |
 
+**If seeding fails with `Access denied … to database tamcarwash_landlord` (SQLSTATE 1044)**
+
+Forge links one MySQL user (e.g. `carwash`) to one database (e.g. `tamcarwash`). The app also needs access to **`tamcarwash_landlord`** (platform schema) and **`tamcarwash_tenant_*`** (per-tenant DBs).
+
+On the server (Forge → Database → Run Command, or SSH as `forge`):
+
+```sql
+CREATE DATABASE IF NOT EXISTS tamcarwash_landlord CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+GRANT ALL PRIVILEGES ON tamcarwash_landlord.* TO 'carwash'@'%';
+GRANT ALL PRIVILEGES ON `tamcarwash_tenant_%`.* TO 'carwash'@'%';
+FLUSH PRIVILEGES;
+```
+
+Replace `carwash` with your `DB_USERNAME` from Forge env. Then:
+
+```bash
+cd /home/forge/tamcarwash.on-forge.com/current
+php artisan config:clear
+php artisan migrate --database=landlord --path=database/migrations/landlord --force
+php artisan db:seed --class=ProductionSeeder --force
+```
+
+**Alternative:** set `LANDLORD_DB_DATABASE` to the same name as `DB_DATABASE` in Forge env (single-DB setup), then `php artisan config:clear` and re-run migrate + seed.
+
 **If the site returns 500 but `/up` and `/api/landlord/v1/health` work**
 
 Web routes use sessions; API/health routes do not. Common causes:
@@ -357,28 +381,17 @@ grep SESSION_DRIVER .env
 php artisan migrate:status --database=landlord --path=database/migrations/landlord
 ```
 
-**Deployment script** — copy from [`deploy/forge-deploy.sh`](deploy/forge-deploy.sh) or use:
+**Deployment script** — in Forge → Site → Deployment Script, use:
 
 ```bash
 cd $FORGE_SITE_PATH
-
-$FORGE_COMPOSER install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-npm ci && npm run build
-
-php artisan config:clear
-php artisan route:cache
-php artisan view:cache
-
-# Platform schema only — do NOT run: php artisan migrate
-php artisan migrate --database=landlord --path=database/migrations/landlord --force
-
-php artisan app:seed-production --force
-
-# New tenant migrations for all provisioned tenants
-php artisan tenants:migrate
-
-php artisan optimize
+git pull origin $FORGE_SITE_BRANCH
+bash deploy/forge-deploy.sh
 ```
+
+Enable **Quick Deploy** so every GitHub push runs migrations + `ProductionSeeder` automatically.
+
+Full checklist: [`DEPLOY.md`](DEPLOY.md)
 
 **Migration layout**
 
