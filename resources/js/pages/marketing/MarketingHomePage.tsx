@@ -69,16 +69,16 @@ export function MarketingHomePage() {
             <main className="relative z-10 pt-28 sm:pt-36 lg:pt-44">
                 {/* Background effects */}
                 <div className="absolute inset-0 -z-10 overflow-hidden">
-                    <div className="absolute -top-[10%] left-[10%] size-[500px] rounded-full bg-cyan-200/40 blur-[120px]" />
-                    <div className="absolute top-[20%] -right-[5%] size-[400px] rounded-full bg-sky-200/30 blur-[100px]" />
-                    <div className="absolute bottom-[10%] left-[20%] size-[600px] rounded-full bg-teal-100/20 blur-[150px]" />
+                    <div className="absolute -top-[10%] left-[10%] size-[500px] rounded-full bg-brand-primary/10 blur-[120px]" />
+                    <div className="absolute top-[20%] -right-[5%] size-[400px] rounded-full bg-brand-secondary/10 blur-[100px]" />
+                    <div className="absolute bottom-[10%] left-[20%] size-[600px] rounded-full bg-brand-primary/5 blur-[150px]" />
                 </div>
 
                 {/* Hero */}
                 <section className="px-4 pb-20 sm:px-6 lg:px-8 lg:pb-32">
                     <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-2 lg:items-center">
                         <div className="space-y-10 text-right">
-                            <span className="inline-flex items-center gap-2 rounded-full border border-sky-100 bg-sky-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-brand-primary backdrop-blur-md">
+                            <span className="inline-flex items-center gap-2 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-brand-primary backdrop-blur-md">
                                 <Sparkles className="size-3.5" />
                                 {t('marketing.hero.badge')}
                             </span>
@@ -95,7 +95,7 @@ export function MarketingHomePage() {
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                                 <Button
                                     size="lg"
-                                    className="h-14 rounded-2xl bg-brand-primary px-10 text-base font-black text-white shadow-2xl shadow-brand-primary/20 hover:bg-brand-primary/90 hover:scale-[1.02] transition-transform"
+                                    className="h-14 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary px-10 text-base font-black text-white shadow-2xl shadow-brand-primary/20 hover:bg-brand-primary/90 hover:scale-[1.02] transition-transform"
                                     asChild
                                 >
                                     <Link to="/register">
@@ -106,7 +106,7 @@ export function MarketingHomePage() {
                                 <Button
                                     size="lg"
                                     variant="outline"
-                                    className="h-14 rounded-2xl border-slate-200 bg-white px-10 text-base font-bold text-slate-900 shadow-sm hover:bg-slate-50 hover:border-brand-primary/50"
+                                    className="h-14 rounded-2xl border-slate-200 bg-white px-10 text-base font-bold text-slate-900 shadow-sm hover:bg-slate-50 hover:border-brand-primary/50 hover:text-brand-primary transition-all"
                                     onClick={() => scrollToSection('features')}
                                 >
                                     {t('marketing.hero.ctaSecondary')}
@@ -146,7 +146,7 @@ export function MarketingHomePage() {
 
                         {/* Hero visual — simplified dashboard preview */}
                         <div className="relative lg:block">
-                            <div className="absolute -inset-4 rounded-[3rem] bg-gradient-to-br from-cyan-400/20 to-sky-400/20 blur-3xl opacity-50" />
+                            <div className="absolute -inset-4 rounded-[3rem] bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 blur-3xl opacity-50" />
                             <div className="relative overflow-hidden rounded-[2.5rem] border border-white/40 bg-white/80 shadow-2xl backdrop-blur-xl">
                                 <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-6 py-4">
                                     <div className="flex items-center gap-3">
@@ -186,8 +186,8 @@ export function MarketingHomePage() {
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="flex items-center gap-3 rounded-2xl border border-sky-100 bg-sky-50/50 px-5 py-4 text-xs font-bold text-sky-800 shadow-sm">
-                                        <div className="flex size-8 items-center justify-center rounded-lg bg-sky-100 text-sky-600">
+                                    <div className="flex items-center gap-3 rounded-2xl border border-brand-primary/20 bg-brand-primary/5 px-5 py-4 text-xs font-bold text-brand-primary shadow-sm">
+                                        <div className="flex size-8 items-center justify-center rounded-lg bg-brand-primary/10 text-brand-primary">
                                             <BadgePercent className="size-4" />
                                         </div>
                                         فواتير ضريبية فورية بنسبة 5% — امتثال تام
@@ -205,7 +205,7 @@ export function MarketingHomePage() {
                             const Icon = trustIcons[key];
                             return (
                                 <div key={key} className="flex items-start gap-5 text-right">
-                                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-brand-primary border border-sky-100 shadow-sm">
+                                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-brand-primary/5 text-brand-primary border border-brand-primary/10 shadow-sm">
                                         <Icon className="size-7" />
                                     </div>
                                     <div>
@@ -242,7 +242,7 @@ export function MarketingHomePage() {
                                         key={key}
                                         className="group relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white/70 p-8 transition-all hover:-translate-y-2 hover:border-brand-primary/30 hover:bg-white shadow-sm hover:shadow-xl"
                                     >
-                                        <div className="flex size-14 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-xl shadow-brand-primary/20 group-hover:scale-110 transition-transform">
+                                        <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-xl shadow-brand-primary/20 group-hover:scale-110 transition-transform">
                                             <Icon className="size-7" />
                                         </div>
                                         <h3 className="mt-8 text-xl font-black text-slate-900">
@@ -260,9 +260,9 @@ export function MarketingHomePage() {
 
                 {/* Pricing / Free Proposition */}
                 <section className="px-4 py-24 sm:px-6 lg:px-8 relative overflow-hidden">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] bg-cyan-100/40 blur-[150px] -z-10" />
-                    <div className="mx-auto max-w-5xl rounded-[3rem] border border-sky-100 bg-white/80 p-12 text-center shadow-2xl backdrop-blur-xl sm:p-20">
-                        <div className="mx-auto mb-8 flex size-20 items-center justify-center rounded-3xl bg-brand-primary text-white shadow-2xl shadow-brand-primary/20">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] bg-brand-primary/10 blur-[150px] -z-10" />
+                    <div className="mx-auto max-w-5xl rounded-[3rem] border border-brand-primary/10 bg-white/80 p-12 text-center shadow-2xl backdrop-blur-xl sm:p-20">
+                        <div className="mx-auto mb-8 flex size-20 items-center justify-center rounded-3xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-2xl shadow-brand-primary/20">
                             <BadgePercent className="size-10" />
                         </div>
                         <h2 className="text-4xl font-black text-slate-900 sm:text-5xl">
@@ -282,7 +282,7 @@ export function MarketingHomePage() {
                         </div>
 
                         <div className="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row">
-                            <Button size="lg" className="h-16 rounded-2xl bg-brand-primary px-12 text-lg font-black text-white hover:bg-brand-primary/90 hover:scale-[1.05] transition-all shadow-xl shadow-brand-primary/20" asChild>
+                            <Button size="lg" className="h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary px-12 text-lg font-black text-white hover:bg-brand-primary/90 hover:scale-[1.05] transition-all shadow-xl shadow-brand-primary/20" asChild>
                                 <Link to="/register">{t('marketing.pricing.free.cta')}</Link>
                             </Button>
                             <Button size="lg" variant="outline" className="h-16 rounded-2xl border-slate-200 bg-white px-12 text-lg font-bold text-slate-900 shadow-sm hover:bg-slate-50" asChild>
@@ -314,7 +314,7 @@ export function MarketingHomePage() {
                                     key={key}
                                     className="relative rounded-[2rem] border border-slate-200 bg-white/70 p-10 backdrop-blur-sm shadow-sm"
                                 >
-                                    <span className="absolute -top-6 right-10 flex size-14 items-center justify-center rounded-2xl bg-brand-primary text-white text-xl font-black shadow-xl shadow-brand-primary/20">
+                                    <span className="absolute -top-6 right-10 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white text-xl font-black shadow-xl shadow-brand-primary/20">
                                         0{index + 1}
                                     </span>
                                     <h3 className="mt-4 text-2xl font-black text-slate-900">{t(`marketing.howItWorks.${key}.title`)}</h3>
@@ -348,7 +348,7 @@ export function MarketingHomePage() {
                                         &ldquo;{t(`marketing.testimonials.${key}.quote`)}&rdquo;
                                     </p>
                                     <div className="mt-8 flex items-center gap-4 border-t border-slate-100 pt-6">
-                                        <div className="size-12 rounded-2xl bg-sky-50 flex items-center justify-center text-brand-primary text-xl font-black border border-sky-100">
+                                        <div className="size-12 rounded-2xl bg-brand-primary/5 flex items-center justify-center text-brand-primary text-xl font-black border border-brand-primary/10">
                                             {t(`marketing.testimonials.${key}.author`).charAt(0)}
                                         </div>
                                         <div>
@@ -370,7 +370,7 @@ export function MarketingHomePage() {
                 <section className="px-4 py-24 sm:px-6 lg:px-8 border-t border-slate-200">
                     <div className="mx-auto max-w-3xl">
                         <div className="text-center">
-                            <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl bg-sky-50 text-brand-primary border border-sky-100">
+                            <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl bg-brand-primary/5 text-brand-primary border border-brand-primary/10">
                                 <HelpCircle className="size-8" />
                             </div>
                             <h2 className="text-4xl font-black text-slate-900">{t('marketing.faq.title')}</h2>
@@ -396,10 +396,10 @@ export function MarketingHomePage() {
 
                 {/* Final CTA */}
                 <section className="px-4 pb-32 pt-24 sm:px-6 lg:px-8">
-                    <div className="mx-auto max-w-5xl overflow-hidden rounded-[3.5rem] border border-sky-100 bg-white/80 relative p-12 text-center shadow-3xl backdrop-blur-xl sm:p-20">
+                    <div className="mx-auto max-w-5xl overflow-hidden rounded-[3.5rem] border border-brand-primary/10 bg-white/80 relative p-12 text-center shadow-3xl backdrop-blur-xl sm:p-20">
                         {/* Decorative background for CTA */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-sky-50 to-white -z-10" />
-                        <div className="absolute -top-24 -right-24 size-[300px] rounded-full bg-brand-primary/5 blur-3xl -z-10" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-white -z-10" />
+                        <div className="absolute -top-24 -right-24 size-[300px] rounded-full bg-brand-primary/10 blur-3xl -z-10" />
                         
                         <div className="relative z-10">
                             <h2 className="text-4xl font-black text-slate-950 sm:text-6xl">{t('marketing.cta.title')}</h2>
@@ -409,7 +409,7 @@ export function MarketingHomePage() {
                             <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row">
                                 <Button
                                     size="lg"
-                                    className="h-16 rounded-2xl bg-brand-primary px-12 text-lg font-black text-white hover:bg-brand-primary/90 hover:scale-[1.05] transition-all shadow-2xl shadow-brand-primary/20"
+                                    className="h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary px-12 text-lg font-black text-white hover:bg-brand-primary/90 hover:scale-[1.05] transition-all shadow-2xl shadow-brand-primary/20"
                                     asChild
                                 >
                                     <Link to="/register">

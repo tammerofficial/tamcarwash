@@ -84,10 +84,10 @@
     --admin-sidebar-active: 180 100% 15%;
     --admin-sidebar-active-foreground: 0 0% 100%;
 
-    /* Tenant storefront branding (homepage/marketing) - Government Professional Blue */
-    --brand-primary: #0A4B78;
-    --brand-secondary: #5CB2FF;
-    --brand-primary-dark: #072E49;
+    /* Tenant storefront branding (homepage/marketing) - Daytime Aquatic */
+    --brand-primary: #0b81b7;
+    --brand-secondary: #0b9dd3;
+    --brand-primary-dark: #085f87;
 }
 
 .dark {
@@ -298,6 +298,10 @@
 
     .to-brand-primary-dark {
         --tw-gradient-to: var(--brand-primary-dark) var(--tw-gradient-to-position);
+    }
+
+    .to-brand-secondary {
+        --tw-gradient-to: var(--brand-secondary) var(--tw-gradient-to-position);
     }
 
     .marketing-surface {

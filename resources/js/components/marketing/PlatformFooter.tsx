@@ -33,8 +33,8 @@ export function PlatformFooter() {
                     backgroundSize: '36px 36px',
                 }}
             />
-            <div className="pointer-events-none absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-cyan-100/30 blur-[160px]" />
-            <div className="pointer-events-none absolute left-0 bottom-0 h-[450px] w-[450px] rounded-full bg-sky-100/20 blur-[160px]" />
+            <div className="pointer-events-none absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-brand-primary/10 blur-[160px]" />
+            <div className="pointer-events-none absolute left-0 bottom-0 h-[450px] w-[450px] rounded-full bg-brand-secondary/10 blur-[160px]" />
 
             <div className="relative z-10 mx-auto max-w-7xl px-4 text-right sm:px-6 lg:px-8">
                 {/* Executive Institutional Top Banner */}
@@ -42,17 +42,17 @@ export function PlatformFooter() {
                     <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
                         <div className="space-y-8">
                             <Link to="/" className="inline-flex items-center gap-4">
-                                <div className="flex size-16 items-center justify-center rounded-[1.5rem] bg-brand-primary text-white shadow-xl shadow-brand-primary/20">
-                                    <Droplets className="size-9 text-sky-100" />
+                                <div className="flex size-16 items-center justify-center rounded-[1.5rem] bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-xl shadow-brand-primary/20">
+                                    <Droplets className="size-9 text-white" />
                                 </div>
                                 <div className="flex flex-col">
                                     <div className="flex items-center gap-3">
                                         <span className="text-4xl font-black tracking-tighter text-slate-900 uppercase">{platformName}</span>
-                                        <span className="rounded-lg bg-sky-100 px-3 py-1 text-[11px] font-black text-brand-primary border border-sky-200">
+                                        <span className="rounded-lg bg-brand-primary/10 px-3 py-1 text-[11px] font-black text-brand-primary border border-brand-primary/20">
                                             سلطنة عُمان
                                         </span>
                                     </div>
-                                    <span className="mt-1 text-[12px] font-black uppercase tracking-[0.3em] text-brand-primary opacity-80">
+                                    <span className="mt-1 text-[12px] font-black uppercase tracking-[0.3em] text-brand-primary">
                                         {brandTagline}
                                     </span>
                                 </div>
@@ -79,15 +79,15 @@ export function PlatformFooter() {
                         </div>
 
                         {/* Quick Start Card */}
-                        <div className="rounded-[2.5rem] border border-sky-100 bg-gradient-to-br from-white via-sky-50 to-white p-8 sm:p-10 shadow-xl">
+                        <div className="rounded-[2.5rem] border border-brand-primary/10 bg-gradient-to-br from-white via-brand-primary/5 to-white p-8 sm:p-10 shadow-xl">
                             <div className="flex items-center justify-between border-b border-slate-100 pb-8">
                                 <div>
-                                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-secondary">
+                                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary">
                                         ابدأ الآن
                                     </span>
                                     <h3 className="mt-2 text-3xl font-black text-slate-900">ابدأ رحلتك مجاناً للأبد</h3>
                                 </div>
-                                <div className="flex size-16 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-xl shadow-brand-primary/20">
+                                <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-xl shadow-brand-primary/20">
                                     <Sparkles className="size-8 text-white" />
                                 </div>
                             </div>
@@ -99,7 +99,7 @@ export function PlatformFooter() {
                             <div className="mt-12 flex flex-col gap-4 sm:flex-row">
                                 <Button
                                     size="lg"
-                                    className="h-16 flex-1 rounded-2xl bg-brand-primary font-black text-white shadow-xl shadow-brand-primary/20 hover:bg-brand-primary/90 hover:scale-[1.03] transition-all text-lg"
+                                    className="h-16 flex-1 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary font-black text-white shadow-xl shadow-brand-primary/20 hover:scale-[1.03] transition-all text-lg"
                                     asChild
                                 >
                                     <Link to="/register">
@@ -209,19 +209,19 @@ export function PlatformFooter() {
                         </ul>
                     </div>
 
-                    {/* Column 4: Compliance & Trust */}
+                        {/* Column 4: Compliance & Trust */}
                     <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-emerald-600">
+                        <div className="flex items-center gap-2 text-brand-primary">
                             <ShieldCheck className="size-4" />
                             <h4 className="text-sm font-extrabold uppercase tracking-wider text-slate-900">
                                 الامتثال والأمان
                             </h4>
                         </div>
-                        <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-sm">
+                        <div className="rounded-2xl border border-brand-primary/10 bg-brand-primary/5 p-4 shadow-sm">
                             <p className="text-xs font-semibold leading-relaxed text-slate-600">
                                 {t('marketing.footer.vatNote')}
                             </p>
-                            <div className="mt-3 flex items-center gap-2 text-[11px] font-bold text-emerald-600">
+                            <div className="mt-3 flex items-center gap-2 text-[11px] font-bold text-brand-primary">
                                 <CheckCircle2 className="size-3.5" />
                                 بنية سحابية مشفرة ومحمية
                             </div>
