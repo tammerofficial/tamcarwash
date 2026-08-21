@@ -102,7 +102,7 @@ export function MarketingHomePage() {
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                                 <Button
                                     size="lg"
-                                    className="h-14 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary px-10 text-base font-black text-white shadow-2xl shadow-brand-primary/20 hover:bg-brand-primary/90 hover:scale-[1.02] transition-transform"
+                                    className="h-14 rounded-2xl bg-aquatic-gradient px-10 text-base font-black text-white shadow-2xl shadow-brand-primary/20 hover:opacity-90 hover:scale-[1.02] transition-transform"
                                     asChild
                                 >
                                     <Link to="/register">
@@ -113,15 +113,15 @@ export function MarketingHomePage() {
                                 <Button
                                     size="lg"
                                     variant="outline"
-                                    className="h-14 rounded-2xl border-brand-secondary/25 bg-white px-10 text-base font-bold text-brand-primary shadow-sm hover:bg-brand-primary/5 hover:border-brand-primary/50 transition-all"
+                                    className="h-14 rounded-2xl border-brand-primary/25 !bg-white px-10 text-base font-bold text-brand-primary shadow-sm hover:!bg-brand-primary/5 hover:border-brand-primary/50 transition-all"
                                     onClick={() => scrollToSection('features')}
                                 >
                                     {t('marketing.hero.ctaSecondary')}
                                 </Button>
                                 <Button
                                     size="lg"
-                                    variant="ghost"
-                                    className="h-14 rounded-2xl font-bold text-brand-primary/60 hover:text-brand-primary hover:bg-brand-primary/5"
+                                    variant="outline"
+                                    className="h-14 rounded-2xl border-brand-primary/25 !bg-white px-10 text-base font-bold text-brand-primary shadow-sm hover:!bg-brand-primary/5"
                                     asChild
                                 >
                                     <a href={DEMO_STOREFRONT}>
@@ -292,10 +292,10 @@ export function MarketingHomePage() {
                         </div>
 
                         <div className="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row">
-                            <Button size="lg" className="h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary px-12 text-base font-black text-white hover:bg-brand-primary/90 hover:scale-[1.05] transition-all shadow-xl shadow-brand-primary/20" asChild>
+                            <Button size="lg" className="h-16 rounded-2xl bg-aquatic-gradient px-12 text-base font-black text-white hover:opacity-90 hover:scale-[1.05] transition-all shadow-xl shadow-brand-primary/20" asChild>
                                 <Link to="/register">{t('marketing.pricing.free.cta')}</Link>
                             </Button>
-                            <Button size="lg" variant="outline" className="h-16 rounded-2xl border-brand-secondary/25 bg-white px-12 text-base font-bold text-brand-primary shadow-sm hover:bg-brand-primary/5" asChild>
+                            <Button size="lg" variant="outline" className="h-16 rounded-2xl border-brand-primary/25 !bg-white px-12 text-base font-bold text-brand-primary shadow-sm hover:!bg-brand-primary/5" asChild>
                                 <a href={DEMO_STOREFRONT}>جرّب العرض التجريبي</a>
                             </Button>
                         </div>
@@ -431,7 +431,7 @@ export function MarketingHomePage() {
                             <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row">
                                 <Button
                                     size="lg"
-                                    className="h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary px-12 text-base font-black text-white hover:bg-brand-primary/90 hover:scale-[1.05] transition-all shadow-2xl shadow-brand-primary/20"
+                                    className="h-16 rounded-2xl bg-aquatic-gradient px-12 text-base font-black text-white hover:opacity-90 hover:scale-[1.05] transition-all shadow-2xl shadow-brand-primary/20"
                                     asChild
                                 >
                                     <Link to="/register">
@@ -442,7 +442,7 @@ export function MarketingHomePage() {
                                 <Button
                                     size="lg"
                                     variant="outline"
-                                    className="h-16 rounded-2xl border-brand-secondary/25 bg-white px-12 text-base font-bold text-brand-primary shadow-sm hover:bg-brand-primary/5 transition-all"
+                                    className="h-16 rounded-2xl border-brand-primary/25 !bg-white px-12 text-base font-bold text-brand-primary shadow-sm hover:!bg-brand-primary/5 transition-all"
                                     asChild
                                 >
                                     <a href={DEMO_STOREFRONT}>جرّب العرض التجريبي</a>

@@ -39,7 +39,7 @@ export function WhyUsPage() {
         {
             icon: TrendingUp,
             title: t('marketing.whyUsPage.roiTitle'),
-            description: t('marketing.whyUsPage.roiText'),
+            description: t('marketing.whyUsPage.roiText', brand),
         },
         {
             icon: BarChart3,
@@ -90,7 +90,7 @@ export function WhyUsPage() {
 
                             <div className="space-y-6">
                                 <h1 className="text-4xl font-black tracking-tight text-aquatic-gradient sm:text-5xl lg:text-6xl">
-                                    {t('marketing.whyUsPage.title')}
+                                    {t('marketing.whyUsPage.title', brand)}
                                 </h1>
                                 <p className="max-w-3xl text-base leading-relaxed text-brand-primary/70">
                                     {t('marketing.whyUsPage.subtitle')}
@@ -260,10 +260,10 @@ export function WhyUsPage() {
                             </p>
                         </div>
                         <div className="mt-12 flex flex-col justify-center gap-6 sm:flex-row">
-                            <Button size="lg" className="h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary px-12 text-base font-black text-white shadow-2xl shadow-brand-primary/20 hover:bg-brand-primary/90 hover:scale-[1.05] transition-all" asChild>
+                            <Button size="lg" className="h-16 rounded-2xl bg-aquatic-gradient px-12 text-base font-black text-white shadow-2xl shadow-brand-primary/20 hover:opacity-90 hover:scale-[1.05] transition-all" asChild>
                                 <Link to="/register">{t('marketing.cta.button')}</Link>
                             </Button>
-                            <Button size="lg" variant="outline" className="h-16 rounded-2xl border-brand-secondary/25 bg-white px-12 text-base font-bold text-brand-primary shadow-sm hover:bg-brand-primary/5 hover:border-brand-primary/50 transition-all" asChild>
+                            <Button size="lg" variant="outline" className="h-16 rounded-2xl border-brand-primary/25 !bg-white px-12 text-base font-bold text-brand-primary shadow-sm hover:!bg-brand-primary/5 hover:border-brand-primary/50 transition-all" asChild>
                                 <Link to="/pricing">{t('marketing.nav.pricing')}</Link>
                             </Button>
                         </div>

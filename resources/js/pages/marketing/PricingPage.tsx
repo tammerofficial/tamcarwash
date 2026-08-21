@@ -141,7 +141,7 @@ export function PricingPage() {
 
                             <Button
                                 size="lg"
-                                className="h-20 w-full max-w-md rounded-[2.5rem] bg-gradient-to-br from-brand-primary to-brand-secondary text-lg font-black text-white transition-all hover:bg-brand-primary/90 hover:scale-[1.02] shadow-2xl shadow-brand-primary/20"
+                                className="h-20 w-full max-w-md rounded-[2.5rem] bg-aquatic-gradient text-lg font-black text-white transition-all hover:opacity-90 hover:scale-[1.02] shadow-2xl shadow-brand-primary/20"
                                 asChild
                             >
                                 <Link to="/register">{t('marketing.pricing.free.cta')}</Link>

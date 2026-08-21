@@ -99,7 +99,7 @@ export function PlatformFooter() {
                             <div className="mt-12 flex flex-col gap-4 sm:flex-row">
                                 <Button
                                     size="lg"
-                                    className="h-16 flex-1 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary text-base font-black text-white shadow-xl shadow-brand-primary/20 hover:scale-[1.03] transition-all"
+                                    className="h-16 flex-1 rounded-2xl bg-aquatic-gradient text-base font-black text-white shadow-xl shadow-brand-primary/20 hover:opacity-90 hover:scale-[1.03] transition-all"
                                     asChild
                                 >
                                     <Link to="/register">
@@ -110,7 +110,7 @@ export function PlatformFooter() {
                                 <Button
                                     size="lg"
                                     variant="outline"
-                                    className="h-16 rounded-2xl border-brand-secondary/25 bg-white text-base font-bold text-brand-primary hover:bg-brand-primary/5 transition-all"
+                                    className="h-16 rounded-2xl border-brand-primary/25 !bg-white text-base font-bold text-brand-primary hover:!bg-brand-primary/5 transition-all"
                                     asChild
                                 >
                                     <Link to="/pricing">تفاصيل الباقة</Link>
@@ -140,7 +140,7 @@ export function PlatformFooter() {
                             </li>
                             <li>
                                 <Link to="/why-us" className="text-sm font-medium text-brand-primary/60 transition-colors hover:text-brand-primary">
-                                    لماذا تمير واش؟
+                                    {t('marketing.footer.whyUsLink', brandI18n)}
                                 </Link>
                             </li>
                             <li>

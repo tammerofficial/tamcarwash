@@ -17,6 +17,7 @@ import { getAppTagline, getPlatformName } from '@/lib/branding';
 
 export function PlatformHeader() {
     const platformName = getPlatformName();
+    const brand = { name: platformName };
     const brandTagline = getAppTagline() ?? 'Enterprise SaaS';
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -141,7 +142,7 @@ export function PlatformHeader() {
                                         : 'text-brand-primary/80 hover:text-brand-primary hover:bg-brand-primary/5',
                                 )}
                             >
-                                {t(`marketing.nav.${item.name}`)}
+                                {t(`marketing.nav.${item.name}`, brand)}
                             </button>
                         ))}
                     </nav>
@@ -149,14 +150,14 @@ export function PlatformHeader() {
                     {/* Action Buttons */}
                     <div className="hidden items-center gap-4 md:flex">
                         <Button
-                            variant="ghost"
-                            className="rounded-xl px-6 text-sm font-semibold text-brand-primary/80 transition-all hover:bg-brand-primary/5 hover:text-brand-primary"
+                            variant="outline"
+                            className="rounded-xl border-brand-primary/25 !bg-white px-6 text-sm font-semibold text-brand-primary transition-all hover:!bg-brand-primary/5"
                             asChild
                         >
                             <Link to="/login">{t('marketing.nav.login')}</Link>
                         </Button>
                         <Button
-                            className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-brand-primary to-brand-secondary px-7 py-6 text-sm font-semibold text-white shadow-xl shadow-brand-primary/20 transition-all duration-500 hover:scale-[1.05] hover:shadow-brand-primary/40"
+                            className="group relative overflow-hidden rounded-xl bg-aquatic-gradient px-7 py-6 text-sm font-semibold text-white shadow-xl shadow-brand-primary/20 transition-all duration-500 hover:opacity-90 hover:scale-[1.05] hover:shadow-brand-primary/40"
                             asChild
                         >
                             <Link to="/register">
@@ -208,7 +209,7 @@ export function PlatformHeader() {
                                         : 'text-brand-primary/80 hover:bg-brand-primary/5 hover:text-brand-primary',
                                 )}
                             >
-                                <span>{t(`marketing.nav.${item.name}`)}</span>
+                                <span>{t(`marketing.nav.${item.name}`, brand)}</span>
                                 {isNavItemActive(item) && <CheckCircle2 className="size-4 text-icon-dark" />}
                             </button>
                         ))}
@@ -219,7 +220,7 @@ export function PlatformHeader() {
                     <div className="flex flex-col gap-3">
                         <Button
                             variant="outline"
-                            className="h-12 w-full justify-center rounded-xl border-brand-secondary/20 bg-white font-bold text-brand-primary hover:bg-brand-primary/5"
+                            className="h-12 w-full justify-center rounded-xl border-brand-primary/25 !bg-white font-bold text-brand-primary hover:!bg-brand-primary/5"
                             asChild
                         >
                             <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
@@ -227,7 +228,7 @@ export function PlatformHeader() {
                             </Link>
                         </Button>
                         <Button
-                            className="h-12 w-full justify-center rounded-xl bg-gradient-to-br from-brand-primary to-brand-secondary font-bold text-white shadow-lg shadow-brand-primary/20"
+                            className="h-12 w-full justify-center rounded-xl bg-aquatic-gradient font-bold text-white shadow-lg shadow-brand-primary/20 hover:opacity-90"
                             asChild
                         >
                             <Link to="/register" onClick={() => setMobileMenuOpen(false)}>

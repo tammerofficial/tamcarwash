@@ -23,6 +23,7 @@ import { getPlatformName } from '@/lib/branding';
 
 export function AboutPage() {
     const platformName = getPlatformName();
+    const brand = { name: platformName };
 
     const coreValues = [
         {
@@ -69,11 +70,11 @@ export function AboutPage() {
                         <div className="space-y-8 text-right">
                             <div className="flex flex-wrap items-center gap-3">
                                 <Badge className="rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary px-4 py-2 text-xs font-bold uppercase tracking-[0.35em] text-white shadow-lg shadow-brand-primary/20">
-                                    {t('marketing.nav.about')}
+                                    {t('marketing.nav.about', brand)}
                                 </Badge>
                                 <span className="inline-flex items-center gap-2 rounded-full border border-brand-primary/20 bg-white/85 px-4 py-2 text-xs font-bold uppercase tracking-[0.28em] text-brand-primary shadow-sm backdrop-blur-xl">
                                     <Sparkles className="size-3.5 text-icon-dark" />
-                                    عن تمير واش
+                                    {t('marketing.about.badge', brand)}
                                 </span>
                             </div>
 
@@ -82,7 +83,7 @@ export function AboutPage() {
                                     {t('marketing.about.title')}
                                 </h1>
                                 <p className="max-w-3xl text-base leading-relaxed text-brand-primary/70">
-                                    {t('marketing.about.subtitle')}
+                                    {t('marketing.about.subtitle', brand)}
                                 </p>
                             </div>
 
@@ -315,10 +316,10 @@ export function AboutPage() {
                             </p>
                         </div>
                         <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-                            <Button size="lg" className="h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary px-12 text-base font-black text-white shadow-2xl shadow-brand-primary/20 hover:bg-brand-primary/90 hover:scale-[1.05] transition-all" asChild>
+                            <Button size="lg" className="h-16 rounded-2xl bg-aquatic-gradient px-12 text-base font-black text-white shadow-2xl shadow-brand-primary/20 hover:opacity-90 hover:scale-[1.05] transition-all" asChild>
                                 <Link to="/register">{t('marketing.cta.button')}</Link>
                             </Button>
-                            <Button size="lg" variant="outline" className="h-16 rounded-2xl border-brand-secondary/25 bg-white px-12 text-base font-bold text-brand-primary shadow-sm hover:bg-brand-primary/5 hover:border-brand-primary/50 transition-all" asChild>
+                            <Button size="lg" variant="outline" className="h-16 rounded-2xl border-brand-primary/25 !bg-white px-12 text-base font-bold text-brand-primary shadow-sm hover:!bg-brand-primary/5 hover:border-brand-primary/50 transition-all" asChild>
                                 <Link to="/pricing">{t('marketing.nav.pricing')}</Link>
                             </Button>
                         </div>
