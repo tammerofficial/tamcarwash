@@ -70,7 +70,7 @@ export const ar = {
         tenantSlug: 'رابط المغسلة',
         tenantSlugHint: 'الرابط الذي اخترته عند التسجيل (مثل: al-wadi-wash)',
         quickLogin: {
-            title: 'دخول سريع (تطوير)',
+            title: 'دخول سريع',
             hint: 'حسابات تجريبية — كلمة المرور: password',
             owner: 'مالك',
             manager: 'مدير',
@@ -231,7 +231,7 @@ export const ar = {
             securityNotice: 'نظام آمن ومشفر لحماية بيانات المنصة والمستأجرين.',
         },
         quickLogin: {
-            title: 'دخول سريع (تطوير)',
+            title: 'دخول سريع',
             hint: 'حساب مدير المنصة — بدون إدخال يدوي',
             platformAdmin: 'مدير المنصة',
         },

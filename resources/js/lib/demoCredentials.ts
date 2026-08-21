@@ -4,6 +4,7 @@ import { CreditCard, Crown, Shield, UserCog, Wrench } from 'lucide-react';
 /** Demo quick-login users — seeded by DemoTenantUsersSeeder (demo tenant + all tenants in local dev) */
 /** Demo landlord user — seeded by PlatformUserSeeder / LandlordProductionSeeder */
 export const DEMO_PASSWORD = 'password';
+export const DEFAULT_DEMO_TENANT_SLUG = 'demo';
 
 export interface DemoRoleCredential {
     role: 'owner' | 'manager' | 'cashier' | 'worker';

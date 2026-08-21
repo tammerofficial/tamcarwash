@@ -15,8 +15,8 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { t } from '@/lib/i18n';
-import { ApiClientError } from '@/lib/api';
-import { DEMO_ROLE_CREDENTIALS, isQuickLoginEnabled } from '@/lib/demoCredentials';
+import { ApiClientError, api, endpoints } from '@/lib/api';
+import { DEMO_ROLE_CREDENTIALS, DEMO_LANDLORD_CREDENTIALS, DEFAULT_DEMO_TENANT_SLUG, isQuickLoginEnabled } from '@/lib/demoCredentials';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -37,9 +37,9 @@ export function LoginPage() {
     const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
     const [quickLoginRole, setQuickLoginRole] = useState<string | null>(null);
-    const showQuickLogin = isQuickLoginEnabled() && !isLandlord;
-
     const needsTenantSlug = !isLandlord && !appConfig.tenant?.slug;
+    const showQuickLogin = isQuickLoginEnabled() && !isLandlord;
+    const showLandlordQuickLogin = isQuickLoginEnabled() && !isLandlord && needsTenantSlug;
     const storedTenantSlug = getActiveTenantSlug();
 
     const form = useForm<LoginFormValues>({
@@ -78,13 +78,42 @@ export function LoginPage() {
         form.setValue('email', email);
         form.setValue('password', password);
 
+        const tenantSlug =
+            form.getValues('tenant_slug')?.trim() ||
+            storedTenantSlug ||
+            (needsTenantSlug ? DEFAULT_DEMO_TENANT_SLUG : undefined);
+
+        if (needsTenantSlug && tenantSlug) {
+            form.setValue('tenant_slug', tenantSlug);
+        }
+
         try {
             await submitLogin({
                 email,
                 password,
                 remember: false,
-                tenant_slug: form.getValues('tenant_slug')?.trim() || storedTenantSlug || undefined,
+                tenant_slug: tenantSlug,
             });
+        } finally {
+            setQuickLoginRole(null);
+        }
+    };
+
+    const handleLandlordQuickLogin = async (email: string, password: string, role: string) => {
+        setQuickLoginRole(role);
+        setError(null);
+
+        try {
+            await api.ensureCsrfCookie();
+            await api.post(
+                endpoints.landlord.login,
+                { email, password, remember: false },
+                undefined,
+                { baseUrl: 'landlord' },
+            );
+            navigate('/landlord/dashboard');
+        } catch (err: unknown) {
+            setError(err instanceof ApiClientError ? err.message : 'فشل تسجيل الدخول');
         } finally {
             setQuickLoginRole(null);
         }
@@ -299,6 +328,47 @@ export function LoginPage() {
                                         );
                                     })}
                                 </div>
+
+                                {showLandlordQuickLogin && (
+                                    <div className="space-y-3 pt-2">
+                                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground text-center">
+                                            {t('landlord.quickLogin.title')}
+                                        </p>
+                                        <div className="grid gap-3">
+                                            {DEMO_LANDLORD_CREDENTIALS.map(({ role, email, password, labelKey, icon: Icon }) => {
+                                                const isLoading = quickLoginRole === role;
+
+                                                return (
+                                                    <Button
+                                                        key={role}
+                                                        type="button"
+                                                        variant="outline"
+                                                        className="h-14 rounded-xl border-border/60 bg-white/50 hover:bg-white hover:border-primary/30 justify-between px-4 group transition-all"
+                                                        disabled={isSubmitting}
+                                                        onClick={() => handleLandlordQuickLogin(email, password, role)}
+                                                    >
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                                                                <Icon className="h-4 w-4" />
+                                                            </div>
+                                                            <div className="text-start">
+                                                                <p className="text-xs font-black text-foreground leading-none">{t(labelKey)}</p>
+                                                                <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mt-1">
+                                                                    {t('landlord.quickLogin.hint')}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        {isLoading ? (
+                                                            <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                                                        ) : (
+                                                            <ChevronLeft className="h-4 w-4 text-muted-foreground/30 group-hover:text-primary" />
+                                                        )}
+                                                    </Button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

@@ -80,6 +80,12 @@ set_env TENANCY_SEED_DEMO_USERS true
 set_env ALLOW_QUICK_LOGIN true
 set_env SANCTUM_STATEFUL_DOMAINS tamcarwash.on-forge.com
 
+# Landlord super admin — bootstrap demo credentials when Forge env is empty (override in Forge UI)
+set_env_if_missing LANDLORD_ADMIN_EMAIL admin@tammer.test
+set_env_if_missing LANDLORD_ADMIN_PASSWORD password
+set_env_if_missing LANDLORD_ADMIN_NAME "مدير المنصة"
+set_env_if_missing LANDLORD_ADMIN_ROLE admin
+
 # Session / Cache / Queue — file/sync (no Redis on this server)
 set_env SESSION_DRIVER file
 set_env SESSION_LIFETIME 120
@@ -210,9 +216,8 @@ fi
 
 LANDLORD_ADMIN_EMAIL=$(read_env_var LANDLORD_ADMIN_EMAIL)
 LANDLORD_ADMIN_PASSWORD=$(read_env_var LANDLORD_ADMIN_PASSWORD)
-if [ -z "${LANDLORD_ADMIN_EMAIL}" ] || [ -z "${LANDLORD_ADMIN_PASSWORD}" ]; then
-    echo "WARNING: Set LANDLORD_ADMIN_EMAIL and LANDLORD_ADMIN_PASSWORD in Forge → Environment for landlord super admin (/landlord/login)."
-    echo "  See deploy/.env.forge for documentation. First deploy may bootstrap demo admin@tammer.test once."
+if [ "${LANDLORD_ADMIN_EMAIL}" = "admin@tammer.test" ] || [ "${LANDLORD_ADMIN_PASSWORD}" = "password" ]; then
+    echo "NOTE: Demo landlord admin in use (${LANDLORD_ADMIN_EMAIL}). Set LANDLORD_ADMIN_* in Forge → Environment before go-live."
 fi
 
 echo "Deploy finished OK."

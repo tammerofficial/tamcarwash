@@ -43,10 +43,17 @@ return [
 
     /*
     | Show quick-login buttons on tenant/landlord login pages. Defaults to true in
-    | local; enable on Forge with ALLOW_QUICK_LOGIN=true when demo users are seeded.
+    | local and when TENANCY_SEED_DEMO_USERS is enabled (Forge production demo).
+    | Override with ALLOW_QUICK_LOGIN=true|false in Forge env.
     */
     'allow_quick_login' => filter_var(
-        env('ALLOW_QUICK_LOGIN', env('APP_ENV') === 'local'),
+        env(
+            'ALLOW_QUICK_LOGIN',
+            filter_var(
+                env('TENANCY_SEED_DEMO_USERS', env('APP_ENV') === 'local'),
+                FILTER_VALIDATE_BOOL
+            )
+        ),
         FILTER_VALIDATE_BOOL
     ),
 

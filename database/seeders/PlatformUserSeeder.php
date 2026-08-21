@@ -62,34 +62,27 @@ class PlatformUserSeeder extends IdempotentSeeder
             return compact('email', 'password', 'name', 'role');
         }
 
-        if (app()->environment('production')) {
-            if (PlatformUser::query()->where('is_active', true)->exists()) {
-                Log::info('[production-seed] PlatformUserSeeder skipped — set LANDLORD_ADMIN_EMAIL and LANDLORD_ADMIN_PASSWORD in Forge env to manage super admin');
-                $this->logResult(static::class, [
-                    'created' => 0,
-                    'updated' => 0,
-                    'skipped' => 1,
-                    'reason' => 'production credentials not configured',
-                ]);
-
-                return null;
+        if (! app()->environment('production') || config('tenancy.seed_demo_users')) {
+            if (app()->environment('production')) {
+                Log::info('[production-seed] PlatformUserSeeder using demo defaults — set LANDLORD_ADMIN_* in Forge env for a custom super admin');
             }
-
-            Log::warning('[production-seed] PlatformUserSeeder using demo defaults for first bootstrap — set LANDLORD_ADMIN_* in Forge env before go-live');
 
             return [
                 'email' => self::DEMO_EMAIL,
                 'password' => self::DEMO_PASSWORD,
-                'name' => self::DEMO_NAME,
-                'role' => self::DEMO_ROLE,
+                'name' => $name,
+                'role' => $role,
             ];
         }
 
-        return [
-            'email' => $email ?: self::DEMO_EMAIL,
-            'password' => $password ?: self::DEMO_PASSWORD,
-            'name' => $name,
-            'role' => $role,
-        ];
+        Log::warning('[production-seed] PlatformUserSeeder skipped — set LANDLORD_ADMIN_EMAIL and LANDLORD_ADMIN_PASSWORD in Forge env');
+        $this->logResult(static::class, [
+            'created' => 0,
+            'updated' => 0,
+            'skipped' => 1,
+            'reason' => 'production credentials not configured',
+        ]);
+
+        return null;
     }
 }
