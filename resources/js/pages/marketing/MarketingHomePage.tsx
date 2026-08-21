@@ -396,20 +396,20 @@ export function MarketingHomePage() {
 
                 {/* Final CTA */}
                 <section className="px-4 pb-32 pt-24 sm:px-6 lg:px-8">
-                    <div className="mx-auto max-w-5xl overflow-hidden rounded-[3.5rem] bg-brand-primary relative p-12 text-center shadow-3xl sm:p-20">
+                    <div className="mx-auto max-w-5xl overflow-hidden rounded-[3.5rem] border border-sky-100 bg-white/80 relative p-12 text-center shadow-3xl backdrop-blur-xl sm:p-20">
                         {/* Decorative background for CTA */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-brand-primary-dark/50 to-transparent" />
-                        <div className="absolute -top-24 -right-24 size-[300px] rounded-full bg-white/10 blur-3xl" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-sky-50 to-white -z-10" />
+                        <div className="absolute -top-24 -right-24 size-[300px] rounded-full bg-brand-primary/5 blur-3xl -z-10" />
                         
                         <div className="relative z-10">
-                            <h2 className="text-4xl font-black text-white sm:text-6xl">{t('marketing.cta.title')}</h2>
-                            <p className="mx-auto mt-6 max-w-xl text-xl text-white/80 font-medium">
+                            <h2 className="text-4xl font-black text-slate-950 sm:text-6xl">{t('marketing.cta.title')}</h2>
+                            <p className="mx-auto mt-6 max-w-xl text-xl text-slate-600 font-medium leading-relaxed">
                                 {t('marketing.cta.subtitle', brand)}
                             </p>
-                            <div className="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row">
+                            <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row">
                                 <Button
                                     size="lg"
-                                    className="h-16 rounded-2xl bg-white px-12 text-lg font-black text-brand-primary hover:bg-slate-50 hover:scale-[1.05] transition-all"
+                                    className="h-16 rounded-2xl bg-brand-primary px-12 text-lg font-black text-white hover:bg-brand-primary/90 hover:scale-[1.05] transition-all shadow-2xl shadow-brand-primary/20"
                                     asChild
                                 >
                                     <Link to="/register">
@@ -420,16 +420,16 @@ export function MarketingHomePage() {
                                 <Button
                                     size="lg"
                                     variant="outline"
-                                    className="h-16 rounded-2xl border-white/30 bg-white/10 px-12 text-lg font-bold text-white hover:bg-white/20 backdrop-blur-sm"
+                                    className="h-16 rounded-2xl border-slate-200 bg-white px-12 text-lg font-bold text-slate-900 shadow-sm hover:bg-slate-50 transition-all"
                                     asChild
                                 >
                                     <a href={DEMO_STOREFRONT}>جرّب العرض التجريبي</a>
                                 </Button>
                             </div>
-                            <div className="mt-10 flex flex-wrap items-center justify-center gap-4 text-xs font-black uppercase tracking-widest text-white/60">
+                            <div className="mt-12 flex flex-wrap items-center justify-center gap-4 text-xs font-black uppercase tracking-widest text-slate-400">
                                 {['امتثال ض.ق.م 5%', 'تفعيل فوري', 'دعم محلي', 'فروع لا محدودة'].map((item) => (
-                                    <span key={item} className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2">
-                                        <CheckCircle2 className="size-3.5 text-white" />
+                                    <span key={item} className="inline-flex items-center gap-2 rounded-full bg-slate-50 border border-slate-100 px-4 py-2 text-slate-600">
+                                        <CheckCircle2 className="size-3.5 text-emerald-500" />
                                         {item}
                                     </span>
                                 ))}

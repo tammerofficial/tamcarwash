@@ -232,40 +232,40 @@ export function AboutPage() {
                 </section>
 
                 <section className="relative z-10 px-6 py-20 lg:px-8 lg:py-28">
-                    <div className="mx-auto max-w-7xl rounded-[2.5rem] bg-slate-950 px-8 py-16 text-white shadow-[0_30px_90px_rgba(15,23,42,0.25)] md:px-14 md:py-20">
+                    <div className="mx-auto max-w-7xl rounded-[3rem] border border-sky-100 bg-white/80 px-8 py-16 text-slate-900 shadow-xl backdrop-blur-xl md:px-14 md:py-20">
                         <div className="grid gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
-                            <div className="space-y-6">
-                                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-black uppercase tracking-[0.35em] text-white/60">
+                            <div className="space-y-6 text-right">
+                                <div className="inline-flex items-center gap-2 rounded-full border border-sky-100 bg-sky-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.35em] text-brand-primary">
                                     <ShieldCheck className="size-4 text-brand-secondary" />
                                     {t('marketing.about.teamTitle')}
                                 </div>
-                                <h2 className="text-3xl font-black tracking-tight text-white md:text-5xl">
+                                <h2 className="text-3xl font-black tracking-tight text-slate-950 md:text-5xl">
                                     {t('marketing.about.teamTitle')}
                                 </h2>
-                                <p className="max-w-2xl text-lg leading-8 text-white/60 md:text-xl">
+                                <p className="max-w-2xl text-lg leading-8 text-slate-600 md:text-xl">
                                     {t('marketing.about.teamText')}
                                 </p>
                                 <div className="grid gap-3 sm:grid-cols-3">
                                     {[t('marketing.about.trust1'), t('marketing.about.trust2'), t('marketing.about.trust3')].map((item) => (
-                                        <div key={item} className="rounded-[1.4rem] border border-white/10 bg-white/5 p-4 text-sm font-bold text-white/80">
+                                        <div key={item} className="rounded-[1.4rem] border border-slate-100 bg-slate-50 p-4 text-sm font-bold text-slate-700 shadow-sm text-center">
                                             {item}
                                         </div>
                                     ))}
                                 </div>
                             </div>
 
-                            <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6">
+                            <div className="rounded-[2rem] border border-sky-50 bg-sky-50/50 p-6">
                                 <div className="grid gap-4">
                                     {[
                                         'فريق يفكر بعقلية تشغيلية',
                                         'قرارات تستند إلى بيانات حقيقية',
                                         'واجهة مستخدم احترافية',
                                     ].map((item) => (
-                                        <div key={item} className="flex items-center gap-3 rounded-[1.25rem] border border-white/10 bg-white/5 p-4">
-                                            <div className="flex size-10 items-center justify-center rounded-2xl bg-brand-primary text-white">
+                                        <div key={item} className="flex items-center gap-3 rounded-[1.25rem] border border-white bg-white/80 p-4 shadow-sm">
+                                            <div className="flex size-10 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-lg shadow-brand-primary/20">
                                                 <CheckCircle2 className="size-5" />
                                             </div>
-                                            <p className="text-sm font-bold text-white/80">{item}</p>
+                                            <p className="text-sm font-bold text-slate-800">{item}</p>
                                         </div>
                                     ))}
                                 </div>

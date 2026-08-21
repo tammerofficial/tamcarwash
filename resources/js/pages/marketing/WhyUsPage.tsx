@@ -176,34 +176,34 @@ export function WhyUsPage() {
                 </section>
 
                 <section className="relative z-10 px-6 py-24 lg:px-8 lg:py-32">
-                    <div className="mx-auto max-w-7xl rounded-[3.5rem] bg-slate-900 border border-slate-800 px-8 py-20 text-white shadow-3xl md:px-20 md:py-24 overflow-hidden relative">
-                        <div className="absolute top-0 right-0 size-[400px] bg-brand-primary/20 blur-[100px] -z-10" />
+                    <div className="mx-auto max-w-7xl rounded-[3.5rem] border border-sky-100 bg-white/80 px-8 py-20 text-slate-900 shadow-xl backdrop-blur-xl md:px-20 md:py-24 overflow-hidden relative">
+                        <div className="absolute top-0 right-0 size-[400px] bg-brand-primary/10 blur-[100px] -z-10" />
                         <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-                            <div className="space-y-8">
-                                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-black uppercase tracking-[0.35em] text-brand-secondary">
-                                    <Building2 className="size-5" />
+                            <div className="space-y-8 text-right">
+                                <div className="inline-flex items-center gap-2 rounded-full border border-sky-100 bg-sky-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.35em] text-brand-primary shadow-sm">
+                                    <Building2 className="size-5 text-brand-secondary" />
                                     أثر التميز على عملك
                                 </div>
-                                <h2 className="text-4xl font-black tracking-tight text-white md:text-6xl">
+                                <h2 className="text-4xl font-black tracking-tight text-slate-950 md:text-6xl">
                                     رؤية واضحة، إدارة هادئة، ونمو مستدام
                                 </h2>
-                                <p className="max-w-2xl text-xl leading-relaxed text-slate-300">
+                                <p className="max-w-2xl text-xl leading-relaxed text-slate-600">
                                     عندما تختار النظام الأفضل، فإنك لا تحصل فقط على برنامج، بل تحصل على شريك استراتيجي يساعدك على تحويل مغسلتك إلى أيقونة في عالم العناية بالمركبات.
                                 </p>
                             </div>
 
-                            <div className="rounded-[2.5rem] border border-white/10 bg-white/[0.02] p-8 backdrop-blur-md">
+                            <div className="rounded-[2.5rem] border border-sky-50 bg-sky-50/50 p-8 shadow-sm backdrop-blur-md">
                                 <div className="grid gap-6">
                                     {[
                                         'إدارة مركزية لجميع الفروع',
                                         'تحليلات دقيقة لحظة بلحظة',
                                         'تجربة عميل استثنائية وعصرية',
                                     ].map((item) => (
-                                        <div key={item} className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/[0.03] p-5">
+                                        <div key={item} className="flex items-center gap-4 rounded-2xl border border-white bg-white/90 p-5 shadow-sm">
                                             <div className="flex size-12 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-xl shadow-brand-primary/20">
                                                 <CheckCircle2 className="size-6" />
                                             </div>
-                                            <p className="text-lg font-bold text-slate-200">{item}</p>
+                                            <p className="text-lg font-bold text-slate-800">{item}</p>
                                         </div>
                                     ))}
                                 </div>
