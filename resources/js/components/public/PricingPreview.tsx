@@ -64,115 +64,172 @@ export function PricingPreview() {
             : FALLBACK_PLANS;
 
     return (
-        <section className="py-20 bg-white" dir="rtl">
-            <div className="mx-auto max-w-7xl px-4 lg:px-8">
-                <div className="mb-12 text-center max-w-2xl mx-auto space-y-3">
-                    <p className="sf-kicker">باقات الأسعار</p>
-                    <h2 className="text-3xl md:text-4xl font-bold text-[var(--inst-text)]">
-                        أسعار واضحة <span className="text-[var(--brand-primary)]">بالريال العماني</span>
+        <section className="py-24 relative overflow-hidden bg-white" dir="rtl">
+            {/* Background decorations */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-0 right-1/3 w-96 h-96 bg-[var(--brand-primary)]/8 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[var(--brand-secondary)]/8 rounded-full blur-3xl" />
+            </div>
+
+            <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
+                {/* Header */}
+                <div className="mb-16 max-w-3xl mx-auto text-center space-y-4">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--brand-secondary)]/10 border border-[var(--brand-secondary)]/20">
+                        <Sparkles className="h-4 w-4 text-[var(--brand-secondary)]" />
+                        <span className="text-xs font-bold text-[var(--brand-primary)] uppercase tracking-wider">باقات فاخرة</span>
+                    </div>
+                    <h2 className="text-4xl md:text-5xl font-black text-[var(--inst-text)]">
+                        أسعار واضحة وشفافة
+                        <br />
+                        <span className="bg-gradient-to-r from-[var(--brand-secondary)] to-[var(--brand-primary)] bg-clip-text text-transparent">بلا مفاجآت</span>
                     </h2>
-                    <p className="text-[var(--inst-muted)] leading-relaxed">
-                        اختر الباقة المناسبة ثم أكمل الحجز في أقل من دقيقتين.
+                    <p className="text-lg text-[var(--inst-muted)] leading-relaxed max-w-2xl mx-auto">
+                        اختر الباقة المناسبة لسيارتك وأكمل الحجز في أقل من دقيقتين. دفع آمن وموثوق.
                     </p>
                 </div>
 
+                {/* Pricing Cards */}
                 {isLoading ? (
-                    <div className="grid lg:grid-cols-3 gap-6">
+                    <div className="grid lg:grid-cols-3 gap-8">
                         {Array.from({ length: 3 }).map((_, index) => (
-                            <Skeleton key={index} className="h-[28rem] rounded-xl" />
+                            <Skeleton key={index} className="h-[32rem] rounded-2xl" />
                         ))}
                     </div>
                 ) : (
-                    <div className="grid lg:grid-cols-3 gap-6">
+                    <div className="grid lg:grid-cols-3 gap-8">
                         {plans.map((plan) => (
-                            <Card
+                            <div
                                 key={plan.name}
                                 className={cn(
-                                    'relative p-7 rounded-xl shadow-none transition-transform duration-300',
-                                    plan.recommended
-                                        ? 'bg-[var(--inst-teal)] text-white border-transparent lg:scale-[1.03] z-10'
-                                        : 'sf-card text-[var(--inst-text)]',
+                                    'relative rounded-2xl transition-all duration-500 group',
+                                    plan.recommended ? 'lg:scale-[1.06] z-10' : ''
                                 )}
                             >
+                                {/* Glow effect for recommended */}
                                 {plan.recommended && (
-                                    <div className="absolute -top-3 inset-x-0 flex justify-center">
-                                        <span className="px-3.5 py-1 rounded-md bg-[var(--brand-secondary)] text-white font-bold text-[11px]">
-                                            الأكثر طلباً
-                                        </span>
-                                    </div>
+                                    <div className="absolute -inset-1 bg-gradient-to-r from-[var(--brand-secondary)]/50 to-[var(--brand-primary)]/50 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
                                 )}
 
-                                <div className="mb-8">
+                                <Card
+                                    className={cn(
+                                        'relative p-8 rounded-2xl shadow-none transition-all duration-300',
+                                        plan.recommended
+                                            ? 'bg-gradient-to-br from-[var(--inst-teal)] to-[#064a5a] text-white border-0'
+                                            : 'bg-white border border-[var(--inst-border)] hover:shadow-xl hover:border-[var(--brand-primary)]/30',
+                                    )}
+                                >
+                                    {/* Recommended badge */}
+                                    {plan.recommended && (
+                                        <div className="absolute -top-4 inset-x-0 flex justify-center">
+                                            <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[var(--brand-secondary)] to-[#00d4ff] text-white font-black text-xs uppercase tracking-wider shadow-lg">
+                                                الأكثر شهرة
+                                            </span>
+                                        </div>
+                                    )}
+
+                                    {/* Icon */}
                                     <div
                                         className={cn(
-                                            'h-12 w-12 rounded-lg flex items-center justify-center mb-5',
+                                            'h-14 w-14 rounded-xl flex items-center justify-center mb-6 transition-all',
                                             plan.recommended
-                                                ? 'bg-white/10 text-[var(--brand-secondary)] border border-white/10'
-                                                : 'bg-[var(--inst-silver)] text-[var(--brand-primary)] border border-[var(--inst-border)]',
+                                                ? 'bg-white/10 text-[var(--brand-secondary)] border border-white/20 backdrop-blur-sm'
+                                                : 'bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] border border-[var(--brand-primary)]/20',
                                         )}
                                     >
-                                        <plan.icon className="h-6 w-6" />
+                                        <plan.icon className="h-7 w-7" />
                                     </div>
-                                    <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
-                                    <p
-                                        className={cn(
-                                            'text-[13px] leading-relaxed',
-                                            plan.recommended ? 'text-white/60' : 'text-[var(--inst-muted)]',
-                                        )}
-                                    >
-                                        {plan.desc}
-                                    </p>
-                                </div>
 
-                                <div className="mb-8 flex items-end gap-2">
-                                    <span className="text-5xl font-bold tracking-tight leading-none">{plan.price}</span>
-                                    <span
-                                        className={cn(
-                                            'mb-1 text-sm font-bold',
-                                            plan.recommended ? 'text-[var(--brand-secondary)]' : 'text-[var(--brand-primary)]',
-                                        )}
-                                    >
-                                        {currencyLabel}
-                                    </span>
-                                </div>
-                                <p
-                                    className={cn(
-                                        'text-[11px] font-semibold mb-8 -mt-6',
-                                        plan.recommended ? 'text-white/45' : 'text-[var(--inst-muted)]',
-                                    )}
-                                >
-                                    {formatPrice(plan.price, currency)}
-                                </p>
+                                    {/* Title and Description */}
+                                    <div className="mb-8">
+                                        <h3 className={cn('text-2xl font-black mb-3', plan.recommended ? 'text-white' : 'text-[var(--inst-text)]')}>
+                                            {plan.name}
+                                        </h3>
+                                        <p
+                                            className={cn(
+                                                'text-sm leading-relaxed',
+                                                plan.recommended ? 'text-white/70' : 'text-[var(--inst-muted)]',
+                                            )}
+                                        >
+                                            {plan.desc}
+                                        </p>
+                                    </div>
 
-                                <ul className="space-y-3 mb-8">
-                                    {plan.features.map((feat) => (
-                                        <li key={feat} className="flex items-center gap-3 text-[13px] font-medium">
-                                            <Check
+                                    {/* Price */}
+                                    <div className="mb-8 pb-8 border-b" style={{
+                                        borderColor: plan.recommended ? 'rgba(255,255,255,0.1)' : 'var(--inst-border)'
+                                    }}>
+                                        <div className="flex items-baseline gap-2">
+                                            <span className="text-5xl font-black tracking-tight leading-none">{plan.price}</span>
+                                            <span
                                                 className={cn(
-                                                    'h-4 w-4 shrink-0',
+                                                    'text-lg font-bold',
                                                     plan.recommended ? 'text-[var(--brand-secondary)]' : 'text-[var(--brand-primary)]',
                                                 )}
-                                            />
-                                            <span className={plan.recommended ? 'text-white/80' : 'text-[var(--inst-text)]'}>
-                                                {feat}
+                                            >
+                                                {currencyLabel}
                                             </span>
-                                        </li>
-                                    ))}
-                                </ul>
+                                        </div>
+                                        <p
+                                            className={cn(
+                                                'text-xs font-semibold mt-2',
+                                                plan.recommended ? 'text-white/50' : 'text-[var(--inst-muted)]',
+                                            )}
+                                        >
+                                            {formatPrice(plan.price, currency)}
+                                        </p>
+                                    </div>
 
-                                <Button
-                                    asChild
-                                    className={cn(
-                                        'w-full h-12 rounded-lg font-bold shadow-none',
-                                        plan.recommended ? 'sf-cta-accent' : 'sf-cta',
-                                    )}
-                                >
-                                    <Link to="/book">احجز هذه الباقة</Link>
-                                </Button>
-                            </Card>
+                                    {/* Features List */}
+                                    <ul className="space-y-4 mb-8">
+                                        {plan.features.map((feat) => (
+                                            <li key={feat} className="flex items-start gap-3">
+                                                <Check
+                                                    className={cn(
+                                                        'h-5 w-5 shrink-0 mt-0.5',
+                                                        plan.recommended ? 'text-[var(--brand-secondary)]' : 'text-[var(--brand-secondary)]',
+                                                    )}
+                                                />
+                                                <span className={cn(
+                                                    'text-sm font-medium leading-relaxed',
+                                                    plan.recommended ? 'text-white/90' : 'text-[var(--inst-text)]'
+                                                )}>
+                                                    {feat}
+                                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    {/* CTA Button */}
+                                    <Button
+                                        asChild
+                                        className={cn(
+                                            'w-full h-12 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all text-base',
+                                            plan.recommended
+                                                ? 'sf-cta-accent bg-gradient-to-r from-[var(--brand-secondary)] to-[#00d4ff]'
+                                                : 'sf-cta bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-dark)]',
+                                        )}
+                                    >
+                                        <Link to="/book">احجز الآن</Link>
+                                    </Button>
+                                </Card>
+                            </div>
                         ))}
                     </div>
                 )}
+
+                {/* Info section below */}
+                <div className="mt-16 grid md:grid-cols-3 gap-6">
+                    {[
+                        { title: 'سهولة الحجز', desc: 'احجز عبر الموقع في ثوان معدودة' },
+                        { title: 'دفع آمن', desc: 'جميع طرق الدفع محمية وموثوقة' },
+                        { title: 'ضمان الجودة', desc: 'رضا العميل هو أولويتنا الأولى' },
+                    ].map((item) => (
+                        <div key={item.title} className="p-6 rounded-xl bg-[var(--inst-silver)] border border-[var(--inst-border)] hover:shadow-md transition-all text-center">
+                            <h4 className="font-black text-[var(--inst-text)] mb-2">{item.title}</h4>
+                            <p className="text-sm text-[var(--inst-muted)]">{item.desc}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
         </section>
     );
