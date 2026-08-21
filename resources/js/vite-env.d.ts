@@ -22,6 +22,7 @@ export interface TammerAppConfig {
     csrfToken: string;
     isLandlord: boolean;
     platformDomain?: string;
+    centralDomains?: string[];
     tenancyMode?: 'subdirectory' | 'subdomain';
     subdirectoryEnabled?: boolean;
     reservedPaths?: string[];

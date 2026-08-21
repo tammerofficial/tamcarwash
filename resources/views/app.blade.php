@@ -21,7 +21,10 @@
 
     if (! $isLandlord) {
         try {
-            if (str_ends_with($host, ".{$platformDomain}")) {
+            if (
+                ! in_array($host, $centralDomains, true)
+                && str_ends_with($host, ".{$platformDomain}")
+            ) {
                 $subdomain = str_replace(".{$platformDomain}", '', $host);
 
                 if (filled($subdomain) && ! in_array($subdomain, ['www', 'api', 'admin', 'landlord', 'platform'], true)) {
@@ -106,6 +109,7 @@
                 tenancyMode: @json($tenancyMode),
                 subdirectoryEnabled: @json(config('tenancy.subdirectory_enabled', false)),
                 reservedPaths: @json(config('tenancy.reserved_paths', [])),
+                centralDomains: @json($centralDomains),
                 subdirectorySlug: @json($subdirectorySlug),
                 allowQuickLogin: @json(config('tenancy.allow_quick_login')),
                 platformDomain: @json(config('tenancy.platform_domain')),

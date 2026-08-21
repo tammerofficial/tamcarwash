@@ -9,6 +9,8 @@ const DEFAULT_RESERVED_PATHS = [
     'landlord',
     'build',
     'storage',
+    'about',
+    'why-us',
     'dashboard',
     'settings',
     'appearance',
@@ -77,9 +79,28 @@ export function isLandlordAdminContext(): boolean {
     return config.isLandlord && resolveTenantSlug() === null;
 }
 
+/** Host serves platform marketing / landlord UI (not a tenant subdomain). */
+export function isCentralDomain(host = window.location.hostname): boolean {
+    const config = readConfig();
+    const centralDomains = config.centralDomains ?? [];
+
+    if (centralDomains.includes(host)) {
+        return true;
+    }
+
+    const platformDomain = config.platformDomain;
+
+    return !!platformDomain && host === platformDomain;
+}
+
 export function detectTenantSlugFromSubdomain(): string | null {
     const config = readConfig();
     const host = window.location.hostname;
+
+    if (isCentralDomain(host)) {
+        return null;
+    }
+
     const platformDomain = config.platformDomain ?? 'tamcarwash.test';
 
     if (!host.endsWith(`.${platformDomain}`)) {
@@ -117,6 +138,19 @@ export function detectTenantSlugFromPathname(pathname = window.location.pathname
 
 export function resolveTenantSlug(): string | null {
     const config = readConfig();
+
+    // Central domain (e.g. tamcarwash.on-forge.com/): only resolve tenant from URL path,
+    // never from subdomain heuristics or injected tenant config on platform root `/`.
+    if (isCentralDomain()) {
+        if (!config.subdirectoryEnabled) {
+            return null;
+        }
+
+        return (
+            (config.subdirectorySlug ? config.subdirectorySlug.toLowerCase() : null) ??
+            detectTenantSlugFromPathname()
+        );
+    }
 
     return (
         detectTenantSlugFromSubdomain() ??
