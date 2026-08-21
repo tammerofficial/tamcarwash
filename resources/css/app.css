@@ -88,6 +88,7 @@
     --brand-primary: #0b81b7;
     --brand-secondary: #0b9dd3;
     --brand-primary-dark: #085f87;
+    --brand-icon-dark: #064a6b;
 }
 
 .dark {
@@ -362,5 +363,67 @@
 
     .bg-aquatic-glow-secondary {
         background-color: color-mix(in srgb, var(--brand-secondary) 15%, transparent);
+    }
+
+    .text-icon-dark {
+        color: var(--brand-icon-dark);
+    }
+
+    .text-brand-icon-dark {
+        color: var(--brand-icon-dark);
+    }
+
+    .bg-brand-icon-dark {
+        background-color: var(--brand-icon-dark);
+    }
+
+    .marketing-icon-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1rem;
+        border: 1px solid color-mix(in srgb, var(--brand-primary) 10%, transparent);
+        background-color: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+        color: var(--brand-icon-dark);
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+
+    .marketing-icon-box-sm {
+        display: flex;
+        width: 3rem;
+        height: 3rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1rem;
+        border: 1px solid color-mix(in srgb, var(--brand-primary) 10%, transparent);
+        background-color: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+        color: var(--brand-icon-dark);
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+
+    .marketing-icon-box-md {
+        display: flex;
+        width: 3.5rem;
+        height: 3.5rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1rem;
+        border: 1px solid color-mix(in srgb, var(--brand-primary) 10%, transparent);
+        background-color: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+        color: var(--brand-icon-dark);
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+
+    .marketing-icon-box-lg {
+        display: flex;
+        width: 4rem;
+        height: 4rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1.5rem;
+        border: 1px solid color-mix(in srgb, var(--brand-primary) 10%, transparent);
+        background-color: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+        color: var(--brand-icon-dark);
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     }
 }

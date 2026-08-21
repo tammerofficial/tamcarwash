@@ -47,32 +47,32 @@ export function PlatformFooter() {
                                 </div>
                                 <div className="flex flex-col">
                                     <div className="flex items-center gap-3">
-                                        <span className="text-4xl font-black tracking-tighter text-brand-primary uppercase">{platformName}</span>
-                                        <span className="rounded-lg bg-brand-primary/10 px-3 py-1 text-[11px] font-black text-brand-primary border border-brand-primary/20">
+                                        <span className="text-2xl font-black tracking-tighter text-brand-primary uppercase sm:text-3xl">{platformName}</span>
+                                        <span className="rounded-lg bg-brand-primary/10 px-3 py-1 text-xs font-bold text-brand-primary border border-brand-primary/20">
                                             سلطنة عُمان
                                         </span>
                                     </div>
-                                    <span className="mt-1 text-[12px] font-black uppercase tracking-[0.3em] text-brand-secondary">
+                                    <span className="mt-1 text-xs font-bold uppercase tracking-[0.3em] text-brand-secondary">
                                         {brandTagline}
                                     </span>
                                 </div>
                             </Link>
 
-                            <p className="max-w-2xl text-lg leading-relaxed text-brand-primary/70 font-medium">
+                            <p className="max-w-2xl text-base leading-relaxed text-brand-primary/70 font-medium">
                                 المنصة السحابية المعتمدة لإدارة مغاسل السيارات في سلطنة عُمان. صُممت لمساعدة أصحاب المغاسل على تنظيم الحجوزات، تحسين تدفق الطوابير، وتوليد فواتير ضريبية فورية متوافقة 100% مع جهاز الضرائب العُماني.
                             </p>
 
                             <div className="flex flex-wrap items-center gap-3 pt-2">
-                                <div className="inline-flex items-center gap-2 rounded-full border border-brand-secondary/20 bg-brand-primary/5 px-4 py-2 text-[12px] font-black text-brand-primary shadow-sm">
-                                    <Smartphone className="size-4 text-brand-secondary" />
+                                <div className="inline-flex items-center gap-2 rounded-full border border-brand-secondary/20 bg-brand-primary/5 px-4 py-2 text-xs font-bold text-brand-primary shadow-sm">
+                                    <Smartphone className="size-4 text-icon-dark" />
                                     تطبيق جوال وويب متزامن
                                 </div>
-                                <div className="inline-flex items-center gap-2 rounded-full border border-brand-secondary/20 bg-brand-primary/5 px-4 py-2 text-[12px] font-black text-brand-primary shadow-sm">
-                                    <Globe className="size-4 text-brand-secondary" />
+                                <div className="inline-flex items-center gap-2 rounded-full border border-brand-secondary/20 bg-brand-primary/5 px-4 py-2 text-xs font-bold text-brand-primary shadow-sm">
+                                    <Globe className="size-4 text-icon-dark" />
                                     إدارة مركزية متعددة الفروع
                                 </div>
-                                <div className="inline-flex items-center gap-2 rounded-full border border-brand-secondary/30 bg-brand-secondary/10 px-4 py-2 text-[12px] font-black text-brand-primary shadow-sm">
-                                    <FileCheck2 className="size-4 text-brand-primary" />
+                                <div className="inline-flex items-center gap-2 rounded-full border border-brand-secondary/30 bg-brand-secondary/10 px-4 py-2 text-xs font-bold text-brand-primary shadow-sm">
+                                    <FileCheck2 className="size-4 text-icon-dark" />
                                     جاهز لض.ق.م 5%
                                 </div>
                             </div>
@@ -82,13 +82,13 @@ export function PlatformFooter() {
                         <div className="rounded-[2.5rem] border border-brand-primary/15 bg-gradient-to-br from-white via-brand-primary/5 to-brand-secondary/10 p-8 sm:p-10 shadow-xl">
                             <div className="flex items-center justify-between border-b border-brand-primary/15 pb-8">
                                 <div>
-                                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-secondary">
+                                    <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-secondary">
                                         ابدأ الآن
                                     </span>
-                                    <h3 className="mt-2 text-3xl font-black text-brand-primary">ابدأ رحلتك مجاناً للأبد</h3>
+                                    <h3 className="mt-2 text-lg font-black text-brand-primary sm:text-xl">ابدأ رحلتك مجاناً للأبد</h3>
                                 </div>
-                                <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-xl shadow-brand-primary/20">
-                                    <Sparkles className="size-8 text-white" />
+                                <div className="marketing-icon-box-md">
+                                    <Sparkles className="size-8" />
                                 </div>
                             </div>
 
@@ -99,7 +99,7 @@ export function PlatformFooter() {
                             <div className="mt-12 flex flex-col gap-4 sm:flex-row">
                                 <Button
                                     size="lg"
-                                    className="h-16 flex-1 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary font-black text-white shadow-xl shadow-brand-primary/20 hover:scale-[1.03] transition-all text-lg"
+                                    className="h-16 flex-1 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary text-base font-black text-white shadow-xl shadow-brand-primary/20 hover:scale-[1.03] transition-all"
                                     asChild
                                 >
                                     <Link to="/register">
@@ -110,7 +110,7 @@ export function PlatformFooter() {
                                 <Button
                                     size="lg"
                                     variant="outline"
-                                    className="h-16 rounded-2xl border-brand-secondary/25 bg-white text-lg font-black text-brand-primary hover:bg-brand-primary/5 transition-all"
+                                    className="h-16 rounded-2xl border-brand-secondary/25 bg-white text-base font-bold text-brand-primary hover:bg-brand-primary/5 transition-all"
                                     asChild
                                 >
                                     <Link to="/pricing">تفاصيل الباقة</Link>
@@ -125,7 +125,9 @@ export function PlatformFooter() {
                     {/* Column 1: Product */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 text-brand-primary">
-                            <LayoutDashboard className="size-4" />
+                            <div className="marketing-icon-box-sm !size-8">
+                                <LayoutDashboard className="size-4" />
+                            </div>
                             <h4 className="text-sm font-extrabold uppercase tracking-wider text-brand-primary">
                                 {t('marketing.footer.product')}
                             </h4>
@@ -157,26 +159,28 @@ export function PlatformFooter() {
                     {/* Column 2: System Capabilities */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 text-brand-primary">
-                            <Clock className="size-4" />
+                            <div className="marketing-icon-box-sm !size-8">
+                                <Clock className="size-4" />
+                            </div>
                             <h4 className="text-sm font-extrabold uppercase tracking-wider text-brand-primary">
                                 الحلول التشغيلية
                             </h4>
                         </div>
                         <ul className="space-y-2.5 text-sm text-brand-primary/60">
                             <li className="flex items-center gap-2">
-                                <CheckCircle2 className="size-3.5 text-brand-secondary" />
+                                <CheckCircle2 className="size-3.5 text-icon-dark" />
                                 إدارة الحجوزات والمواعيد
                             </li>
                             <li className="flex items-center gap-2">
-                                <CheckCircle2 className="size-3.5 text-brand-secondary" />
+                                <CheckCircle2 className="size-3.5 text-icon-dark" />
                                 شاشة طابور ذكية للعملاء
                             </li>
                             <li className="flex items-center gap-2">
-                                <CheckCircle2 className="size-3.5 text-brand-secondary" />
+                                <CheckCircle2 className="size-3.5 text-icon-dark" />
                                 فواتير ض.ق.م 5% معتمدة
                             </li>
                             <li className="flex items-center gap-2">
-                                <CheckCircle2 className="size-3.5 text-brand-secondary" />
+                                <CheckCircle2 className="size-3.5 text-icon-dark" />
                                 إدارة الكاشير ومهام العمال
                             </li>
                         </ul>
@@ -185,7 +189,9 @@ export function PlatformFooter() {
                     {/* Column 3: Customer Portal */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 text-brand-primary">
-                            <Shield className="size-4" />
+                            <div className="marketing-icon-box-sm !size-8">
+                                <Shield className="size-4" />
+                            </div>
                             <h4 className="text-sm font-extrabold uppercase tracking-wider text-brand-primary">
                                 بوابات الدخول
                             </h4>
@@ -212,7 +218,9 @@ export function PlatformFooter() {
                         {/* Column 4: Compliance & Trust */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 text-brand-primary">
-                            <ShieldCheck className="size-4" />
+                            <div className="marketing-icon-box-sm !size-8">
+                                <ShieldCheck className="size-4" />
+                            </div>
                             <h4 className="text-sm font-extrabold uppercase tracking-wider text-brand-primary">
                                 الامتثال والأمان
                             </h4>
@@ -221,8 +229,8 @@ export function PlatformFooter() {
                             <p className="text-xs font-semibold leading-relaxed text-brand-primary/70">
                                 {t('marketing.footer.vatNote')}
                             </p>
-                            <div className="mt-3 flex items-center gap-2 text-[11px] font-bold text-brand-primary">
-                                <CheckCircle2 className="size-3.5" />
+                            <div className="mt-3 flex items-center gap-2 text-xs font-bold text-brand-primary">
+                                <CheckCircle2 className="size-3.5 text-icon-dark" />
                                 بنية سحابية مشفرة ومحمية
                             </div>
                         </div>

@@ -4,14 +4,19 @@ import {
     BadgePercent,
     Building2,
     CalendarDays,
+    Car,
     CheckCircle2,
     Clock3,
     HelpCircle,
+    Quote,
     Receipt,
+    Rocket,
     ShieldCheck,
     Sparkles,
     Star,
     TrendingUp,
+    UserPlus,
+    Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -43,12 +48,14 @@ const trustKeys = ['vat', 'activation', 'omann', 'security'] as const;
 
 const trustIcons = {
     vat: BadgePercent,
-    activation: Sparkles,
+    activation: Zap,
     omann: ShieldCheck,
     security: CheckCircle2,
 } as const;
 
 const stepKeys = ['step1', 'step2', 'step3'] as const;
+
+const stepIcons = [UserPlus, Car, Rocket] as const;
 
 const testimonialKeys = ['t1', 't2', 't3'] as const;
 
@@ -78,16 +85,16 @@ export function MarketingHomePage() {
                 <section className="px-4 pb-20 sm:px-6 lg:px-8 lg:pb-32">
                     <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-2 lg:items-center">
                         <div className="space-y-10 text-right">
-                            <span className="inline-flex items-center gap-2 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-brand-primary backdrop-blur-md">
-                                <Sparkles className="size-3.5" />
+                            <span className="inline-flex items-center gap-2 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-4 py-2 text-xs font-bold uppercase tracking-widest text-brand-primary backdrop-blur-md">
+                                <Sparkles className="size-3.5 text-icon-dark" />
                                 {t('marketing.hero.badge')}
                             </span>
 
                             <div className="space-y-6">
-                                <h1 className="text-5xl font-black leading-[1.1] tracking-tight text-aquatic-gradient sm:text-6xl lg:text-7xl">
+                                <h1 className="text-4xl font-black leading-[1.1] tracking-tight text-aquatic-gradient sm:text-5xl lg:text-6xl">
                                     {t('marketing.hero.title')}
                                 </h1>
-                                <p className="max-w-xl text-lg leading-relaxed text-brand-primary/70 sm:text-xl">
+                                <p className="max-w-xl text-base leading-relaxed text-brand-primary/70">
                                     {t('marketing.hero.subtitle')}
                                 </p>
                             </div>
@@ -137,8 +144,8 @@ export function MarketingHomePage() {
                                             stat.highlight ? "border-brand-primary/20 bg-brand-primary/5" : "border-brand-secondary/20 bg-white/70"
                                         )}
                                     >
-                                        <p className="text-lg font-black text-brand-primary sm:text-xl">{stat.value}</p>
-                                        <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-brand-primary/60">{stat.label}</p>
+                                        <p className="text-2xl font-black text-brand-primary sm:text-3xl">{stat.value}</p>
+                                        <p className="mt-1 text-xs font-bold uppercase tracking-wider text-brand-primary/60">{stat.label}</p>
                                     </div>
                                 ))}
                             </div>
@@ -155,39 +162,42 @@ export function MarketingHomePage() {
                                             <div className="size-2.5 rounded-full bg-amber-400/40" />
                                             <div className="size-2.5 rounded-full bg-emerald-400/40" />
                                         </div>
-                                        <span className="text-xs font-black text-brand-primary/50">{platformName} OS</span>
+                                        <span className="text-xs font-bold text-brand-primary/50">{platformName} OS</span>
                                     </div>
-                                    <span className="rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-emerald-700">
+                                    <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-700">
                                         Active Now
                                     </span>
                                 </div>
                                 <div className="space-y-6 p-8">
                                     <div className="rounded-3xl border border-brand-primary/15 bg-brand-primary/5 p-6 shadow-sm">
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-brand-primary/60">عمليات اليوم</p>
-                                        <p className="mt-2 text-4xl font-black text-brand-primary">548 <span className="text-sm font-medium text-brand-primary/60">مركبة</span></p>
+                                        <div className="flex items-center gap-3">
+                                            <div className="marketing-icon-box-sm">
+                                                <TrendingUp className="size-5" />
+                                            </div>
+                                            <p className="text-xs font-bold uppercase tracking-widest text-brand-primary/60">عمليات اليوم</p>
+                                        </div>
+                                        <p className="mt-2 text-2xl font-black text-brand-primary sm:text-3xl">548 <span className="text-sm font-medium text-brand-primary/60">مركبة</span></p>
                                     </div>
                                     <div className="grid grid-cols-3 gap-4">
                                         {[
-                                            { label: 'انتظار', value: '6', color: 'amber' },
-                                            { label: 'غسيل', value: '4', color: 'sky' },
-                                            { label: 'مكتمل', value: '42', color: 'emerald' },
+                                            { label: 'انتظار', value: '6', icon: Clock3 },
+                                            { label: 'غسيل', value: '4', icon: Car },
+                                            { label: 'مكتمل', value: '42', icon: CheckCircle2 },
                                         ].map((item) => (
                                             <div
                                                 key={item.label}
                                                 className="rounded-2xl bg-white border border-brand-secondary/20 p-4 text-center shadow-sm"
                                             >
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-brand-primary/60">{item.label}</p>
-                                                <p className={cn(
-                                                    "text-2xl font-black mt-1",
-                                                    item.color === 'amber' && 'text-brand-secondary',
-                                                    item.color === 'sky' && 'text-brand-primary',
-                                                    item.color === 'emerald' && 'text-brand-primary',
-                                                )}>{item.value}</p>
+                                                <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-lg bg-brand-primary/10">
+                                                    <item.icon className="size-4 text-icon-dark" />
+                                                </div>
+                                                <p className="text-xs font-bold uppercase tracking-widest text-brand-primary/60">{item.label}</p>
+                                                <p className="text-2xl font-black mt-1 text-brand-primary">{item.value}</p>
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="flex items-center gap-3 rounded-2xl border border-brand-primary/20 bg-brand-primary/5 px-5 py-4 text-xs font-bold text-brand-primary shadow-sm">
-                                        <div className="flex size-8 items-center justify-center rounded-lg bg-brand-primary/10 text-brand-primary">
+                                    <div className="flex items-center gap-3 rounded-2xl border border-brand-primary/20 bg-brand-primary/5 px-5 py-4 text-sm font-bold text-brand-primary shadow-sm">
+                                        <div className="marketing-icon-box-sm !size-10">
                                             <BadgePercent className="size-4" />
                                         </div>
                                         فواتير ضريبية فورية بنسبة 5% — امتثال تام
@@ -205,11 +215,11 @@ export function MarketingHomePage() {
                             const Icon = trustIcons[key];
                             return (
                                 <div key={key} className="flex items-start gap-5 text-right">
-                                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-brand-primary/5 text-brand-primary border border-brand-primary/10 shadow-sm">
+                                    <div className="marketing-icon-box-md shrink-0">
                                         <Icon className="size-7" />
                                     </div>
                                     <div>
-                                        <h3 className="text-base font-black text-brand-primary">
+                                        <h3 className="text-lg font-black text-brand-primary sm:text-xl">
                                             {t(`marketing.trust.${key}.title`)}
                                         </h3>
                                         <p className="mt-1.5 text-sm leading-relaxed text-brand-primary/65">
@@ -226,10 +236,10 @@ export function MarketingHomePage() {
                 <section id="features" className="px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
                     <div className="mx-auto max-w-7xl">
                         <div className="mx-auto max-w-3xl text-center">
-                            <h2 className="text-4xl font-black text-brand-primary sm:text-5xl">
+                            <h2 className="text-3xl font-black text-brand-primary sm:text-4xl">
                                 {t('marketing.features.title')}
                             </h2>
-                            <p className="mt-6 text-lg text-brand-primary/70 leading-relaxed">
+                            <p className="mt-6 text-base leading-relaxed text-brand-primary/70">
                                 {t('marketing.features.subtitle')}
                             </p>
                         </div>
@@ -242,10 +252,10 @@ export function MarketingHomePage() {
                                         key={key}
                                         className="group relative overflow-hidden rounded-[2rem] border border-brand-secondary/20 bg-white/70 p-8 transition-all hover:-translate-y-2 hover:border-brand-primary/30 hover:bg-white shadow-sm hover:shadow-xl"
                                     >
-                                        <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-xl shadow-brand-primary/20 group-hover:scale-110 transition-transform">
+                                        <div className="marketing-icon-box-md group-hover:scale-110 transition-transform">
                                             <Icon className="size-7" />
                                         </div>
-                                        <h3 className="mt-8 text-xl font-black text-brand-primary">
+                                        <h3 className="mt-8 text-lg font-black text-brand-primary sm:text-xl">
                                             {t(`marketing.features.${key}.title`)}
                                         </h3>
                                         <p className="mt-3 text-base leading-relaxed text-brand-primary/70">
@@ -262,13 +272,13 @@ export function MarketingHomePage() {
                 <section className="px-4 py-24 sm:px-6 lg:px-8 relative overflow-hidden">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] bg-brand-primary/10 blur-[150px] -z-10" />
                     <div className="mx-auto max-w-5xl rounded-[3rem] border border-brand-primary/10 bg-white/80 p-12 text-center shadow-2xl backdrop-blur-xl sm:p-20">
-                        <div className="mx-auto mb-8 flex size-20 items-center justify-center rounded-3xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-2xl shadow-brand-primary/20">
+                        <div className="mx-auto mb-8 marketing-icon-box-lg">
                             <BadgePercent className="size-10" />
                         </div>
-                        <h2 className="text-4xl font-black text-brand-primary sm:text-5xl">
+                        <h2 className="text-3xl font-black text-brand-primary sm:text-4xl">
                             {t('marketing.pricing.title')}
                         </h2>
-                        <p className="mx-auto mt-6 max-w-2xl text-lg text-brand-primary/70 leading-relaxed">
+                        <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-brand-primary/70">
                             {t('marketing.pricing.subtitle')}
                         </p>
                         
@@ -276,16 +286,16 @@ export function MarketingHomePage() {
                             <span className="text-[120px] font-black leading-none bg-gradient-to-br from-brand-primary to-brand-secondary bg-clip-text text-transparent tracking-tighter sm:text-[160px]">
                                 0
                             </span>
-                            <span className="text-2xl font-black text-brand-secondary -mt-4 uppercase tracking-[0.2em]">
+                            <span className="text-xl font-black text-brand-secondary -mt-4 uppercase tracking-[0.2em] sm:text-2xl">
                                 OMR / FOREVER
                             </span>
                         </div>
 
                         <div className="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row">
-                            <Button size="lg" className="h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary px-12 text-lg font-black text-white hover:bg-brand-primary/90 hover:scale-[1.05] transition-all shadow-xl shadow-brand-primary/20" asChild>
+                            <Button size="lg" className="h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary px-12 text-base font-black text-white hover:bg-brand-primary/90 hover:scale-[1.05] transition-all shadow-xl shadow-brand-primary/20" asChild>
                                 <Link to="/register">{t('marketing.pricing.free.cta')}</Link>
                             </Button>
-                            <Button size="lg" variant="outline" className="h-16 rounded-2xl border-brand-secondary/25 bg-white px-12 text-lg font-bold text-brand-primary shadow-sm hover:bg-brand-primary/5" asChild>
+                            <Button size="lg" variant="outline" className="h-16 rounded-2xl border-brand-secondary/25 bg-white px-12 text-base font-bold text-brand-primary shadow-sm hover:bg-brand-primary/5" asChild>
                                 <a href={DEMO_STOREFRONT}>جرّب العرض التجريبي</a>
                             </Button>
                         </div>
@@ -293,7 +303,7 @@ export function MarketingHomePage() {
                         <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm font-bold text-brand-primary/65">
                             {['لا حدود للفروع', 'دعم فني متميز', 'تحديثات مجانية للأبد', 'فواتير ضريبية قانونية'].map((item) => (
                                 <span key={item} className="flex items-center gap-2">
-                                    <CheckCircle2 className="size-4 text-brand-secondary" />
+                                    <CheckCircle2 className="size-4 text-icon-dark" />
                                     {item}
                                 </span>
                             ))}
@@ -305,24 +315,32 @@ export function MarketingHomePage() {
                 <section className="bg-brand-primary/5 border-y border-brand-secondary/20 px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
                     <div className="mx-auto max-w-7xl">
                         <div className="text-center">
-                            <h2 className="text-4xl font-black text-brand-primary sm:text-5xl">{t('marketing.howItWorks.title')}</h2>
-                            <p className="mt-4 text-lg text-brand-primary/70">{t('marketing.howItWorks.subtitle')}</p>
+                            <h2 className="text-3xl font-black text-brand-primary sm:text-4xl">{t('marketing.howItWorks.title')}</h2>
+                            <p className="mt-4 text-base text-brand-primary/70">{t('marketing.howItWorks.subtitle')}</p>
                         </div>
                         <div className="mt-20 grid gap-8 md:grid-cols-3">
-                            {stepKeys.map((key, index) => (
-                                <div
-                                    key={key}
-                                    className="relative rounded-[2rem] border border-brand-secondary/20 bg-white/70 p-10 backdrop-blur-sm shadow-sm"
-                                >
-                                    <span className="absolute -top-6 right-10 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white text-xl font-black shadow-xl shadow-brand-primary/20">
-                                        0{index + 1}
-                                    </span>
-                                    <h3 className="mt-4 text-2xl font-black text-brand-primary">{t(`marketing.howItWorks.${key}.title`)}</h3>
-                                    <p className="mt-4 text-base leading-relaxed text-brand-primary/70">
-                                        {t(`marketing.howItWorks.${key}.description`)}
-                                    </p>
-                                </div>
-                            ))}
+                            {stepKeys.map((key, index) => {
+                                const StepIcon = stepIcons[index];
+                                return (
+                                    <div
+                                        key={key}
+                                        className="relative rounded-[2rem] border border-brand-secondary/20 bg-white/70 p-10 backdrop-blur-sm shadow-sm"
+                                    >
+                                        <div className="absolute -top-6 right-10 flex items-center gap-3">
+                                            <span className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white text-sm font-black shadow-xl shadow-brand-primary/20">
+                                                0{index + 1}
+                                            </span>
+                                            <div className="marketing-icon-box-sm">
+                                                <StepIcon className="size-5" />
+                                            </div>
+                                        </div>
+                                        <h3 className="mt-6 text-lg font-black text-brand-primary sm:text-xl">{t(`marketing.howItWorks.${key}.title`)}</h3>
+                                        <p className="mt-4 text-base leading-relaxed text-brand-primary/70">
+                                            {t(`marketing.howItWorks.${key}.description`)}
+                                        </p>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </section>
@@ -331,31 +349,36 @@ export function MarketingHomePage() {
                 <section className="px-4 py-24 sm:px-6 lg:px-8">
                     <div className="mx-auto max-w-7xl">
                         <div className="text-center">
-                            <h2 className="text-4xl font-black text-brand-primary sm:text-5xl">
+                            <h2 className="text-3xl font-black text-brand-primary sm:text-4xl">
                                 {t('marketing.testimonials.title', brand)}
                             </h2>
-                            <p className="mt-4 text-lg text-brand-primary/70">{t('marketing.testimonials.subtitle')}</p>
+                            <p className="mt-4 text-base text-brand-primary/70">{t('marketing.testimonials.subtitle')}</p>
                         </div>
                         <div className="mt-20 grid gap-8 md:grid-cols-3">
                             {testimonialKeys.map((key) => (
                                 <div key={key} className="rounded-[2rem] border border-brand-secondary/20 bg-white/70 p-8 shadow-sm hover:shadow-lg transition-all">
-                                    <div className="flex gap-1.5 text-brand-secondary">
-                                        {Array.from({ length: 5 }).map((_, i) => (
-                                            <Star key={i} className="size-4 fill-brand-secondary" />
-                                        ))}
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex gap-1.5 text-brand-secondary">
+                                            {Array.from({ length: 5 }).map((_, i) => (
+                                                <Star key={i} className="size-4 fill-brand-secondary" />
+                                            ))}
+                                        </div>
+                                        <div className="marketing-icon-box-sm !size-10">
+                                            <Quote className="size-4" />
+                                        </div>
                                     </div>
-                                    <p className="mt-6 text-lg leading-relaxed text-brand-primary/75 italic">
+                                    <p className="mt-6 text-base leading-relaxed text-brand-primary/75 italic">
                                         &ldquo;{t(`marketing.testimonials.${key}.quote`)}&rdquo;
                                     </p>
                                     <div className="mt-8 flex items-center gap-4 border-t border-brand-primary/15 pt-6">
-                                        <div className="size-12 rounded-2xl bg-brand-primary/5 flex items-center justify-center text-brand-primary text-xl font-black border border-brand-primary/10">
+                                        <div className="size-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-icon-dark text-lg font-black border border-brand-primary/10">
                                             {t(`marketing.testimonials.${key}.author`).charAt(0)}
                                         </div>
                                         <div>
                                             <p className="text-base font-black text-brand-primary">
                                                 {t(`marketing.testimonials.${key}.author`)}
                                             </p>
-                                            <p className="text-sm font-bold text-brand-primary">
+                                            <p className="text-sm font-bold text-brand-primary/70">
                                                 {t(`marketing.testimonials.${key}.business`)}
                                             </p>
                                         </div>
@@ -370,10 +393,10 @@ export function MarketingHomePage() {
                 <section className="px-4 py-24 sm:px-6 lg:px-8 border-t border-brand-secondary/20">
                     <div className="mx-auto max-w-3xl">
                         <div className="text-center">
-                            <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl bg-brand-primary/5 text-brand-primary border border-brand-primary/10">
+                            <div className="mx-auto mb-6 marketing-icon-box-md">
                                 <HelpCircle className="size-8" />
                             </div>
-                            <h2 className="text-4xl font-black text-brand-primary">{t('marketing.faq.title')}</h2>
+                            <h2 className="text-3xl font-black text-brand-primary sm:text-4xl">{t('marketing.faq.title')}</h2>
                         </div>
                         <Accordion type="single" collapsible className="mt-16 space-y-4">
                             {faqKeys.map((key) => (
@@ -382,7 +405,7 @@ export function MarketingHomePage() {
                                     value={key}
                                     className="overflow-hidden rounded-[1.5rem] border border-brand-secondary/20 bg-white px-6 transition-all hover:bg-brand-primary/5 shadow-sm"
                                 >
-                                    <AccordionTrigger className="py-6 text-right text-lg font-black text-brand-primary hover:no-underline hover:text-brand-secondary">
+                                    <AccordionTrigger className="py-6 text-right text-base font-black text-brand-primary hover:no-underline hover:text-brand-secondary">
                                         {t(`marketing.faq.${key}.question`)}
                                     </AccordionTrigger>
                                     <AccordionContent className="pb-6 text-right text-base leading-relaxed text-brand-primary/70">
@@ -397,19 +420,18 @@ export function MarketingHomePage() {
                 {/* Final CTA */}
                 <section className="px-4 pb-32 pt-24 sm:px-6 lg:px-8">
                     <div className="mx-auto max-w-5xl overflow-hidden rounded-[3.5rem] border border-brand-primary/10 bg-white/80 relative p-12 text-center shadow-3xl backdrop-blur-xl sm:p-20">
-                        {/* Decorative background for CTA */}
                         <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-white -z-10" />
                         <div className="absolute -top-24 -right-24 size-[300px] rounded-full bg-brand-primary/10 blur-3xl -z-10" />
                         
                         <div className="relative z-10">
-                            <h2 className="text-4xl font-black text-aquatic-gradient sm:text-6xl">{t('marketing.cta.title')}</h2>
-                            <p className="mx-auto mt-6 max-w-xl text-xl text-brand-primary/70 font-medium leading-relaxed">
+                            <h2 className="text-3xl font-black text-aquatic-gradient sm:text-4xl">{t('marketing.cta.title')}</h2>
+                            <p className="mx-auto mt-6 max-w-xl text-base text-brand-primary/70 font-medium leading-relaxed">
                                 {t('marketing.cta.subtitle', brand)}
                             </p>
                             <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row">
                                 <Button
                                     size="lg"
-                                    className="h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary px-12 text-lg font-black text-white hover:bg-brand-primary/90 hover:scale-[1.05] transition-all shadow-2xl shadow-brand-primary/20"
+                                    className="h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary px-12 text-base font-black text-white hover:bg-brand-primary/90 hover:scale-[1.05] transition-all shadow-2xl shadow-brand-primary/20"
                                     asChild
                                 >
                                     <Link to="/register">
@@ -420,16 +442,16 @@ export function MarketingHomePage() {
                                 <Button
                                     size="lg"
                                     variant="outline"
-                                    className="h-16 rounded-2xl border-brand-secondary/25 bg-white px-12 text-lg font-bold text-brand-primary shadow-sm hover:bg-brand-primary/5 transition-all"
+                                    className="h-16 rounded-2xl border-brand-secondary/25 bg-white px-12 text-base font-bold text-brand-primary shadow-sm hover:bg-brand-primary/5 transition-all"
                                     asChild
                                 >
                                     <a href={DEMO_STOREFRONT}>جرّب العرض التجريبي</a>
                                 </Button>
                             </div>
-                            <div className="mt-12 flex flex-wrap items-center justify-center gap-4 text-xs font-black uppercase tracking-widest text-brand-primary/50">
+                            <div className="mt-12 flex flex-wrap items-center justify-center gap-4 text-xs font-bold uppercase tracking-widest text-brand-primary/50">
                                 {['امتثال ض.ق.م 5%', 'تفعيل فوري', 'دعم محلي', 'فروع لا محدودة'].map((item) => (
                                     <span key={item} className="inline-flex items-center gap-2 rounded-full bg-brand-primary/5 border border-brand-secondary/20 px-4 py-2 text-brand-primary/70">
-                                        <CheckCircle2 className="size-3.5 text-emerald-500" />
+                                        <CheckCircle2 className="size-3.5 text-icon-dark" />
                                         {item}
                                     </span>
                                 ))}
@@ -443,4 +465,3 @@ export function MarketingHomePage() {
         </div>
     );
 }
-

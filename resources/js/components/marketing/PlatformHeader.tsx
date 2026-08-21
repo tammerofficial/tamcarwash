@@ -73,21 +73,21 @@ export function PlatformHeader() {
     return (
         <header className="fixed left-0 right-0 top-0 z-50 transition-all duration-300" dir="rtl">
             {/* Top Bar / Announcement */}
-            <div className="border-b border-brand-secondary/20 bg-brand-primary/5 text-[11px] font-black text-brand-primary/80">
+            <div className="border-b border-brand-secondary/20 bg-brand-primary/5 text-xs font-bold text-brand-primary/80">
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6 lg:px-8">
                     <div className="flex items-center gap-3">
                         <span className="flex size-2 rounded-full bg-brand-primary ring-4 ring-brand-primary/20 animate-pulse" />
-                        <span className="font-black text-brand-primary uppercase tracking-widest text-[10px]">
+                        <span className="font-bold text-brand-primary uppercase tracking-widest text-xs">
                             نظام إدارة مغاسل السيارات في عُمان
                         </span>
                     </div>
-                    <div className="flex items-center gap-3 text-[10px]">
+                    <div className="flex items-center gap-3 text-xs">
                         <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-secondary/20 bg-white/80 px-3 py-1 text-brand-primary/70 shadow-sm">
-                            <CheckCircle2 className="size-3 text-brand-primary" />
+                            <CheckCircle2 className="size-3.5 text-icon-dark" />
                             امتثال ضريبي كامل
                         </span>
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-3 py-1 font-black text-brand-primary shadow-sm">
-                            <Shield className="size-3 text-brand-primary" />
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-primary/20 bg-brand-primary/5 px-3 py-1 font-bold text-brand-primary shadow-sm">
+                            <Shield className="size-3.5 text-icon-dark" />
                             أمان وموثوقية
                         </span>
                     </div>
@@ -114,14 +114,14 @@ export function PlatformHeader() {
                         </div>
                         <div className="flex flex-col text-right">
                             <div className="flex items-center gap-2">
-                                <span className="text-xl font-black leading-none tracking-tight text-brand-primary uppercase sm:text-2xl">
+                                <span className="text-lg font-black leading-none tracking-tight text-brand-primary uppercase sm:text-xl">
                                     {platformName}
                                 </span>
-                                <span className="rounded-md bg-brand-primary/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-brand-primary border border-brand-primary/20">
+                                <span className="rounded-md bg-brand-primary/10 px-2 py-0.5 text-xs font-bold uppercase tracking-widest text-brand-primary border border-brand-primary/20">
                                     عُمان
                                 </span>
                             </div>
-                            <span className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-brand-primary/60 group-hover:text-brand-primary transition-colors">
+                            <span className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-brand-primary/60 group-hover:text-brand-primary transition-colors">
                                 {brandTagline}
                             </span>
                         </div>
@@ -135,7 +135,7 @@ export function PlatformHeader() {
                                 type="button"
                                 onClick={() => handleNavClick(item)}
                                 className={cn(
-                                    'relative rounded-xl px-6 py-2 text-[12px] font-black transition-all duration-300 uppercase tracking-wide',
+                                    'relative rounded-xl px-6 py-2 text-sm font-semibold transition-all duration-300 uppercase tracking-wide',
                                     isNavItemActive(item)
                                         ? 'bg-white text-brand-primary shadow-sm border border-brand-secondary/20'
                                         : 'text-brand-primary/80 hover:text-brand-primary hover:bg-brand-primary/5',
@@ -150,13 +150,13 @@ export function PlatformHeader() {
                     <div className="hidden items-center gap-4 md:flex">
                         <Button
                             variant="ghost"
-                            className="rounded-xl px-6 font-black text-brand-primary/80 transition-all hover:bg-brand-primary/5 hover:text-brand-primary text-sm"
+                            className="rounded-xl px-6 text-sm font-semibold text-brand-primary/80 transition-all hover:bg-brand-primary/5 hover:text-brand-primary"
                             asChild
                         >
                             <Link to="/login">{t('marketing.nav.login')}</Link>
                         </Button>
                         <Button
-                            className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-brand-primary to-brand-secondary px-7 py-6 font-black text-white shadow-xl shadow-brand-primary/20 transition-all duration-500 hover:scale-[1.05] hover:shadow-brand-primary/40 text-sm"
+                            className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-brand-primary to-brand-secondary px-7 py-6 text-sm font-semibold text-white shadow-xl shadow-brand-primary/20 transition-all duration-500 hover:scale-[1.05] hover:shadow-brand-primary/40"
                             asChild
                         >
                             <Link to="/register">
@@ -202,14 +202,14 @@ export function PlatformHeader() {
                                 type="button"
                                 onClick={() => handleNavClick(item)}
                                 className={cn(
-                                    'flex items-center justify-between rounded-xl px-4 py-3 text-right text-base font-bold transition-colors',
+                                    'flex items-center justify-between rounded-xl px-4 py-3 text-right text-sm font-semibold transition-colors',
                                     isNavItemActive(item)
                                         ? 'bg-brand-primary/10 text-brand-primary'
                                         : 'text-brand-primary/80 hover:bg-brand-primary/5 hover:text-brand-primary',
                                 )}
                             >
                                 <span>{t(`marketing.nav.${item.name}`)}</span>
-                                {isNavItemActive(item) && <CheckCircle2 className="size-4 text-brand-primary" />}
+                                {isNavItemActive(item) && <CheckCircle2 className="size-4 text-icon-dark" />}
                             </button>
                         ))}
                     </div>
