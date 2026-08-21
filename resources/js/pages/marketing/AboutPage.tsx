@@ -30,7 +30,7 @@ export function AboutPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(92,178,255,0.12),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(10,75,120,0.08),transparent_28%),linear-gradient(180deg,#f8fbfe_0%,#eef5fb_46%,#f8fbfe_100%)] font-sans text-slate-900" dir="rtl">
+        <div className="min-h-screen marketing-surface font-sans text-brand-primary/70" dir="rtl">
             <PlatformHeader />
 
             <main className="relative overflow-hidden pt-32 lg:pt-40">
@@ -49,10 +49,10 @@ export function AboutPage() {
                             </div>
 
                             <div className="space-y-5">
-                                <h1 className="text-4xl font-black tracking-tight text-slate-950 md:text-5xl lg:text-6xl">
+                                <h1 className="text-4xl font-black tracking-tight text-aquatic-gradient md:text-5xl lg:text-6xl">
                                     {t('marketing.about.title')}
                                 </h1>
-                                <p className="max-w-3xl text-lg leading-[1.95] text-slate-600 md:text-2xl">
+                                <p className="max-w-3xl text-lg leading-[1.95] text-brand-primary/70 md:text-2xl">
                                     {t('marketing.about.subtitle')}
                                 </p>
                             </div>
@@ -63,12 +63,12 @@ export function AboutPage() {
                                     'امتثال ضريبي جاهز',
                                     'نمو متدرج منظم',
                                 ].map((item) => (
-                                    <div key={item} className="rounded-[1.5rem] border border-slate-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-xl">
+                                    <div key={item} className="rounded-[1.5rem] border border-brand-secondary/20 bg-white/90 p-4 shadow-sm backdrop-blur-xl">
                                         <div className="flex items-center gap-3">
                                             <div className="flex size-10 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary">
                                                 <CheckCircle2 className="size-5" />
                                             </div>
-                                            <p className="text-sm font-black text-slate-800">{item}</p>
+                                            <p className="text-sm font-black text-brand-primary/90">{item}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -77,13 +77,13 @@ export function AboutPage() {
 
                         <div className="relative">
                             <div className="absolute -inset-8 rounded-[3rem] bg-brand-primary/10 blur-[120px]" />
-                            <div className="relative overflow-hidden rounded-[2.5rem] border border-slate-200/80 bg-white p-6 shadow-[0_30px_90px_rgba(15,23,42,0.12)] md:p-8">
-                                <div className="flex items-center justify-between border-b border-slate-100 pb-5">
+                            <div className="relative overflow-hidden rounded-[2.5rem] border border-brand-secondary/20 bg-white p-6 shadow-[0_30px_90px_rgba(11,129,183,0.12)] md:p-8">
+                                <div className="flex items-center justify-between border-b border-brand-primary/15 pb-5">
                                     <div className="text-right">
                                         <p className="text-[11px] font-black uppercase tracking-[0.3em] text-brand-primary">نظرة عامة</p>
-                                        <p className="mt-2 text-2xl font-black text-slate-950">{platformName}</p>
+                                        <p className="mt-2 text-2xl font-black text-brand-primary">{platformName}</p>
                                     </div>
-                                    <div className="flex size-12 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-xl shadow-slate-950/10">
+                                    <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-xl shadow-brand-primary/20">
                                         <ShieldCheck className="size-6" />
                                     </div>
                                 </div>
@@ -94,8 +94,8 @@ export function AboutPage() {
                                             <Target className="size-5" />
                                         </div>
                                         <div className="space-y-2 text-right">
-                                            <p className="text-lg font-black text-slate-950">رسالة واضحة</p>
-                                            <p className="text-sm leading-7 text-slate-600">تمكين أصحاب المغاسل من إدارة التشغيل والمراجعة والضريبة من لوحة واحدة، دون تشتت بين الأنظمة.</p>
+                                            <p className="text-lg font-black text-brand-primary">رسالة واضحة</p>
+                                            <p className="text-sm leading-7 text-brand-primary/70">تمكين أصحاب المغاسل من إدارة التشغيل والمراجعة والضريبة من لوحة واحدة، دون تشتت بين الأنظمة.</p>
                                         </div>
                                     </div>
 
@@ -104,8 +104,8 @@ export function AboutPage() {
                                             <Compass className="size-5" />
                                         </div>
                                         <div className="space-y-2 text-right">
-                                            <p className="text-lg font-black text-slate-950">رؤية عملية</p>
-                                            <p className="text-sm leading-7 text-slate-600">بناء منصة إدارية بسيطة في الاستخدام، قوية في الرقابة، وقابلة للتوسع مع نمو الفروع.</p>
+                                            <p className="text-lg font-black text-brand-primary">رؤية عملية</p>
+                                            <p className="text-sm leading-7 text-brand-primary/70">بناء منصة إدارية بسيطة في الاستخدام، قوية في الرقابة، وقابلة للتوسع مع نمو الفروع.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -115,12 +115,12 @@ export function AboutPage() {
                                         'تجربة إدارة أكثر وضوحاً',
                                         'اعتمادية في التفاصيل اليومية',
                                     ].map((item) => (
-                                        <div key={item} className="rounded-[1.5rem] border border-slate-200/80 bg-slate-50 p-4 shadow-sm">
+                                        <div key={item} className="rounded-[1.5rem] border border-brand-secondary/20 bg-brand-primary/5 p-4 shadow-sm">
                                             <div className="flex items-center gap-3">
                                                 <div className="flex size-10 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary">
                                                     <CheckCircle2 className="size-5" />
                                                 </div>
-                                                <p className="text-sm font-black text-slate-800">{item}</p>
+                                                <p className="text-sm font-black text-brand-primary/90">{item}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -133,39 +133,39 @@ export function AboutPage() {
                 <section className="relative z-10 px-6 py-20 lg:px-8 lg:py-28">
                     <div className="mx-auto max-w-7xl">
                         <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-stretch">
-                            <div className="rounded-[2.25rem] border border-slate-200/80 bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.08)] lg:p-10">
+                            <div className="rounded-[2.25rem] border border-brand-secondary/20 bg-white p-8 shadow-[0_20px_60px_rgba(11,129,183,0.08)] lg:p-10">
                                 <div className="inline-flex items-center gap-2 rounded-full border border-brand-secondary/20 bg-brand-secondary/8 px-4 py-2 text-[11px] font-black uppercase tracking-[0.35em] text-brand-primary">
                                     <Target className="size-4 text-brand-secondary" />
                                     {t('marketing.about.missionTitle')}
                                 </div>
-                                <h2 className="mt-6 text-3xl font-black tracking-tight text-slate-950 md:text-5xl">
+                                <h2 className="mt-6 text-3xl font-black tracking-tight text-brand-primary md:text-5xl">
                                     {t('marketing.about.missionTitle')}
                                 </h2>
-                                <p className="mt-6 text-base leading-8 text-slate-600 md:text-lg">
+                                <p className="mt-6 text-base leading-8 text-brand-primary/70 md:text-lg">
                                     {t('marketing.about.missionText')}
                                 </p>
                             </div>
 
-                            <div className="rounded-[2.25rem] border border-brand-primary/10 bg-gradient-to-br from-white via-brand-primary/5 to-brand-secondary/10 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] md:p-8">
+                            <div className="rounded-[2.25rem] border border-brand-primary/10 bg-gradient-to-br from-white via-brand-primary/5 to-brand-secondary/10 p-6 shadow-[0_20px_60px_rgba(11,129,183,0.08)] md:p-8">
                                 <div className="grid gap-4 md:grid-cols-3">
                                     {[
                                         { title: 'تشغيل منظم', description: 'ترابط بين الاستقبال والفوترة والإغلاق المالي.' },
                                         { title: 'وضوح إداري', description: 'رؤية لحظية للفروع والفرق والطلب اليومي.' },
                                         { title: 'نمو قابل للتوسع', description: 'إضافة فروع وصلاحيات من دون تعقيد.' },
                                     ].map((item) => (
-                                        <div key={item.title} className="rounded-[1.75rem] border border-slate-200/80 bg-white p-5 shadow-sm">
+                                        <div key={item.title} className="rounded-[1.75rem] border border-brand-secondary/20 bg-white p-5 shadow-sm">
                                             <div className="flex size-11 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-lg shadow-brand-primary/20">
                                                 <CheckCircle2 className="size-5" />
                                             </div>
-                                            <h3 className="mt-5 text-xl font-black tracking-tight text-slate-950">{item.title}</h3>
-                                            <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
+                                            <h3 className="mt-5 text-xl font-black tracking-tight text-brand-primary">{item.title}</h3>
+                                            <p className="mt-3 text-sm leading-7 text-brand-primary/70">{item.description}</p>
                                         </div>
                                     ))}
                                 </div>
 
-                                <div className="mt-6 rounded-[2rem] border border-slate-200/80 bg-white p-6 shadow-sm">
-                                    <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                                        <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-400">Why it matters</p>
+                                <div className="mt-6 rounded-[2rem] border border-brand-secondary/20 bg-white p-6 shadow-sm">
+                                    <div className="flex items-center justify-between gap-4 border-b border-brand-primary/15 pb-4">
+                                        <p className="text-[11px] font-black uppercase tracking-[0.28em] text-brand-primary/50">Why it matters</p>
                                         <Users className="size-5 text-brand-primary" />
                                     </div>
                                     <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -175,11 +175,11 @@ export function AboutPage() {
                                             'التجربة أكثر ثباتاً',
                                             'البيانات تصبح قابلة للمراجعة',
                                         ].map((item) => (
-                                            <div key={item} className="flex items-center gap-3 rounded-[1.25rem] bg-slate-50 px-4 py-3">
+                                            <div key={item} className="flex items-center gap-3 rounded-[1.25rem] bg-brand-primary/5 px-4 py-3">
                                                 <div className="flex size-9 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary">
                                                     <CheckCircle2 className="size-4" />
                                                 </div>
-                                                <span className="text-sm font-bold text-slate-700">{item}</span>
+                                                <span className="text-sm font-bold text-brand-primary/65">{item}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -196,10 +196,10 @@ export function AboutPage() {
                                 <Sparkles className="size-4 text-brand-secondary" />
                                 {t('marketing.about.valuesTitle')}
                             </div>
-                            <h2 className="mt-6 text-3xl font-black tracking-tight text-slate-950 md:text-5xl">
+                            <h2 className="mt-6 text-3xl font-black tracking-tight text-brand-primary md:text-5xl">
                                 {t('marketing.about.valuesTitle')}
                             </h2>
-                            <p className="mt-6 text-base leading-8 text-slate-600 md:text-lg">
+                            <p className="mt-6 text-base leading-8 text-brand-primary/70 md:text-lg">
                                 قيمنا ليست شعارات، بل طريقة في بناء المنتج وخدمة العملاء والتعامل مع البيانات.
                             </p>
                         </div>
@@ -213,17 +213,17 @@ export function AboutPage() {
                                         key={value.title}
                                         className={cn(
                                             'rounded-[1.75rem] border p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl',
-                                            index === 1 ? 'border-brand-primary/15 bg-brand-primary/6' : 'border-slate-200/80 bg-white/92',
+                                            index === 1 ? 'border-brand-primary/15 bg-brand-primary/6' : 'border-brand-secondary/20 bg-white/92',
                                         )}
                                     >
                                         <div className="flex items-start justify-between gap-4">
                                             <div className="flex size-12 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-lg shadow-brand-primary/20">
                                                 <Icon className="size-6" />
                                             </div>
-                                            <span className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-300">0{index + 1}</span>
+                                            <span className="text-[10px] font-black uppercase tracking-[0.28em] text-brand-secondary/40">0{index + 1}</span>
                                         </div>
-                                        <h3 className="mt-6 text-2xl font-black tracking-tight text-slate-950">{value.title}</h3>
-                                        <p className="mt-4 text-sm leading-7 text-slate-600">{value.description}</p>
+                                        <h3 className="mt-6 text-2xl font-black tracking-tight text-brand-primary">{value.title}</h3>
+                                        <p className="mt-4 text-sm leading-7 text-brand-primary/70">{value.description}</p>
                                     </div>
                                 );
                             })}
@@ -232,29 +232,29 @@ export function AboutPage() {
                 </section>
 
                 <section className="relative z-10 px-6 py-20 lg:px-8 lg:py-28">
-                    <div className="mx-auto max-w-7xl rounded-[3rem] border border-sky-100 bg-white/80 px-8 py-16 text-slate-900 shadow-xl backdrop-blur-xl md:px-14 md:py-20">
+                    <div className="mx-auto max-w-7xl rounded-[3rem] border border-brand-secondary/20 bg-white/80 px-8 py-16 text-brand-primary shadow-xl backdrop-blur-xl md:px-14 md:py-20">
                         <div className="grid gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
                             <div className="space-y-6 text-right">
-                                <div className="inline-flex items-center gap-2 rounded-full border border-sky-100 bg-sky-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.35em] text-brand-primary">
+                                <div className="inline-flex items-center gap-2 rounded-full border border-brand-secondary/20 bg-brand-primary/5 px-4 py-2 text-[11px] font-black uppercase tracking-[0.35em] text-brand-primary">
                                     <ShieldCheck className="size-4 text-brand-secondary" />
                                     {t('marketing.about.teamTitle')}
                                 </div>
-                                <h2 className="text-3xl font-black tracking-tight text-slate-950 md:text-5xl">
+                                <h2 className="text-3xl font-black tracking-tight text-brand-primary md:text-5xl">
                                     {t('marketing.about.teamTitle')}
                                 </h2>
-                                <p className="max-w-2xl text-lg leading-8 text-slate-600 md:text-xl">
+                                <p className="max-w-2xl text-lg leading-8 text-brand-primary/70 md:text-xl">
                                     {t('marketing.about.teamText')}
                                 </p>
                                 <div className="grid gap-3 sm:grid-cols-3">
                                     {[t('marketing.about.trust1'), t('marketing.about.trust2'), t('marketing.about.trust3')].map((item) => (
-                                        <div key={item} className="rounded-[1.4rem] border border-slate-100 bg-slate-50 p-4 text-sm font-bold text-slate-700 shadow-sm text-center">
+                                        <div key={item} className="rounded-[1.4rem] border border-brand-primary/15 bg-brand-primary/5 p-4 text-sm font-bold text-brand-primary/65 shadow-sm text-center">
                                             {item}
                                         </div>
                                     ))}
                                 </div>
                             </div>
 
-                            <div className="rounded-[2rem] border border-sky-50 bg-sky-50/50 p-6">
+                            <div className="rounded-[2rem] border border-brand-secondary/20 bg-brand-primary/5 p-6">
                                 <div className="grid gap-4">
                                     {[
                                         'فريق يفكر بعقلية تشغيلية',
@@ -265,7 +265,7 @@ export function AboutPage() {
                                             <div className="flex size-10 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-lg shadow-brand-primary/20">
                                                 <CheckCircle2 className="size-5" />
                                             </div>
-                                            <p className="text-sm font-bold text-slate-800">{item}</p>
+                                            <p className="text-sm font-bold text-brand-primary/90">{item}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -275,17 +275,17 @@ export function AboutPage() {
                 </section>
 
                 <section className="relative z-10 px-6 py-20 lg:px-8 lg:py-28">
-                    <div className="mx-auto max-w-5xl rounded-[2.5rem] border border-slate-200/80 bg-white p-8 text-center shadow-[0_24px_70px_rgba(15,23,42,0.1)] md:p-14">
+                    <div className="mx-auto max-w-5xl rounded-[2.5rem] border border-brand-secondary/20 bg-white p-8 text-center shadow-[0_24px_70px_rgba(11,129,183,0.1)] md:p-14">
                         <div className="mx-auto max-w-3xl space-y-6">
-                            <h2 className="text-3xl font-black tracking-tight text-slate-950 md:text-5xl">
+                            <h2 className="text-3xl font-black tracking-tight text-brand-primary md:text-5xl">
                                 {t('marketing.cta.title')}
                             </h2>
-                            <p className="text-lg leading-8 text-slate-600 md:text-xl">
+                            <p className="text-lg leading-8 text-brand-primary/70 md:text-xl">
                                 {t('marketing.cta.subtitle', { name: platformName, year: new Date().getFullYear() })}
                             </p>
                         </div>
                         <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-                            <Button size="lg" className="h-14 rounded-full bg-brand-primary px-8 text-base font-black text-white shadow-lg shadow-brand-primary/20 hover:bg-brand-primary-dark" asChild>
+                            <Button size="lg" className="h-14 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary px-8 text-base font-black text-white shadow-lg shadow-brand-primary/20 hover:scale-[1.02] transition-all" asChild>
                                 <Link to="/register">{t('marketing.cta.button')}</Link>
                             </Button>
                             <Button size="lg" variant="outline" className="h-14 rounded-full border-brand-primary/15 bg-white px-8 text-base font-black text-brand-primary hover:bg-brand-primary/5" asChild>

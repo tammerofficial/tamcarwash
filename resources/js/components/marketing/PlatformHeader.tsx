@@ -73,16 +73,16 @@ export function PlatformHeader() {
     return (
         <header className="fixed left-0 right-0 top-0 z-50 transition-all duration-300" dir="rtl">
             {/* Top Bar / Announcement */}
-            <div className="border-b border-slate-200 bg-slate-50 text-[11px] font-black text-slate-600">
+            <div className="border-b border-brand-secondary/20 bg-brand-primary/5 text-[11px] font-black text-brand-primary/80">
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6 lg:px-8">
                     <div className="flex items-center gap-3">
                         <span className="flex size-2 rounded-full bg-brand-primary ring-4 ring-brand-primary/20 animate-pulse" />
-                        <span className="font-black text-slate-900 uppercase tracking-widest text-[10px]">
+                        <span className="font-black text-brand-primary uppercase tracking-widest text-[10px]">
                             نظام إدارة مغاسل السيارات في عُمان
                         </span>
                     </div>
                     <div className="flex items-center gap-3 text-[10px]">
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-600 shadow-sm">
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-secondary/20 bg-white/80 px-3 py-1 text-brand-primary/70 shadow-sm">
                             <CheckCircle2 className="size-3 text-brand-primary" />
                             امتثال ضريبي كامل
                         </span>
@@ -99,7 +99,7 @@ export function PlatformHeader() {
                 className={cn(
                     'transition-all duration-500 border-b',
                     scrolled || location.pathname !== '/'
-                        ? 'border-white/20 bg-white/70 py-3 shadow-lg backdrop-blur-md'
+                        ? 'border-brand-secondary/20 bg-white/70 py-3 shadow-lg backdrop-blur-md'
                         : 'border-transparent bg-transparent py-5',
                 )}
             >
@@ -114,21 +114,21 @@ export function PlatformHeader() {
                         </div>
                         <div className="flex flex-col text-right">
                             <div className="flex items-center gap-2">
-                                <span className="text-xl font-black leading-none tracking-tight text-slate-900 uppercase sm:text-2xl">
+                                <span className="text-xl font-black leading-none tracking-tight text-brand-primary uppercase sm:text-2xl">
                                     {platformName}
                                 </span>
                                 <span className="rounded-md bg-brand-primary/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-brand-primary border border-brand-primary/20">
                                     عُمان
                                 </span>
                             </div>
-                            <span className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 group-hover:text-brand-primary transition-colors">
+                            <span className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-brand-primary/60 group-hover:text-brand-primary transition-colors">
                                 {brandTagline}
                             </span>
                         </div>
                     </Link>
 
                     {/* Desktop Navigation Links */}
-                    <nav className="hidden items-center gap-2 rounded-2xl border border-slate-200 bg-white/50 p-1 shadow-sm lg:flex">
+                    <nav className="hidden items-center gap-2 rounded-2xl border border-brand-secondary/20 bg-white/50 p-1 shadow-sm lg:flex">
                         {navItems.map((item) => (
                             <button
                                 key={item.name}
@@ -137,8 +137,8 @@ export function PlatformHeader() {
                                 className={cn(
                                     'relative rounded-xl px-6 py-2 text-[12px] font-black transition-all duration-300 uppercase tracking-wide',
                                     isNavItemActive(item)
-                                        ? 'bg-white text-brand-primary shadow-sm border border-slate-200'
-                                        : 'text-slate-500 hover:text-brand-primary hover:bg-brand-primary/5',
+                                        ? 'bg-white text-brand-primary shadow-sm border border-brand-secondary/20'
+                                        : 'text-brand-primary/80 hover:text-brand-primary hover:bg-brand-primary/5',
                                 )}
                             >
                                 {t(`marketing.nav.${item.name}`)}
@@ -150,7 +150,7 @@ export function PlatformHeader() {
                     <div className="hidden items-center gap-4 md:flex">
                         <Button
                             variant="ghost"
-                            className="rounded-xl px-6 font-black text-slate-600 transition-all hover:bg-slate-100 hover:text-brand-primary text-sm"
+                            className="rounded-xl px-6 font-black text-brand-primary/80 transition-all hover:bg-brand-primary/5 hover:text-brand-primary text-sm"
                             asChild
                         >
                             <Link to="/login">{t('marketing.nav.login')}</Link>
@@ -168,7 +168,7 @@ export function PlatformHeader() {
 
                     {/* Mobile Menu Button */}
                     <button
-                        className="flex size-10 items-center justify-center rounded-xl border border-slate-200 bg-white p-2 text-slate-600 shadow-sm transition-colors hover:bg-slate-50 md:hidden"
+                        className="flex size-10 items-center justify-center rounded-xl border border-brand-secondary/20 bg-white p-2 text-brand-primary/80 shadow-sm transition-colors hover:bg-brand-primary/5 md:hidden"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         aria-label={mobileMenuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
                     >
@@ -179,15 +179,15 @@ export function PlatformHeader() {
 
             {/* Mobile Dropdown Menu */}
             {mobileMenuOpen && (
-                <div className="border-b border-slate-200 bg-white/95 p-6 shadow-2xl backdrop-blur-xl animate-in slide-in-from-top-3 duration-200 md:hidden">
-                    <div className="mb-4 flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                <div className="border-b border-brand-secondary/20 bg-white/95 p-6 shadow-2xl backdrop-blur-xl animate-in slide-in-from-top-3 duration-200 md:hidden">
+                    <div className="mb-4 flex items-center justify-between rounded-2xl border border-brand-primary/15 bg-brand-primary/5 p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-xl bg-brand-primary text-white">
+                            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white">
                                 <Droplets className="size-5" />
                             </div>
                             <div className="text-right">
-                                <p className="text-sm font-black text-slate-900">{platformName}</p>
-                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{brandTagline}</p>
+                                <p className="text-sm font-black text-brand-primary">{platformName}</p>
+                                <p className="text-[10px] font-bold text-brand-primary/60 uppercase tracking-widest">{brandTagline}</p>
                             </div>
                         </div>
                         <span className="rounded-full bg-brand-primary/10 px-2.5 py-0.5 text-[9px] font-bold text-brand-primary border border-brand-primary/20">
@@ -204,8 +204,8 @@ export function PlatformHeader() {
                                 className={cn(
                                     'flex items-center justify-between rounded-xl px-4 py-3 text-right text-base font-bold transition-colors',
                                     isNavItemActive(item)
-                                        ? 'bg-slate-100 text-brand-primary'
-                                        : 'text-slate-600 hover:bg-slate-50',
+                                        ? 'bg-brand-primary/10 text-brand-primary'
+                                        : 'text-brand-primary/80 hover:bg-brand-primary/5 hover:text-brand-primary',
                                 )}
                             >
                                 <span>{t(`marketing.nav.${item.name}`)}</span>
@@ -214,12 +214,12 @@ export function PlatformHeader() {
                         ))}
                     </div>
 
-                    <Separator className="my-4 bg-slate-100" />
+                    <Separator className="my-4 bg-brand-primary/10" />
 
                     <div className="flex flex-col gap-3">
                         <Button
                             variant="outline"
-                            className="h-12 w-full justify-center rounded-xl border-slate-200 bg-white font-bold text-slate-900 hover:bg-slate-50"
+                            className="h-12 w-full justify-center rounded-xl border-brand-secondary/20 bg-white font-bold text-brand-primary hover:bg-brand-primary/5"
                             asChild
                         >
                             <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
@@ -241,4 +241,3 @@ export function PlatformHeader() {
         </header>
     );
 }
-
