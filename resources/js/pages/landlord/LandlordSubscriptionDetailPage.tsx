@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Pencil } from 'lucide-react';
@@ -11,23 +10,17 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { t } from '@/lib/i18n';
 import { formatCurrency } from '@/lib/utils';
 import type { ApiResponse } from '@/types/api';
-import type { LandlordPlan, LandlordSubscriptionRow } from '@/types/landlord';
-import { SubscriptionFormDialog, subscriptionStatusLabel } from '@/pages/landlord/LandlordSubscriptionsPage';
+import type { LandlordSubscriptionRow } from '@/types/landlord';
+import { subscriptionStatusLabel } from '@/pages/landlord/LandlordSubscriptionsPage';
 
 export function LandlordSubscriptionDetailPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [formOpen, setFormOpen] = useState(false);
 
     const { data, isLoading } = useQuery({
         queryKey: ['landlord-subscription', id],
         queryFn: () => api.get<ApiResponse<LandlordSubscriptionRow>>(endpoints.landlord.subscription(id!)),
         enabled: Boolean(id),
-    });
-
-    const { data: plansData } = useQuery({
-        queryKey: ['landlord-plans'],
-        queryFn: () => api.get<ApiResponse<LandlordPlan[]>>(endpoints.landlord.plans),
     });
 
     const subscription = data?.data;
@@ -42,8 +35,8 @@ export function LandlordSubscriptionDetailPage() {
                 description={t('landlord.subscriptions.details')}
                 actions={
                     <div className="flex gap-2">
-                        <Button variant="outline" onClick={() => navigate('/landlord/subscriptions')}>رجوع</Button>
-                        <Button onClick={() => setFormOpen(true)}><Pencil className="me-2 h-4 w-4" />{t('common.edit')}</Button>
+                        <Button variant="outline" onClick={() => navigate('/landlord/subscriptions')}>{t('common.back')}</Button>
+                        <Button onClick={() => navigate(`/landlord/subscriptions/${subscription.id}/edit`)}><Pencil className="me-2 h-4 w-4" />{t('common.edit')}</Button>
                     </div>
                 }
             />
@@ -78,12 +71,6 @@ export function LandlordSubscriptionDetailPage() {
                 </Card>
             </div>
 
-            <SubscriptionFormDialog
-                open={formOpen}
-                onOpenChange={setFormOpen}
-                subscription={subscription}
-                plans={plansData?.data ?? []}
-            />
         </div>
     );
 }

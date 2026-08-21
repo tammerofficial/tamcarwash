@@ -25,6 +25,7 @@ use App\Modules\Shared\Http\Controllers\StorefrontController;
 use App\Modules\Shared\Http\Controllers\TenantAuthController;
 use App\Modules\Vehicles\Http\Controllers\CompanyController;
 use App\Modules\Vehicles\Http\Controllers\VehicleController;
+use App\Services\Landlord\TenantPlanService;
 use App\Services\Tenancy\TenantContext;
 use Illuminate\Support\Facades\Route;
 
@@ -70,33 +71,59 @@ Route::prefix('storefront')->group(function () {
 });
 
 Route::middleware('auth:tenant')->group(function () {
-    Route::get('/me', fn () => response()->json([
-        'user' => auth('tenant')->user(),
-        'context' => 'tenant',
-        'tenant' => app(TenantContext::class)->get()?->only(['id', 'slug', 'name']),
-    ]));
+    Route::get('/me', function () {
+        $planService = app(TenantPlanService::class);
+        $user = auth('tenant')->user();
+        $features = $planService->enabledFeatures();
+        $plan = $planService->getPlanMeta();
 
-    Route::get('dashboard/stats', [DashboardController::class, 'stats']);
+        return response()->json([
+            'user' => [
+                'id' => $user?->id,
+                'name' => $user?->name,
+                'email' => $user?->email,
+                'roles' => method_exists($user, 'getRoleNames') ? $user->getRoleNames()->values()->all() : [],
+                'features' => $features,
+                'plan' => $plan,
+            ],
+            'context' => 'tenant',
+            'tenant' => app(TenantContext::class)->get()?->only(['id', 'slug', 'name']),
+            'features' => $features,
+            'plan' => $plan,
+        ]);
+    });
 
-    Route::apiResource('branches', BranchController::class);
-    Route::get('branches/{branch}/capacity', [BranchController::class, 'capacity']);
-    Route::post('branches/{branch}/holidays', [BranchController::class, 'storeHoliday']);
-    Route::post('branches/{branch}/wash-bays', [BranchController::class, 'storeWashBay']);
+    Route::middleware('plan.feature:dashboard')->group(function () {
+        Route::get('dashboard/stats', [DashboardController::class, 'stats']);
+    });
 
-    Route::apiResource('customers', CustomerController::class);
-    Route::post('customers/{customer}/blacklist', [CustomerController::class, 'blacklist']);
-    Route::post('customers/{customer}/activate', [CustomerController::class, 'activate']);
-    Route::post('customers/{customer}/deactivate', [CustomerController::class, 'deactivate']);
-    Route::post('customers/{customer}/notes', [CustomerController::class, 'storeNote']);
-    Route::post('customers/{customer}/loyalty-points', [CustomerController::class, 'adjustLoyalty']);
+    Route::middleware('plan.feature:branches')->group(function () {
+        Route::apiResource('branches', BranchController::class);
+        Route::get('branches/{branch}/capacity', [BranchController::class, 'capacity']);
+        Route::post('branches/{branch}/holidays', [BranchController::class, 'storeHoliday']);
+        Route::post('branches/{branch}/wash-bays', [BranchController::class, 'storeWashBay']);
+    });
 
-    Route::apiResource('vehicles', VehicleController::class);
-    Route::apiResource('companies', CompanyController::class)->except(['destroy']);
+    Route::middleware('plan.feature:customers')->group(function () {
+        Route::apiResource('customers', CustomerController::class);
+        Route::post('customers/{customer}/blacklist', [CustomerController::class, 'blacklist']);
+        Route::post('customers/{customer}/activate', [CustomerController::class, 'activate']);
+        Route::post('customers/{customer}/deactivate', [CustomerController::class, 'deactivate']);
+        Route::post('customers/{customer}/notes', [CustomerController::class, 'storeNote']);
+        Route::post('customers/{customer}/loyalty-points', [CustomerController::class, 'adjustLoyalty']);
+    });
 
-    Route::apiResource('service-categories', ServiceCategoryController::class)->only(['index', 'store', 'show']);
-    Route::apiResource('services', ServiceController::class);
+    Route::middleware('plan.feature:vehicles')->group(function () {
+        Route::apiResource('vehicles', VehicleController::class);
+        Route::apiResource('companies', CompanyController::class)->except(['destroy']);
+    });
 
-    Route::prefix('pricing')->group(function () {
+    Route::middleware('plan.feature:services')->group(function () {
+        Route::apiResource('service-categories', ServiceCategoryController::class)->only(['index', 'store', 'show']);
+        Route::apiResource('services', ServiceController::class);
+    });
+
+    Route::middleware('plan.feature:pricing')->prefix('pricing')->group(function () {
         Route::get('rules', [PriceRuleController::class, 'index']);
         Route::post('rules', [PriceRuleController::class, 'store']);
         Route::get('discounts', [DiscountController::class, 'index']);
@@ -108,21 +135,23 @@ Route::middleware('auth:tenant')->group(function () {
         Route::post('peak-hours', [PeakHourPricingController::class, 'store']);
     });
 
-    Route::prefix('time-slots')->group(function () {
-        Route::get('available', [TimeSlotController::class, 'available']);
-        Route::post('generate', [TimeSlotController::class, 'generate']);
+    Route::middleware('plan.feature:bookings')->group(function () {
+        Route::prefix('time-slots')->group(function () {
+            Route::get('available', [TimeSlotController::class, 'available']);
+            Route::post('generate', [TimeSlotController::class, 'generate']);
+        });
+
+        Route::get('bookings', [BookingController::class, 'index']);
+        Route::post('bookings', [BookingController::class, 'store']);
+        Route::get('bookings/{booking}', [BookingController::class, 'show']);
+        Route::post('bookings/{booking}/confirm', [BookingController::class, 'confirm']);
+        Route::post('bookings/{booking}/cancel', [BookingController::class, 'cancel']);
+        Route::post('bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
+        Route::post('bookings/{booking}/complete', [BookingController::class, 'complete']);
+        Route::post('bookings/{booking}/convert-to-order', [BookingController::class, 'convertToOrder']);
     });
 
-    Route::get('bookings', [BookingController::class, 'index']);
-    Route::post('bookings', [BookingController::class, 'store']);
-    Route::get('bookings/{booking}', [BookingController::class, 'show']);
-    Route::post('bookings/{booking}/confirm', [BookingController::class, 'confirm']);
-    Route::post('bookings/{booking}/cancel', [BookingController::class, 'cancel']);
-    Route::post('bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
-    Route::post('bookings/{booking}/complete', [BookingController::class, 'complete']);
-    Route::post('bookings/{booking}/convert-to-order', [BookingController::class, 'convertToOrder']);
-
-    Route::prefix('queue')->group(function () {
+    Route::middleware('plan.feature:queue')->prefix('queue')->group(function () {
         Route::get('entries', [QueueController::class, 'index']);
         Route::post('entries/walk-in', [QueueController::class, 'storeWalkIn']);
         Route::post('entries/from-booking/{booking}', [QueueController::class, 'storeFromBooking']);
@@ -130,46 +159,60 @@ Route::middleware('auth:tenant')->group(function () {
         Route::patch('entries/{queueEntry}/status', [QueueController::class, 'updateStatus']);
         Route::post('call-next', [QueueController::class, 'callNext']);
         Route::get('estimated-wait', [QueueController::class, 'estimatedWait']);
-        Route::get('screen', [QueueController::class, 'screen']);
         Route::get('analytics', [QueueController::class, 'analytics']);
     });
 
-    Route::get('orders', [OrderController::class, 'index']);
-    Route::post('orders', [OrderController::class, 'store']);
-    Route::get('orders/screen', [OrderController::class, 'screen']);
-    Route::get('orders/{order}', [OrderController::class, 'show']);
-    Route::post('orders/{order}/transition', [OrderController::class, 'transition']);
-    Route::post('orders/{order}/assign-worker', [OrderController::class, 'assignWorker']);
-    Route::post('orders/{order}/items', [OrderController::class, 'addItem']);
+    Route::middleware('plan.feature:queue_screen')->group(function () {
+        Route::get('queue/screen', [QueueController::class, 'screen']);
+    });
 
-    Route::get('invoices', [InvoiceController::class, 'index']);
-    Route::get('invoices/{invoice}', [InvoiceController::class, 'show']);
-    Route::post('orders/{order}/invoice', [InvoiceController::class, 'storeFromOrder']);
-    Route::post('invoices/{invoice}/void', [InvoiceController::class, 'void']);
-    Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'pdf']);
+    Route::middleware('plan.feature:orders')->group(function () {
+        Route::get('orders', [OrderController::class, 'index']);
+        Route::post('orders', [OrderController::class, 'store']);
+        Route::get('orders/screen', [OrderController::class, 'screen']);
+        Route::get('orders/{order}', [OrderController::class, 'show']);
+        Route::post('orders/{order}/transition', [OrderController::class, 'transition']);
+        Route::post('orders/{order}/assign-worker', [OrderController::class, 'assignWorker']);
+        Route::post('orders/{order}/items', [OrderController::class, 'addItem']);
+    });
 
-    Route::get('payments', [PaymentController::class, 'index']);
-    Route::post('payments', [PaymentController::class, 'store']);
-    Route::get('payment-methods', [PaymentMethodController::class, 'index']);
+    Route::middleware('plan.feature:invoices')->group(function () {
+        Route::get('invoices', [InvoiceController::class, 'index']);
+        Route::get('invoices/{invoice}', [InvoiceController::class, 'show']);
+        Route::post('orders/{order}/invoice', [InvoiceController::class, 'storeFromOrder']);
+        Route::post('invoices/{invoice}/void', [InvoiceController::class, 'void']);
+        Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'pdf']);
+    });
 
-    Route::get('expenses', [ExpenseController::class, 'index']);
-    Route::post('expenses', [ExpenseController::class, 'store']);
-
-    Route::get('cash-drawer/current', [CashDrawerController::class, 'current']);
-    Route::post('cash-drawer/open', [CashDrawerController::class, 'open']);
-    Route::post('cash-drawer/{session}/close', [CashDrawerController::class, 'close']);
+    Route::middleware('plan.feature:cashier')->group(function () {
+        Route::get('payments', [PaymentController::class, 'index']);
+        Route::post('payments', [PaymentController::class, 'store']);
+        Route::get('payment-methods', [PaymentMethodController::class, 'index']);
+        Route::get('expenses', [ExpenseController::class, 'index']);
+        Route::post('expenses', [ExpenseController::class, 'store']);
+        Route::get('cash-drawer/current', [CashDrawerController::class, 'current']);
+        Route::post('cash-drawer/open', [CashDrawerController::class, 'open']);
+        Route::post('cash-drawer/{session}/close', [CashDrawerController::class, 'close']);
+    });
 
     Route::get('settings', [SettingsController::class, 'show']);
-    Route::put('settings', [SettingsController::class, 'update']);
-
     Route::get('tax-settings', [TaxSettingsController::class, 'show']);
-    Route::put('tax-settings', [TaxSettingsController::class, 'update']);
 
-    Route::get('tax-reports', [TaxReportController::class, 'summary']);
-    Route::prefix('tax-reports')->group(function () {
-        Route::get('daily', [TaxReportController::class, 'daily']);
-        Route::get('monthly', [TaxReportController::class, 'monthly']);
-        Route::get('quarterly', [TaxReportController::class, 'quarterly']);
-        Route::get('breakdown', [TaxReportController::class, 'breakdown']);
+    Route::middleware('plan.feature:settings,appearance')->group(function () {
+        Route::put('settings', [SettingsController::class, 'update']);
+    });
+
+    Route::middleware('plan.feature:settings,tax_reports')->group(function () {
+        Route::put('tax-settings', [TaxSettingsController::class, 'update']);
+    });
+
+    Route::middleware('plan.feature:tax_reports')->group(function () {
+        Route::get('tax-reports', [TaxReportController::class, 'summary']);
+        Route::prefix('tax-reports')->group(function () {
+            Route::get('daily', [TaxReportController::class, 'daily']);
+            Route::get('monthly', [TaxReportController::class, 'monthly']);
+            Route::get('quarterly', [TaxReportController::class, 'quarterly']);
+            Route::get('breakdown', [TaxReportController::class, 'breakdown']);
+        });
     });
 });

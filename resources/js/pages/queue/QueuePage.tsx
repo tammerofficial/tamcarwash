@@ -1,11 +1,8 @@
-import { useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthenticatedQuery } from '@/hooks/useAuthenticatedQuery';
 import { ColumnDef } from '@tanstack/react-table';
-import { Clock, Loader2, Megaphone, Plus, RefreshCw } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { Clock, Megaphone, Plus, RefreshCw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { api, endpoints } from '@/lib/api';
 import { useBranch, useBranchQueryParams } from '@/providers/BranchProvider';
@@ -14,12 +11,8 @@ import { DataTable } from '@/components/common/DataTable';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { t } from '@/lib/i18n';
-import type { ApiResponse, Customer, PaginatedResponse, QueueEntry, QueueEntryStatus, Vehicle } from '@/types/api';
+import type { ApiResponse, PaginatedResponse, QueueEntry, QueueEntryStatus } from '@/types/api';
 
 const STATUS_LABELS: Record<QueueEntryStatus, string> = {
     waiting: t('queue.waiting'),
@@ -39,33 +32,15 @@ const STATUS_VARIANTS: Record<QueueEntryStatus, 'warning' | 'success' | 'seconda
     no_show: 'destructive',
 };
 
-const NEXT_STATUSES: Record<QueueEntryStatus, QueueEntryStatus[]> = {
-    waiting: ['arrived', 'in_service', 'no_show'],
-    arrived: ['in_service', 'no_show'],
-    in_service: ['ready', 'completed'],
-    ready: ['completed'],
-    completed: [],
-    no_show: [],
-};
-
-const walkInSchema = z.object({
-    customer_id: z.coerce.number().min(1, 'اختر العميل'),
-    vehicle_id: z.coerce.number().min(1, 'اختر المركبة'),
-    notes: z.string().optional(),
-});
-
-type WalkInValues = z.infer<typeof walkInSchema>;
-
 function sourceLabel(source: QueueEntry['source']): string {
     return source === 'walk_in' ? t('queue.sourceWalkIn') : t('queue.sourceBooking');
 }
 
 export function QueuePage() {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const branchParams = useBranchQueryParams();
     const { selectedBranchId } = useBranch();
-    const [walkInOpen, setWalkInOpen] = useState(false);
-    const [selectedEntryId, setSelectedEntryId] = useState<number | null>(null);
 
     const { data, isLoading, refetch, isFetching } = useAuthenticatedQuery({
         queryKey: ['queue', branchParams],
@@ -94,80 +69,15 @@ export function QueuePage() {
         refetchInterval: 15_000,
     });
 
-    const { data: customers = [] } = useAuthenticatedQuery({
-        queryKey: ['customers', 'select'],
-        queryFn: async () => {
-            const response = await api.get<PaginatedResponse<Customer>>(endpoints.customers, { per_page: 100 });
-            return response.data;
-        },
-        retry: false,
-    });
-
-    const { data: vehicles = [] } = useAuthenticatedQuery({
-        queryKey: ['vehicles', 'select'],
-        queryFn: async () => {
-            const response = await api.get<PaginatedResponse<Vehicle>>(endpoints.vehicles, { per_page: 100 });
-            return response.data;
-        },
-        retry: false,
-    });
-
-    const walkInForm = useForm<WalkInValues>({
-        resolver: zodResolver(walkInSchema),
-        defaultValues: { customer_id: 0, vehicle_id: 0, notes: '' },
-    });
-
-    const watchedCustomerId = walkInForm.watch('customer_id');
-    const customerVehicles = useMemo(
-        () => vehicles.filter((vehicle) => vehicle.customer_id === watchedCustomerId),
-        [vehicles, watchedCustomerId],
-    );
-
-    const selectedEntry = useMemo(
-        () => data?.find((entry) => entry.id === selectedEntryId) ?? null,
-        [data, selectedEntryId],
-    );
-
-    const invalidateQueue = () => {
-        queryClient.invalidateQueries({ queryKey: ['queue'] });
-        queryClient.invalidateQueries({ queryKey: ['queue-estimated-wait'] });
-        queryClient.invalidateQueries({ queryKey: ['queue-screen'] });
-    };
-
     const callNext = useMutation({
         mutationFn: () => api.post<ApiResponse<QueueEntry | null>>(endpoints.queue.callNext, branchParams),
         onSuccess: (response) => {
-            invalidateQueue();
+            queryClient.invalidateQueries({ queryKey: ['queue'] });
+            queryClient.invalidateQueries({ queryKey: ['queue-estimated-wait'] });
+            queryClient.invalidateQueries({ queryKey: ['queue-screen'] });
             toast.success(response.message ?? t('queue.callNextSuccess'));
         },
         onError: () => toast.error(t('queue.callNextError')),
-    });
-
-    const addWalkIn = useMutation({
-        mutationFn: (values: WalkInValues) =>
-            api.post<ApiResponse<QueueEntry>>(endpoints.queue.walkIn, {
-                branch_id: selectedBranchId,
-                customer_id: values.customer_id,
-                vehicle_id: values.vehicle_id,
-                notes: values.notes || undefined,
-            }),
-        onSuccess: () => {
-            invalidateQueue();
-            setWalkInOpen(false);
-            walkInForm.reset();
-            toast.success(t('queue.walkInSuccess'));
-        },
-        onError: (error: Error) => toast.error(error.message || t('queue.walkInError')),
-    });
-
-    const updateStatus = useMutation({
-        mutationFn: ({ entryId, status }: { entryId: number; status: QueueEntryStatus }) =>
-            api.patch<ApiResponse<QueueEntry>>(endpoints.queue.entryStatus(entryId), { status }),
-        onSuccess: () => {
-            invalidateQueue();
-            toast.success(t('queue.statusUpdated'));
-        },
-        onError: () => toast.error(t('queue.statusError')),
     });
 
     const waitingCount = data?.filter((entry) => entry.status === 'waiting').length ?? 0;
@@ -210,14 +120,12 @@ export function QueuePage() {
             id: 'actions',
             header: t('common.actions'),
             cell: ({ row }) => (
-                <Button variant="ghost" size="sm" onClick={() => setSelectedEntryId(row.original.id)}>
+                <Button variant="ghost" size="sm" onClick={() => navigate(`/queue/${row.original.id}`)}>
                     {t('queue.manage')}
                 </Button>
             ),
         },
     ];
-
-    const nextStatuses = selectedEntry ? NEXT_STATUSES[selectedEntry.status] ?? [] : [];
 
     return (
         <div className="space-y-6">
@@ -230,7 +138,7 @@ export function QueuePage() {
                             <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
                             {t('common.refresh')}
                         </Button>
-                        <Button variant="outline" onClick={() => setWalkInOpen(true)} disabled={!selectedBranchId}>
+                        <Button variant="outline" onClick={() => navigate('/queue/walk-in')} disabled={!selectedBranchId}>
                             <Plus className="h-4 w-4" />
                             {t('queue.addWalkIn')}
                         </Button>
@@ -283,139 +191,6 @@ export function QueuePage() {
             </div>
 
             <DataTable columns={columns} data={data ?? []} searchKey="queue_number" loading={isLoading} />
-
-            <Sheet open={walkInOpen} onOpenChange={setWalkInOpen}>
-                <SheetContent side="start" className="w-full overflow-y-auto sm:max-w-lg">
-                    <h2 className="text-lg font-semibold">{t('queue.addWalkIn')}</h2>
-                    <p className="text-sm text-muted-foreground">{t('queue.walkInHint')}</p>
-                    <Form {...walkInForm}>
-                        <form
-                            onSubmit={walkInForm.handleSubmit((values) => addWalkIn.mutate(values))}
-                            className="mt-6 space-y-4"
-                        >
-                            <FormField
-                                control={walkInForm.control}
-                                name="customer_id"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('customers.name')}</FormLabel>
-                                        <Select
-                                            value={field.value ? String(field.value) : ''}
-                                            onValueChange={(value) => field.onChange(Number(value))}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder={t('booking.selectCustomer')} />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {customers.map((customer) => (
-                                                    <SelectItem key={customer.id} value={String(customer.id)}>
-                                                        {customer.name} — {customer.phone}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={walkInForm.control}
-                                name="vehicle_id"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('vehicles.plate')}</FormLabel>
-                                        <Select
-                                            value={field.value ? String(field.value) : ''}
-                                            onValueChange={(value) => field.onChange(Number(value))}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder={t('booking.selectVehicle')} />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {customerVehicles.map((vehicle) => (
-                                                    <SelectItem key={vehicle.id} value={String(vehicle.id)}>
-                                                        {vehicle.plate_number} — {vehicle.brand} {vehicle.model}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={walkInForm.control}
-                                name="notes"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('booking.notes')}</FormLabel>
-                                        <FormControl>
-                                            <Textarea {...field} rows={3} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <Button type="submit" disabled={addWalkIn.isPending} className="w-full">
-                                {addWalkIn.isPending ? (
-                                    <>
-                                        <Loader2 className="animate-spin" />
-                                        {t('common.saving')}
-                                    </>
-                                ) : (
-                                    t('queue.addWalkIn')
-                                )}
-                            </Button>
-                        </form>
-                    </Form>
-                </SheetContent>
-            </Sheet>
-
-            <Sheet open={selectedEntryId !== null} onOpenChange={(open) => !open && setSelectedEntryId(null)}>
-                <SheetContent side="start" className="w-full overflow-y-auto sm:max-w-md">
-                    {selectedEntry ? (
-                        <div className="space-y-6">
-                            <div>
-                                <h2 className="text-3xl font-bold">{selectedEntry.queue_number}</h2>
-                                <p className="text-sm text-muted-foreground">
-                                    {selectedEntry.customer_name} — {selectedEntry.vehicle_plate}
-                                </p>
-                                <Badge className="mt-2" variant={STATUS_VARIANTS[selectedEntry.status]}>
-                                    {selectedEntry.status_label ?? STATUS_LABELS[selectedEntry.status]}
-                                </Badge>
-                            </div>
-
-                            {nextStatuses.length > 0 && (
-                                <div className="space-y-3">
-                                    <h3 className="font-medium">{t('queue.transition')}</h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {nextStatuses.map((status) => (
-                                            <Button
-                                                key={status}
-                                                size="sm"
-                                                variant={status === 'no_show' ? 'destructive' : 'default'}
-                                                disabled={updateStatus.isPending}
-                                                onClick={() =>
-                                                    updateStatus.mutate({ entryId: selectedEntry.id, status })
-                                                }
-                                            >
-                                                {STATUS_LABELS[status]}
-                                            </Button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    ) : null}
-                </SheetContent>
-            </Sheet>
         </div>
     );
 }

@@ -12,7 +12,7 @@ export interface LandlordPlan extends LandlordPlanRef {
     max_branches?: number | null;
     max_users?: number | null;
     max_vehicles_per_day?: number | null;
-    features?: string[];
+    features?: Record<string, boolean> | string[];
     is_active?: boolean;
     sort_order?: number;
     created_at?: string;

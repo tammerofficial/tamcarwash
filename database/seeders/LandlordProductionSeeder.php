@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Landlord\Plan;
+use App\Support\PlanFeatureCatalog;
 use Illuminate\Support\Facades\Schema;
 
 class LandlordProductionSeeder extends IdempotentSeeder
@@ -31,7 +32,7 @@ class LandlordProductionSeeder extends IdempotentSeeder
                 'max_vehicles_per_day' => 500,
                 'is_active' => true,
                 'sort_order' => 1,
-                'features' => ['bookings', 'queue', 'invoices', 'basic_reports'],
+                'features' => PlanFeatureCatalog::starterDefaults(),
             ],
             [
                 'slug' => 'professional',
@@ -45,7 +46,7 @@ class LandlordProductionSeeder extends IdempotentSeeder
                 'max_vehicles_per_day' => 3000,
                 'is_active' => true,
                 'sort_order' => 2,
-                'features' => ['bookings', 'queue', 'invoices', 'vat_reports', 'cashier', 'advanced_reports', 'subscriptions'],
+                'features' => PlanFeatureCatalog::professionalDefaults(),
             ],
             [
                 'slug' => 'enterprise',
@@ -59,10 +60,7 @@ class LandlordProductionSeeder extends IdempotentSeeder
                 'max_vehicles_per_day' => null,
                 'is_active' => true,
                 'sort_order' => 3,
-                'features' => [
-                    'bookings', 'queue', 'invoices', 'vat_reports', 'cashier', 'advanced_reports',
-                    'subscriptions', 'corporate', 'fleet', 'multi_branch_analytics', 'api', 'priority_support',
-                ],
+                'features' => PlanFeatureCatalog::enterpriseDefaults(),
             ],
         ];
 

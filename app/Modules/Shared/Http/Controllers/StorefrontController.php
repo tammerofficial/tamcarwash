@@ -21,6 +21,7 @@ use App\Modules\Shared\Http\Requests\StorePublicBookingRequest;
 use App\Modules\Vehicles\Models\Vehicle;
 use App\Support\BrandingHelper;
 use App\Support\DefaultContact;
+use App\Services\Landlord\TenantPlanService;
 use App\Services\Tenancy\TenantContext;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -37,6 +38,7 @@ class StorefrontController extends ApiController
         protected QueueService $queueService,
         protected OrderService $orderService,
         protected VatCalculatorService $vatCalculator,
+        protected TenantPlanService $tenantPlanService,
     ) {}
 
     public function show(): JsonResponse
@@ -133,6 +135,10 @@ class StorefrontController extends ApiController
 
     public function availableTimeSlots(Request $request): JsonResponse
     {
+        if (! $this->tenantPlanService->hasFeature('bookings')) {
+            return $this->error('الحجز غير متاح في باقة هذه المغسلة.', 403, 'feature_not_available');
+        }
+
         $request->validate([
             'branch_id' => ['required', 'integer', 'exists:branches,id'],
             'date' => ['required', 'date', 'after_or_equal:today'],
@@ -152,6 +158,10 @@ class StorefrontController extends ApiController
 
     public function storeBooking(StorePublicBookingRequest $request): JsonResponse
     {
+        if (! $this->tenantPlanService->hasFeature('bookings')) {
+            return $this->error('الحجز غير متاح في باقة هذه المغسلة.', 403, 'feature_not_available');
+        }
+
         $validated = $request->validated();
 
         try {

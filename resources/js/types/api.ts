@@ -436,7 +436,7 @@ export interface PlanMeta {
     subscription_starts_at?: string | null;
     subscription_ends_at?: string | null;
     days_remaining?: number | null;
-    features: string[];
+    features: Record<string, boolean> | string[];
     limits: {
         max_branches: number | null;
         max_users: number | null;
@@ -473,6 +473,8 @@ export interface User {
     name: string;
     email: string;
     roles?: string[];
+    features?: Record<string, boolean>;
+    plan?: PlanMeta | null;
 }
 
 export interface LoginPayload {

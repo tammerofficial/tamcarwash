@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureFrontendRequestsAreStateful;
+use App\Http\Middleware\EnsurePlanFeature;
 use App\Http\Middleware\Tenancy\EnsureLandlordContext;
 use App\Http\Middleware\Tenancy\EnsureTenantContext;
 use App\Http\Middleware\Tenancy\IdentifyTenantByCustomDomain;
@@ -62,6 +63,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant.subdirectory' => IdentifyTenantBySubdirectory::class,
             'tenant.header' => IdentifyTenantByHeader::class,
             'tenant.admin' => SetAdminTenantContext::class,
+            'plan.feature' => EnsurePlanFeature::class,
         ]);
 
         $middleware->prependToGroup('api', [

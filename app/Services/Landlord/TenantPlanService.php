@@ -2,10 +2,12 @@
 
 namespace App\Services\Landlord;
 
+use App\Models\Landlord\Plan;
 use App\Models\Landlord\Subscription;
 use App\Models\Landlord\Tenant;
 use App\Modules\Branches\Models\Branch;
 use App\Services\Tenancy\TenantContext;
+use App\Support\PlanFeatureCatalog;
 use Carbon\CarbonInterface;
 
 class TenantPlanService
@@ -46,7 +48,7 @@ class TenantPlanService
             'subscription_starts_at' => $subscription?->starts_at?->toIso8601String(),
             'subscription_ends_at' => $endsAt instanceof CarbonInterface ? $endsAt->toIso8601String() : null,
             'days_remaining' => $this->daysRemaining($endsAt),
-            'features' => $plan->features ?? [],
+            'features' => $plan->featureMap(),
             'limits' => [
                 'max_branches' => $maxBranches,
                 'max_users' => $plan->max_users,
@@ -57,6 +59,43 @@ class TenantPlanService
             ],
             'can_add_branch' => $maxBranches === null || $branchCount < $maxBranches,
         ];
+    }
+
+    /**
+     * @return array<string, bool>
+     */
+    public function enabledFeatures(?Tenant $tenant = null): array
+    {
+        $tenant ??= app(TenantContext::class)->get();
+
+        if (! $tenant) {
+            return PlanFeatureCatalog::allEnabled();
+        }
+
+        $tenant->loadMissing('plan');
+
+        if (! $tenant->plan) {
+            return PlanFeatureCatalog::allEnabled();
+        }
+
+        return $tenant->plan->featureMap();
+    }
+
+    public function hasFeature(string $feature, ?Tenant $tenant = null): bool
+    {
+        $tenant ??= app(TenantContext::class)->get();
+
+        if (! $tenant) {
+            return true;
+        }
+
+        $tenant->loadMissing('plan');
+
+        if (! $tenant->plan) {
+            return true;
+        }
+
+        return $tenant->plan->hasFeature($feature);
     }
 
     protected function daysRemaining(mixed $endsAt): ?int

@@ -29,6 +29,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { getAppName, getAppTagline } from '@/lib/branding';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/providers/AuthProvider';
+import { usePlanFeatures } from '@/hooks/usePlanFeatures';
+import type { PlanFeatureKey } from '@/lib/plan-features';
 
 type NavItem = {
     to: string;
@@ -36,6 +38,7 @@ type NavItem = {
     icon: LucideIcon;
     end?: boolean;
     roles?: string[];
+    feature?: PlanFeatureKey;
 };
 
 type NavSection = {
@@ -49,46 +52,46 @@ const navSections: NavSection[] = [
         sectionKey: 'main',
         sectionLabel: t('nav.sections.main'),
         items: [
-            { to: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard, end: true, roles: ['owner', 'manager', 'cashier', 'worker'] },
-            { to: '/cashier', label: t('nav.cashier'), icon: Banknote, roles: ['owner', 'manager', 'cashier'] },
-            { to: '/worker', label: t('nav.worker'), icon: Wrench, roles: ['owner', 'manager', 'worker'] },
+            { to: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard, end: true, roles: ['owner', 'manager', 'cashier', 'worker'], feature: 'dashboard' },
+            { to: '/cashier', label: t('nav.cashier'), icon: Banknote, roles: ['owner', 'manager', 'cashier'], feature: 'cashier' },
+            { to: '/worker', label: t('nav.worker'), icon: Wrench, roles: ['owner', 'manager', 'worker'], feature: 'worker' },
         ],
     },
     {
         sectionKey: 'operations',
         sectionLabel: t('nav.sections.operations'),
         items: [
-            { to: '/queue', label: t('nav.queue'), icon: ListOrdered, roles: ['owner', 'manager', 'cashier', 'worker'] },
-            { to: '/queue/screen', label: t('nav.queueScreen'), icon: Monitor, roles: ['owner', 'manager', 'cashier'] },
-            { to: '/orders', label: t('nav.orders'), icon: ClipboardList, roles: ['owner', 'manager', 'cashier', 'worker'] },
-            { to: '/booking', label: t('nav.booking'), icon: CalendarDays, roles: ['owner', 'manager'] },
+            { to: '/queue', label: t('nav.queue'), icon: ListOrdered, roles: ['owner', 'manager', 'cashier', 'worker'], feature: 'queue' },
+            { to: '/queue/screen', label: t('nav.queueScreen'), icon: Monitor, roles: ['owner', 'manager', 'cashier'], feature: 'queue_screen' },
+            { to: '/orders', label: t('nav.orders'), icon: ClipboardList, roles: ['owner', 'manager', 'cashier', 'worker'], feature: 'orders' },
+            { to: '/booking', label: t('nav.booking'), icon: CalendarDays, roles: ['owner', 'manager'], feature: 'bookings' },
         ],
     },
     {
         sectionKey: 'masterData',
         sectionLabel: t('nav.sections.masterData'),
         items: [
-            { to: '/branches', label: t('nav.branches'), icon: Building2, roles: ['owner', 'manager'] },
-            { to: '/customers', label: t('nav.customers'), icon: Users, roles: ['owner', 'manager', 'cashier'] },
-            { to: '/vehicles', label: t('nav.vehicles'), icon: CarFront, roles: ['owner', 'manager', 'cashier'] },
-            { to: '/services', label: t('nav.services'), icon: Droplets, roles: ['owner', 'manager'] },
-            { to: '/pricing', label: t('nav.pricing'), icon: Tags, roles: ['owner', 'manager'] },
+            { to: '/branches', label: t('nav.branches'), icon: Building2, roles: ['owner', 'manager'], feature: 'branches' },
+            { to: '/customers', label: t('nav.customers'), icon: Users, roles: ['owner', 'manager', 'cashier'], feature: 'customers' },
+            { to: '/vehicles', label: t('nav.vehicles'), icon: CarFront, roles: ['owner', 'manager', 'cashier'], feature: 'vehicles' },
+            { to: '/services', label: t('nav.services'), icon: Droplets, roles: ['owner', 'manager'], feature: 'services' },
+            { to: '/pricing', label: t('nav.pricing'), icon: Tags, roles: ['owner', 'manager'], feature: 'pricing' },
         ],
     },
     {
         sectionKey: 'finance',
         sectionLabel: t('nav.sections.finance'),
         items: [
-            { to: '/invoices', label: t('nav.invoices'), icon: Receipt, roles: ['owner', 'manager', 'cashier'] },
-            { to: '/tax-reports', label: t('nav.taxReports'), icon: CreditCard, roles: ['owner', 'manager'] },
+            { to: '/invoices', label: t('nav.invoices'), icon: Receipt, roles: ['owner', 'manager', 'cashier'], feature: 'invoices' },
+            { to: '/tax-reports', label: t('nav.taxReports'), icon: CreditCard, roles: ['owner', 'manager'], feature: 'tax_reports' },
         ],
     },
     {
         sectionKey: 'system',
         sectionLabel: t('nav.sections.system'),
         items: [
-            { to: '/appearance', label: t('nav.appearance'), icon: Palette, roles: ['owner', 'manager'] },
-            { to: '/settings', label: t('nav.settings'), icon: Settings, roles: ['owner', 'manager'] },
+            { to: '/appearance', label: t('nav.appearance'), icon: Palette, roles: ['owner', 'manager'], feature: 'appearance' },
+            { to: '/settings', label: t('nav.settings'), icon: Settings, roles: ['owner', 'manager'], feature: 'settings' },
         ],
     },
 ];
@@ -111,12 +114,15 @@ export function Sidebar({
     className 
 }: SidebarProps) {
     const { user } = useAuth();
+    const { hasFeature } = usePlanFeatures();
     const userRoles = user?.roles ?? [];
     const visibleSections = navSections
         .map((section) => ({
             ...section,
             items: section.items.filter(
-                (item) => !item.roles || item.roles.some((role) => userRoles.includes(role)),
+                (item) =>
+                    (!item.roles || item.roles.some((role) => userRoles.includes(role))) &&
+                    (!item.feature || hasFeature(item.feature)),
             ),
         }))
         .filter((section) => section.items.length > 0);

@@ -6,6 +6,7 @@ use App\Http\Requests\Landlord\StorePlanRequest;
 use App\Http\Requests\Landlord\UpdatePlanRequest;
 use App\Models\Landlord\Plan;
 use App\Modules\Shared\Http\Controllers\ApiController;
+use App\Support\PlanFeatureCatalog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -29,6 +30,10 @@ class PlanController extends ApiController
         $validated = $request->validated();
         $validated['currency'] = $validated['currency'] ?? 'OMR';
         $validated['is_active'] = $validated['is_active'] ?? true;
+        $validated['features'] = PlanFeatureCatalog::normalize(
+            $validated['features'] ?? null,
+            $validated['slug'] ?? null,
+        );
 
         $plan = Plan::query()->create($validated);
 
@@ -44,7 +49,16 @@ class PlanController extends ApiController
 
     public function update(UpdatePlanRequest $request, Plan $plan): JsonResponse
     {
-        $plan->update($request->validated());
+        $validated = $request->validated();
+
+        if (array_key_exists('features', $validated)) {
+            $validated['features'] = PlanFeatureCatalog::normalize(
+                $validated['features'],
+                $validated['slug'] ?? $plan->slug,
+            );
+        }
+
+        $plan->update($validated);
 
         return $this->success($this->transformPlan($plan->fresh()), 'تم تحديث الباقة.');
     }
@@ -77,7 +91,7 @@ class PlanController extends ApiController
             'max_branches' => $plan->max_branches,
             'max_users' => $plan->max_users,
             'max_vehicles_per_day' => $plan->max_vehicles_per_day,
-            'features' => $plan->features ?? [],
+            'features' => $plan->featureMap(),
             'is_active' => (bool) $plan->is_active,
             'sort_order' => $plan->sort_order,
             'created_at' => $plan->created_at?->toIso8601String(),

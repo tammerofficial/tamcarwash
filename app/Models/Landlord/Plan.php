@@ -2,6 +2,7 @@
 
 namespace App\Models\Landlord;
 
+use App\Support\PlanFeatureCatalog;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -46,5 +47,25 @@ class Plan extends Model
     public function subscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class);
+    }
+
+    /**
+     * @return array<string, bool>
+     */
+    public function featureMap(): array
+    {
+        return PlanFeatureCatalog::normalize(
+            is_array($this->features) ? $this->features : null,
+            $this->slug,
+        );
+    }
+
+    public function hasFeature(string $feature): bool
+    {
+        return PlanFeatureCatalog::enabled(
+            is_array($this->features) ? $this->features : null,
+            $feature,
+            $this->slug,
+        );
     }
 }

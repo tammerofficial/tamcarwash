@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ExternalLink, Pencil } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -10,23 +9,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { t } from '@/lib/i18n';
 import type { ApiResponse } from '@/types/api';
-import type { LandlordPlan, LandlordTenantRow } from '@/types/landlord';
-import { TenantFormDialog, statusLabel } from '@/pages/landlord/LandlordTenantsPage';
+import type { LandlordTenantRow } from '@/types/landlord';
+import { statusLabel } from '@/pages/landlord/LandlordTenantsPage';
 
 export function LandlordTenantDetailPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [formOpen, setFormOpen] = useState(false);
 
     const { data, isLoading } = useQuery({
         queryKey: ['landlord-tenant', id],
         queryFn: () => api.get<ApiResponse<LandlordTenantRow>>(endpoints.landlord.tenant(id!)),
         enabled: Boolean(id),
-    });
-
-    const { data: plansData } = useQuery({
-        queryKey: ['landlord-plans'],
-        queryFn: () => api.get<ApiResponse<LandlordPlan[]>>(endpoints.landlord.plans),
     });
 
     const tenant = data?.data;
@@ -41,8 +34,8 @@ export function LandlordTenantDetailPage() {
                 description={t('landlord.tenants.details')}
                 actions={
                     <div className="flex gap-2">
-                        <Button variant="outline" onClick={() => navigate('/landlord/tenants')}>رجوع</Button>
-                        <Button onClick={() => setFormOpen(true)}><Pencil className="me-2 h-4 w-4" />{t('common.edit')}</Button>
+                        <Button variant="outline" onClick={() => navigate('/landlord/tenants')}>{t('common.back')}</Button>
+                        <Button onClick={() => navigate(`/landlord/tenants/${tenant.id}/edit`)}><Pencil className="me-2 h-4 w-4" />{t('common.edit')}</Button>
                         {tenant.dashboard_url && tenant.status === 'active' && (
                             <Button asChild variant="secondary">
                                 <a href={tenant.dashboard_url} target="_blank" rel="noopener noreferrer">
@@ -100,7 +93,6 @@ export function LandlordTenantDetailPage() {
                 </Card>
             )}
 
-            <TenantFormDialog open={formOpen} onOpenChange={setFormOpen} tenant={tenant} plans={plansData?.data ?? []} />
         </div>
     );
 }

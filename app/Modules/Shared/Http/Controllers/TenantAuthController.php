@@ -3,6 +3,7 @@
 namespace App\Modules\Shared\Http\Controllers;
 
 use App\Modules\Shared\Http\Resources\TenantUserResource;
+use App\Services\Landlord\TenantPlanService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\TenantUser;
@@ -34,7 +35,7 @@ class TenantAuthController extends ApiController
         }
 
         return $this->success([
-            'user' => TenantUserResource::make(Auth::guard('tenant')->user()),
+            'user' => $this->userPayload(Auth::guard('tenant')->user()),
         ], 'تم تسجيل الدخول بنجاح.');
     }
 
@@ -56,6 +57,20 @@ class TenantAuthController extends ApiController
             return $this->error('غير مصرح.', 401, 'unauthenticated');
         }
 
-        return $this->success(TenantUserResource::make($user));
+        return $this->success($this->userPayload($user));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function userPayload(mixed $user): array
+    {
+        $planService = app(TenantPlanService::class);
+
+        return [
+            ...TenantUserResource::make($user)->resolve(),
+            'features' => $planService->enabledFeatures(),
+            'plan' => $planService->getPlanMeta(),
+        ];
     }
 }

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Pencil } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,14 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { t } from '@/lib/i18n';
 import { formatCurrency } from '@/lib/utils';
+import { PLAN_FEATURE_CATALOG, isFeatureEnabled } from '@/lib/plan-features';
 import type { ApiResponse } from '@/types/api';
 import type { LandlordPlan } from '@/types/landlord';
-import { PlanFormDialog } from '@/pages/landlord/LandlordPlansPage';
 
 export function LandlordPlanDetailPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [formOpen, setFormOpen] = useState(false);
 
     const { data, isLoading } = useQuery({
         queryKey: ['landlord-plan', id],
@@ -37,8 +35,10 @@ export function LandlordPlanDetailPage() {
                 description={t('landlord.plans.details')}
                 actions={
                     <div className="flex gap-2">
-                        <Button variant="outline" onClick={() => navigate('/landlord/plans')}>رجوع</Button>
-                        <Button onClick={() => setFormOpen(true)}><Pencil className="me-2 h-4 w-4" />{t('common.edit')}</Button>
+                        <Button variant="outline" onClick={() => navigate('/landlord/plans')}>{t('common.back')}</Button>
+                        <Button onClick={() => navigate(`/landlord/plans/${plan.id}/edit`)}>
+                            <Pencil className="me-2 h-4 w-4" />{t('common.edit')}
+                        </Button>
                     </div>
                 }
             />
@@ -76,20 +76,25 @@ export function LandlordPlanDetailPage() {
                 </Card>
             )}
 
-            {(plan.features ?? []).length > 0 && (
-                <Card>
-                    <CardHeader><CardTitle>{t('landlord.plans.features')}</CardTitle></CardHeader>
-                    <CardContent>
-                        <ul className="list-disc space-y-1 pe-4 text-sm">
-                            {plan.features!.map((feature) => (
-                                <li key={feature}>{feature}</li>
-                            ))}
-                        </ul>
-                    </CardContent>
-                </Card>
-            )}
-
-            <PlanFormDialog open={formOpen} onOpenChange={setFormOpen} plan={plan} />
+            <Card>
+                <CardHeader><CardTitle>{t('landlord.plans.features')}</CardTitle></CardHeader>
+                <CardContent className="grid gap-3 sm:grid-cols-2">
+                    {PLAN_FEATURE_CATALOG.map((feature) => {
+                        const enabled = isFeatureEnabled(plan.features, feature.key);
+                        return (
+                            <div key={feature.key} className="flex items-center justify-between rounded-xl border p-3">
+                                <div>
+                                    <p className="font-medium">{feature.label}</p>
+                                    <p className="text-xs text-muted-foreground">{feature.description}</p>
+                                </div>
+                                <Badge variant={enabled ? 'default' : 'secondary'}>
+                                    {enabled ? t('common.enabled') : t('common.disabled')}
+                                </Badge>
+                            </div>
+                        );
+                    })}
+                </CardContent>
+            </Card>
         </div>
     );
 }
