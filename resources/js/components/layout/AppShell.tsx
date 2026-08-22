@@ -50,18 +50,18 @@ export function AppShell() {
             <div className="admin-console-main relative flex min-w-0 flex-1 flex-col">
                 <Header onMenuClick={() => setMobileNavOpen(true)} />
 
-                <main className="flex-1 px-4 py-5 lg:px-7 lg:py-6">
+                <main className="flex-1 px-3 py-4 sm:px-4 sm:py-5 lg:px-7 lg:py-6">
                     <div className="mx-auto w-full max-w-[1600px]">
                         <Outlet />
                     </div>
                 </main>
 
-                <footer className="admin-console-footer px-4 py-4 lg:px-7">
+                <footer className="admin-console-footer px-3 py-3 sm:px-4 sm:py-4 lg:px-7">
                     <div className="mx-auto flex w-full max-w-[1600px] flex-col items-center justify-between gap-2 sm:flex-row sm:items-center">
-                        <p className="text-[11px] font-semibold tracking-wide">
+                        <p className="text-[9px] sm:text-[10px] font-semibold tracking-wide text-center sm:text-start">
                             &copy; {new Date().getFullYear()} {getAppName()} · {t('app.operationsConsole')}
                         </p>
-                        <p className="text-[11px] font-semibold tracking-[0.12em]">
+                        <p className="text-[9px] sm:text-[10px] font-semibold tracking-[0.12em]">
                             {t('app.sultanate')}
                         </p>
                     </div>

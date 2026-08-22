@@ -177,6 +177,48 @@
 }
 
 @layer utilities {
+    /* ── Mobile-first responsive utilities ── */
+    @media (max-width: 319px) {
+        /* Extra small phones (320px and below) */
+        body {
+            font-size: 14px;
+        }
+    }
+
+    @media (min-width: 320px) and (max-width: 639px) {
+        /* Mobile phones (320px - 639px) */
+        :root {
+            --spacing-mobile: 0.5rem;
+        }
+    }
+
+    @media (min-width: 640px) and (max-width: 767px) {
+        /* Small tablets (640px - 767px) */
+        :root {
+            --spacing-tablet-small: 1rem;
+        }
+    }
+
+    @media (min-width: 768px) {
+        /* Tablets and above (768px+) */
+        :root {
+            --spacing-tablet: 1.5rem;
+        }
+    }
+
+    /* Touch-friendly minimum sizes (44-48px) */
+    .touch-target {
+        @apply min-h-12 min-w-12 flex items-center justify-center;
+    }
+
+    .touch-target-sm {
+        @apply min-h-11 min-w-11 flex items-center justify-center;
+    }
+
+    .mobile-safe-padding {
+        @apply px-3 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6;
+    }
+
     /* ── Operations console chrome ── */
     .admin-console {
         background-color: var(--inst-bg);
@@ -191,6 +233,19 @@
         background-color: var(--inst-silver);
         border-top: 1px solid var(--inst-border);
         color: var(--inst-muted);
+        padding: 1rem 1rem;
+    }
+
+    @media (min-width: 640px) {
+        .admin-console-footer {
+            padding: 1rem 1.75rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .admin-console-footer {
+            padding: 1rem 1.75rem;
+        }
     }
 
     .admin-header {
@@ -198,6 +253,13 @@
         background-color: #ffffff;
         border-bottom: 1px solid var(--inst-border);
         box-shadow: 0 1px 0 color-mix(in srgb, var(--inst-teal) 5%, transparent);
+        height: 3.75rem;
+    }
+
+    @media (min-width: 640px) {
+        .admin-header {
+            height: 4.25rem;
+        }
     }
 
     .admin-header::before {
@@ -216,16 +278,30 @@
 
     .admin-page-header {
         border-bottom: 1px solid var(--inst-border);
-        padding-bottom: 1rem;
+        padding-bottom: 0.75rem;
         margin-bottom: 0.25rem;
+    }
+
+    @media (min-width: 768px) {
+        .admin-page-header {
+            padding-bottom: 1rem;
+        }
     }
 
     .admin-page-kicker {
         color: var(--inst-muted);
-        font-size: 0.6875rem;
+        font-size: 0.625rem;
         font-weight: 700;
-        letter-spacing: 0.14em;
-        margin-bottom: 0.35rem;
+        letter-spacing: 0.12em;
+        margin-bottom: 0.25rem;
+    }
+
+    @media (min-width: 768px) {
+        .admin-page-kicker {
+            font-size: 0.6875rem;
+            letter-spacing: 0.14em;
+            margin-bottom: 0.35rem;
+        }
     }
 
     .admin-stat-card {
@@ -233,18 +309,44 @@
         border: 1px solid var(--inst-border);
         border-inline-start: 4px solid var(--brand-primary);
         box-shadow: 0 1px 2px color-mix(in srgb, var(--inst-teal) 7%, transparent);
+        padding: 1rem;
+    }
+
+    @media (min-width: 640px) {
+        .admin-stat-card {
+            padding: 1.25rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .admin-stat-card {
+            padding: 1.5rem;
+        }
     }
 
     .admin-panel {
         background: #ffffff;
         border: 1px solid var(--inst-border);
         box-shadow: 0 1px 2px color-mix(in srgb, var(--inst-teal) 6%, transparent);
+        padding: 1rem;
+    }
+
+    @media (min-width: 640px) {
+        .admin-panel {
+            padding: 1.25rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .admin-panel {
+            padding: 1.5rem;
+        }
     }
 
     .admin-table-card {
         background: #ffffff;
         border: 1px solid var(--inst-border);
-        overflow: hidden;
+        overflow-x: auto;
         box-shadow: 0 1px 2px color-mix(in srgb, var(--inst-teal) 6%, transparent);
     }
 
@@ -252,9 +354,26 @@
         background-color: var(--inst-silver);
     }
 
+    .admin-table-card tbody tr {
+        font-size: 0.875rem;
+    }
+
+    @media (min-width: 768px) {
+        .admin-table-card tbody tr {
+            font-size: 0.9375rem;
+        }
+    }
+
     .admin-table-toolbar {
         background-color: var(--inst-silver);
         border-bottom: 1px solid var(--inst-border);
+        padding: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+        .admin-table-toolbar {
+            padding: 1rem;
+        }
     }
 
     /* ── Admin sidebar — deep institutional teal ── */
@@ -268,6 +387,13 @@
             color-mix(in srgb, var(--inst-teal) 86%, #000000) 100%
         );
         border-inline-start: 1px solid color-mix(in srgb, #ffffff 8%, transparent);
+        width: 100%;
+    }
+
+    @media (min-width: 1024px) {
+        .admin-sidebar {
+            width: auto;
+        }
     }
 
     .admin-sidebar--collapsed {
@@ -275,7 +401,7 @@
     }
 
     .admin-sidebar-nav {
-        @apply relative z-20 flex-1 overflow-y-auto px-3 pb-20 pt-2;
+        @apply relative z-20 flex-1 overflow-y-auto px-2 pb-20 pt-2 sm:px-3;
         scrollbar-width: none;
     }
 
@@ -284,7 +410,14 @@
     }
 
     .admin-sidebar-nav-item {
-        @apply text-[0.875rem] font-semibold leading-tight;
+        @apply text-sm font-semibold leading-tight min-h-11 py-2 px-3 rounded flex items-center justify-start;
+        font-size: 0.875rem;
+    }
+
+    @media (min-width: 768px) {
+        .admin-sidebar-nav-item {
+            font-size: 0.9375rem;
+        }
     }
 
     .admin-sidebar-nav-item--active {
@@ -317,33 +450,33 @@
     }
 
     .admin-sidebar-brand {
-        @apply relative z-30 flex-shrink-0 p-5 pt-7;
+        @apply relative z-30 flex-shrink-0 p-3 pt-6 sm:p-5 sm:pt-7;
         border-bottom: 1px solid color-mix(in srgb, #ffffff 10%, transparent);
     }
 
     .admin-sidebar-brand--compact {
-        @apply p-3 pt-7;
+        @apply p-2 pt-6 sm:p-3 sm:pt-7;
     }
 
     .admin-sidebar-brand-title {
-        @apply text-lg font-bold tracking-tight text-center text-white;
+        @apply text-base font-bold tracking-tight text-center text-white sm:text-lg;
     }
 
     .admin-sidebar-brand-subtitle {
-        @apply text-[11px] font-semibold text-white/55 tracking-wide text-center;
+        @apply text-[10px] font-semibold text-white/55 tracking-wide text-center sm:text-[11px];
     }
 
     .admin-sidebar-brand-sultanate {
-        @apply text-[10px] font-semibold text-white/35 tracking-[0.16em] text-center;
+        @apply text-[9px] font-semibold text-white/35 tracking-[0.16em] text-center sm:text-[10px];
     }
 
     .admin-sidebar-section-label {
-        @apply text-[10px] font-bold tracking-[0.16em] mb-1.5 px-2.5 text-right;
+        @apply text-[9px] font-bold tracking-[0.14em] mb-1 px-2 text-right sm:text-[10px] sm:mb-1.5 sm:px-2.5;
         color: color-mix(in srgb, var(--inst-aqua) 70%, #ffffff);
     }
 
     .admin-sidebar-footer-note {
-        @apply text-[11px] font-medium leading-relaxed text-white/55;
+        @apply text-[10px] font-medium leading-relaxed text-white/55 sm:text-[11px];
     }
 
     .admin-sidebar-mobile-backdrop {

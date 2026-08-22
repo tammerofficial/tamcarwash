@@ -64,33 +64,34 @@ export function Header({ onMenuClick }: HeaderProps) {
     const currentRole = roleLabel(user?.roles, isLandlord);
 
     return (
-        <header className="admin-header sticky top-0 z-40 flex h-[4.25rem] items-center justify-between px-4 lg:px-7">
-            <div className="flex items-center gap-3">
+        <header className="admin-header sticky top-0 z-40 flex items-center justify-between px-3 sm:px-4 lg:px-7">
+            <div className="flex items-center gap-2 sm:gap-3">
                 <Button
                     variant="outline"
                     size="icon"
-                    className="h-10 w-10 shrink-0 rounded-lg border-inst-border bg-white text-inst-text hover:bg-inst-silver lg:hidden"
+                    className="h-12 w-12 sm:h-11 sm:w-11 md:h-10 md:w-10 shrink-0 rounded-lg border-inst-border bg-white text-inst-text hover:bg-inst-silver lg:hidden touch-target-sm"
                     onClick={onMenuClick}
+                    aria-label={t('nav.menu') || 'Menu'}
                 >
                     <Menu className="h-5 w-5" />
                 </Button>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     {logoUrl && !isLandlord && (
-                        <div className="hidden h-10 w-10 overflow-hidden rounded-lg border border-inst-border bg-inst-silver p-1 sm:block">
+                        <div className="hidden h-9 w-9 sm:h-10 sm:w-10 overflow-hidden rounded-lg border border-inst-border bg-inst-silver p-1 sm:block flex-shrink-0">
                             <img src={logoUrl} alt={businessName} className="h-full w-full object-contain" />
                         </div>
                     )}
-                    <div>
-                        <p className="mb-0.5 text-[10px] font-bold tracking-[0.16em] text-inst-muted">
+                    <div className="min-w-0 flex-1 truncate">
+                        <p className="mb-0.5 text-[9px] sm:text-[10px] font-bold tracking-[0.14em] sm:tracking-[0.16em] text-inst-muted truncate">
                             {isLandlord ? t('auth.landlordPortal') : t('app.operationsConsole')}
                         </p>
-                        <div className="flex items-center gap-2">
-                            <p className="text-[1.05rem] font-bold leading-none text-inst-text">
+                        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                            <p className="text-sm sm:text-base font-bold leading-none text-inst-text truncate">
                                 {isLandlord ? t('auth.landlordLogin') : businessName}
                             </p>
                             {!isLandlord && (
-                                <Badge className="rounded-md border border-inst-border bg-inst-silver px-2 py-0.5 text-[10px] font-bold text-inst-teal">
+                                <Badge className="rounded-md border border-inst-border bg-inst-silver px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-inst-teal flex-shrink-0">
                                     {t('app.active')}
                                 </Badge>
                             )}
