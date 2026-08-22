@@ -28,7 +28,7 @@ export function HomePage() {
     const { data: branches } = useStorefrontBranches();
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans" dir="rtl">
+        <div className="min-h-screen bg-brand-primary/[0.02] font-sans" dir="rtl">
             <PublicHeader profile={profile} />
 
             <main>
@@ -38,11 +38,11 @@ export function HomePage() {
                 <section id="services" className="py-24 bg-white">
                     <div className="mx-auto max-w-7xl px-4 lg:px-8">
                         <div className="mb-16 max-w-2xl space-y-4">
-                            <p className="text-sm font-bold tracking-widest uppercase text-slate-500">خدماتنا</p>
-                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
-                                عناية فائقة <span className="text-slate-400">وأسعار واضحة</span>
+                            <p className="text-sm font-bold tracking-widest uppercase text-brand-primary/40">خدماتنا</p>
+                            <h2 className="text-4xl md:text-5xl font-black text-brand-primary-dark tracking-tight">
+                                عناية فائقة <span className="text-brand-primary/30">وأسعار واضحة</span>
                             </h2>
-                            <p className="text-lg text-slate-600 leading-relaxed">
+                            <p className="text-lg text-brand-primary/70 leading-relaxed">
                                 باقات غسيل وتلميع بعناية فائقة — احجز الخدمة المناسبة لسيارتك مباشرة.
                             </p>
                         </div>
@@ -72,26 +72,26 @@ export function HomePage() {
                 <PricingPreview />
                 <CorporateSection />
 
-                <section className="py-24 bg-slate-50" dir="rtl">
+                <section className="py-24 bg-brand-primary/[0.02]" dir="rtl">
                     <div className="mx-auto max-w-7xl px-4 lg:px-8">
                         <div className="mb-16 text-center space-y-4">
-                            <p className="text-sm font-bold tracking-widest uppercase text-slate-500">مسار الخدمة</p>
-                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
-                                أربع خطوات <span className="text-slate-400">واضحة</span>
+                            <p className="text-sm font-bold tracking-widest uppercase text-brand-primary/40">مسار الخدمة</p>
+                            <h2 className="text-4xl md:text-5xl font-black text-brand-primary-dark tracking-tight">
+                                أربع خطوات <span className="text-brand-primary/30">واضحة</span>
                             </h2>
                         </div>
 
                         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             {STEPS.map((item) => (
-                                <div key={item.step} className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                <div key={item.step} className="bg-white rounded-2xl p-8 border border-brand-primary/10 shadow-sm hover:shadow-md transition-shadow">
                                     <div className="flex items-center justify-between mb-6">
-                                        <div className="h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-900">
+                                        <div className="h-12 w-12 rounded-xl bg-brand-primary/5 border border-brand-primary/10 flex items-center justify-center text-brand-primary">
                                             <item.icon className="h-6 w-6" />
                                         </div>
-                                        <span className="text-sm font-bold text-slate-400">{item.step}</span>
+                                        <span className="text-sm font-bold text-brand-primary/20">{item.step}</span>
                                     </div>
-                                    <h3 className="text-xl font-bold text-slate-900 mb-3">{item.title}</h3>
-                                    <p className="text-sm text-slate-600 leading-relaxed">{item.desc}</p>
+                                    <h3 className="text-xl font-bold text-brand-primary-dark mb-3">{item.title}</h3>
+                                    <p className="text-sm text-brand-primary/60 leading-relaxed">{item.desc}</p>
                                 </div>
                             ))}
                         </div>

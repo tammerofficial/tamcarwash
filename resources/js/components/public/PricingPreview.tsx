@@ -67,16 +67,16 @@ export function PricingPreview() {
             <div className="mx-auto max-w-7xl px-4 lg:px-8">
                 {/* Header */}
                 <div className="mb-20 max-w-3xl mx-auto text-center space-y-4">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 border border-slate-200 shadow-sm">
-                        <Sparkles className="h-4 w-4 text-slate-900" />
-                        <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">باقات فاخرة</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-primary/5 border border-brand-primary/10 shadow-sm">
+                        <Sparkles className="h-4 w-4 text-brand-primary" />
+                        <span className="text-xs font-bold text-brand-primary uppercase tracking-wider">باقات فاخرة</span>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+                    <h2 className="text-4xl md:text-5xl font-black text-brand-primary-dark tracking-tight">
                         أسعار واضحة وشفافة
                         <br />
-                        <span className="text-slate-400">بلا مفاجآت</span>
+                        <span className="text-brand-primary/30">بلا مفاجآت</span>
                     </h2>
-                    <p className="text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
+                    <p className="text-lg text-brand-primary/70 leading-relaxed max-w-2xl mx-auto">
                         اختر الباقة المناسبة لسيارتك وأكمل الحجز في أقل من دقيقتين. دفع آمن وموثوق.
                     </p>
                 </div>
@@ -102,14 +102,14 @@ export function PricingPreview() {
                                     className={cn(
                                         'relative p-8 rounded-3xl shadow-sm transition-all duration-300',
                                         plan.recommended
-                                            ? 'bg-slate-900 text-white border-0 shadow-xl'
-                                            : 'bg-white border border-slate-200 hover:shadow-md',
+                                            ? 'bg-brand-primary text-white border-0 shadow-xl shadow-brand-primary/20'
+                                            : 'bg-white border border-brand-primary/10 hover:shadow-md',
                                     )}
                                 >
                                     {/* Recommended badge */}
                                     {plan.recommended && (
                                         <div className="absolute -top-4 inset-x-0 flex justify-center">
-                                            <span className="px-4 py-1.5 rounded-full bg-white text-slate-900 font-bold text-xs uppercase tracking-wider shadow-sm border border-slate-100">
+                                            <span className="px-4 py-1.5 rounded-full bg-white text-brand-primary font-bold text-xs uppercase tracking-wider shadow-sm border border-brand-primary/10">
                                                 الأكثر طلباً
                                             </span>
                                         </div>
@@ -121,7 +121,7 @@ export function PricingPreview() {
                                             'h-14 w-14 rounded-2xl flex items-center justify-center mb-8',
                                             plan.recommended
                                                 ? 'bg-white/10 text-white'
-                                                : 'bg-slate-50 text-slate-900 border border-slate-100',
+                                                : 'bg-brand-primary/5 text-brand-primary border border-brand-primary/10',
                                         )}
                                     >
                                         <plan.icon className="h-7 w-7" />
@@ -129,13 +129,13 @@ export function PricingPreview() {
 
                                     {/* Title and Description */}
                                     <div className="mb-8">
-                                        <h3 className={cn('text-2xl font-black mb-3 tracking-tight', plan.recommended ? 'text-white' : 'text-slate-900')}>
+                                        <h3 className={cn('text-2xl font-black mb-3 tracking-tight', plan.recommended ? 'text-white' : 'text-brand-primary-dark')}>
                                             {plan.name}
                                         </h3>
                                         <p
                                             className={cn(
                                                 'text-sm leading-relaxed',
-                                                plan.recommended ? 'text-white/70' : 'text-slate-500',
+                                                plan.recommended ? 'text-white/70' : 'text-brand-primary/60',
                                             )}
                                         >
                                             {plan.desc}
@@ -144,14 +144,14 @@ export function PricingPreview() {
 
                                     {/* Price */}
                                     <div className="mb-8 pb-8 border-b" style={{
-                                        borderColor: plan.recommended ? 'rgba(255,255,255,0.1)' : 'var(--tw-colors-slate-100)'
+                                        borderColor: plan.recommended ? 'rgba(255,255,255,0.1)' : 'var(--brand-primary-10, rgba(0,0,0,0.05))'
                                     }}>
                                         <div className="flex items-baseline gap-2">
                                             <span className="text-5xl font-black tracking-tight leading-none">{plan.price}</span>
                                             <span
                                                 className={cn(
                                                     'text-lg font-bold',
-                                                    plan.recommended ? 'text-white/80' : 'text-slate-900',
+                                                    plan.recommended ? 'text-white/80' : 'text-brand-primary-dark',
                                                 )}
                                             >
                                                 {currencyLabel}
@@ -166,12 +166,12 @@ export function PricingPreview() {
                                                 <Check
                                                     className={cn(
                                                         'h-5 w-5 shrink-0 mt-0.5',
-                                                        plan.recommended ? 'text-white' : 'text-slate-900',
+                                                        plan.recommended ? 'text-white' : 'text-brand-primary',
                                                     )}
                                                 />
                                                 <span className={cn(
                                                     'text-sm font-medium leading-relaxed',
-                                                    plan.recommended ? 'text-white/90' : 'text-slate-700'
+                                                    plan.recommended ? 'text-white/90' : 'text-brand-primary/80'
                                                 )}>
                                                     {feat}
                                                 </span>
@@ -185,8 +185,8 @@ export function PricingPreview() {
                                         className={cn(
                                             'w-full h-14 rounded-xl font-bold transition-all text-base shadow-sm',
                                             plan.recommended
-                                                ? 'bg-white text-slate-900 hover:bg-slate-100'
-                                                : 'bg-slate-900 text-white hover:bg-slate-800',
+                                                ? 'bg-white text-brand-primary hover:bg-slate-100'
+                                                : 'bg-brand-primary text-white hover:bg-brand-primary-dark',
                                         )}
                                     >
                                         <Link to="/book">احجز الآن</Link>
@@ -204,9 +204,9 @@ export function PricingPreview() {
                         { title: 'دفع آمن', desc: 'جميع طرق الدفع محمية وموثوقة' },
                         { title: 'ضمان الجودة', desc: 'رضا العميل هو أولويتنا الأولى' },
                     ].map((item) => (
-                        <div key={item.title} className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-sm transition-all text-center">
-                            <h4 className="font-bold text-slate-900 mb-2">{item.title}</h4>
-                            <p className="text-sm text-slate-500">{item.desc}</p>
+                        <div key={item.title} className="p-8 rounded-2xl bg-brand-primary/[0.03] border border-brand-primary/10 hover:shadow-sm transition-all text-center">
+                            <h4 className="font-bold text-brand-primary-dark mb-2">{item.title}</h4>
+                            <p className="text-sm text-brand-primary/60">{item.desc}</p>
                         </div>
                     ))}
                 </div>

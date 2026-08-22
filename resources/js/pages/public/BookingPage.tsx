@@ -32,13 +32,13 @@ export function BookingPage() {
                                     { icon: ShieldCheck, title: 'تأكيد فوري', desc: 'ستصلك رسالة نصية فور تأكيد حجزك.' },
                                     { icon: Info, title: 'تعديل مرن', desc: 'يمكنك تعديل أو إلغاء حجزك قبل 3 ساعات.' },
                                 ].map((item, i) => (
-                                    <div key={i} className="flex gap-5 p-6 rounded-2xl bg-white shadow-sm border border-gray-100 transition-all hover:shadow-md">
-                                        <div className="h-12 w-12 rounded-xl bg-brand-secondary-10 flex items-center justify-center shrink-0 text-brand-secondary">
+                                    <div key={i} className="flex gap-5 p-6 rounded-2xl bg-white shadow-sm border border-brand-primary/5 transition-all hover:shadow-md">
+                                        <div className="h-12 w-12 rounded-xl bg-brand-primary/10 flex items-center justify-center shrink-0 text-brand-primary">
                                             <item.icon className="h-6 w-6" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-gray-900 mb-1">{item.title}</h4>
-                                            <p className="text-[11px] text-gray-400 font-medium leading-relaxed">{item.desc}</p>
+                                            <h4 className="font-bold text-brand-primary-dark mb-1">{item.title}</h4>
+                                            <p className="text-[11px] text-brand-primary/40 font-medium leading-relaxed">{item.desc}</p>
                                         </div>
                                     </div>
                                 ))}

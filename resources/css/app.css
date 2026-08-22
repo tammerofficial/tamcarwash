@@ -51,6 +51,9 @@
     --color-inst-border: var(--inst-border);
     --color-inst-success: var(--inst-success);
     --color-inst-silver: var(--inst-silver);
+    --color-brand-primary: var(--brand-primary);
+    --color-brand-secondary: var(--brand-secondary);
+    --color-brand-primary-dark: var(--brand-primary-dark);
 }
 
 :root {

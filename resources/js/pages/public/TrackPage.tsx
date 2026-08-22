@@ -23,7 +23,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
     pending: 'bg-gray-100 text-gray-700 border-gray-200',
     checked_in: 'bg-blue-50 text-blue-700 border-blue-100',
     queued: 'bg-amber-50 text-amber-700 border-amber-100',
-    in_service: 'bg-brand-secondary-10 text-brand-primary border-brand-secondary-20',
+    in_service: 'bg-brand-primary/10 text-brand-primary border-brand-primary/20',
     quality_check: 'bg-purple-50 text-purple-700 border-purple-100',
     ready: 'bg-emerald-50 text-emerald-700 border-emerald-100',
     completed: 'bg-gray-100 text-gray-600 border-gray-200',
@@ -145,20 +145,20 @@ export function TrackPage() {
 
                             <div className="grid sm:grid-cols-3 gap-4 mb-10">
                                 {result.queue_number != null && (
-                                    <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4 text-center">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">رقم الطابور</p>
+                                    <div className="rounded-xl border border-brand-primary/5 bg-brand-primary/[0.02] p-4 text-center">
+                                        <p className="text-[10px] font-bold text-brand-primary/40 uppercase tracking-widest mb-1">رقم الطابور</p>
                                         <p className="text-2xl font-black text-brand-primary">{result.queue_number}</p>
                                     </div>
                                 )}
                                 {result.queue_position != null && (
-                                    <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4 text-center">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">ترتيبك</p>
+                                    <div className="rounded-xl border border-brand-primary/5 bg-brand-primary/[0.02] p-4 text-center">
+                                        <p className="text-[10px] font-bold text-brand-primary/40 uppercase tracking-widest mb-1">ترتيبك</p>
                                         <p className="text-2xl font-black text-brand-primary">{result.queue_position}</p>
                                     </div>
                                 )}
                                 {result.estimated_wait_minutes != null && (
-                                    <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4 text-center">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">الانتظار المتوقع</p>
+                                    <div className="rounded-xl border border-brand-primary/5 bg-brand-primary/[0.02] p-4 text-center">
+                                        <p className="text-[10px] font-bold text-brand-primary/40 uppercase tracking-widest mb-1">الانتظار المتوقع</p>
                                         <p className="text-2xl font-black text-brand-primary">{result.estimated_wait_minutes} د</p>
                                     </div>
                                 )}
@@ -166,7 +166,7 @@ export function TrackPage() {
 
                             {result.timeline.length > 0 && (
                                 <div className="space-y-10 relative">
-                                    <div className="absolute top-0 bottom-0 right-6 w-px bg-gray-100" />
+                                    <div className="absolute top-0 bottom-0 right-6 w-px bg-brand-primary/10" />
 
                                     {result.timeline.map((step, index) => (
                                         <div key={index} className="relative flex items-center gap-8 group">
@@ -174,10 +174,10 @@ export function TrackPage() {
                                                 className={cn(
                                                     'h-12 w-12 rounded-xl border-4 border-white flex items-center justify-center z-10 shadow-sm transition-all duration-500',
                                                     step.state === 'completed'
-                                                        ? 'bg-brand-secondary text-white'
+                                                        ? 'bg-brand-primary text-white'
                                                         : step.state === 'current'
                                                           ? 'bg-brand-primary text-white animate-pulse'
-                                                          : 'bg-gray-100 text-gray-400',
+                                                          : 'bg-brand-primary/5 text-brand-primary/20',
                                                 )}
                                             >
                                                 {step.state === 'completed' ? (
@@ -185,19 +185,19 @@ export function TrackPage() {
                                                 ) : step.state === 'current' ? (
                                                     <Clock className="h-5 w-5" />
                                                 ) : (
-                                                    <div className="h-1.5 w-1.5 rounded-full bg-gray-300" />
+                                                    <div className="h-1.5 w-1.5 rounded-full bg-brand-primary/20" />
                                                 )}
                                             </div>
                                             <div>
                                                 <h4
                                                     className={cn(
                                                         'font-bold text-lg leading-none mb-2',
-                                                        step.state === 'pending' ? 'text-gray-300' : 'text-gray-900',
+                                                        step.state === 'pending' ? 'text-brand-primary/30' : 'text-brand-primary-dark',
                                                     )}
                                                 >
                                                     {step.title}
                                                 </h4>
-                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
+                                                <p className="text-[10px] font-bold text-brand-primary/40 uppercase tracking-[0.2em]">
                                                     {step.time ?? '—'}
                                                 </p>
                                             </div>
@@ -235,8 +235,8 @@ export function TrackPage() {
                         </Card>
                     ) : !errorMessage && !isSearching ? (
                         <div className="text-center py-24 opacity-30">
-                            <Receipt className="h-32 w-32 mx-auto mb-6 text-gray-400" />
-                            <p className="text-lg font-bold text-gray-900 uppercase tracking-widest">
+                            <Receipt className="h-32 w-32 mx-auto mb-6 text-brand-primary" />
+                            <p className="text-lg font-bold text-brand-primary-dark uppercase tracking-widest">
                                 أدخل رقم الفاتورة للبدء
                             </p>
                         </div>

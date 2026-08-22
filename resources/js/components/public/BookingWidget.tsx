@@ -136,17 +136,17 @@ export function BookingWidget() {
 
     if (confirmation) {
         return (
-            <Card className="p-16 text-center rounded-2xl border border-gray-100 shadow-2xl bg-white" dir="rtl">
-                <div className="h-20 w-20 rounded-2xl bg-brand-secondary-10 text-brand-secondary flex items-center justify-center mx-auto mb-8 shadow-sm">
+            <Card className="p-16 text-center rounded-2xl border border-brand-primary/10 shadow-2xl bg-white" dir="rtl">
+                <div className="h-20 w-20 rounded-2xl bg-brand-primary/10 text-brand-primary flex items-center justify-center mx-auto mb-8 shadow-sm">
                     <CheckCircle2 className="h-10 w-10" />
                 </div>
-                <h3 className="text-3xl font-bold text-brand-primary mb-4">تم تأكيد حجزك!</h3>
-                <p className="text-gray-500 mb-4">احتفظ برقم الحجز — ستحتاجه عند وصولك للمغسلة.</p>
-                <p className="text-3xl font-black tracking-wide text-brand-secondary mb-10" dir="ltr">
+                <h3 className="text-3xl font-bold text-brand-primary-dark mb-4">تم تأكيد حجزك!</h3>
+                <p className="text-brand-primary/50 mb-4">احتفظ برقم الحجز — ستحتاجه عند وصولك للمغسلة.</p>
+                <p className="text-3xl font-black tracking-wide text-brand-primary mb-10" dir="ltr">
                     {confirmation.booking_number}
                 </p>
                 <Button
-                    className="h-14 px-10 rounded-xl font-bold transition-all shadow-lg bg-brand-secondary text-white hover:opacity-90"
+                    className="h-14 px-10 rounded-xl font-bold transition-all shadow-lg bg-brand-primary text-white hover:bg-brand-primary-dark"
                     onClick={resetBooking}
                 >
                     حجز موعد آخر
@@ -156,17 +156,17 @@ export function BookingWidget() {
     }
 
     return (
-        <Card className="relative overflow-hidden rounded-2xl border border-gray-100 shadow-2xl bg-white" dir="rtl">
-            <div className="bg-brand-primary p-10 text-white relative">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-brand-secondary-10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+        <Card className="relative overflow-hidden rounded-2xl border border-brand-primary/10 shadow-2xl bg-white" dir="rtl">
+            <div className="bg-brand-primary-dark p-10 text-white relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
 
                 <div className="relative flex items-center justify-between mb-10">
                     <div>
                         <h3 className="text-2xl font-bold mb-1">حجز موعد سريع</h3>
-                        <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.2em]">Secure Online Booking</p>
+                        <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.2em]">Secure Online Booking</p>
                     </div>
                     <div className="h-12 w-12 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/10">
-                        <Calendar className="h-6 w-6 text-brand-secondary" />
+                        <Calendar className="h-6 w-6 text-white" />
                     </div>
                 </div>
 
@@ -178,8 +178,8 @@ export function BookingWidget() {
                                 className={cn(
                                     'h-10 w-10 rounded-xl flex items-center justify-center transition-all duration-500 border',
                                     step >= s.id
-                                        ? 'bg-brand-secondary border-brand-secondary text-white shadow-lg'
-                                        : 'bg-brand-primary border-white/20 text-white/40',
+                                        ? 'bg-brand-primary border-brand-primary text-white shadow-lg'
+                                        : 'bg-brand-primary-dark border-white/20 text-white/40',
                                 )}
                             >
                                 <s.icon className="h-5 w-5" />
@@ -187,7 +187,7 @@ export function BookingWidget() {
                             <span
                                 className={cn(
                                     'text-[10px] font-bold uppercase tracking-widest',
-                                    step >= s.id ? 'text-brand-secondary' : 'text-white/40',
+                                    step >= s.id ? 'text-white' : 'text-white/40',
                                 )}
                             >
                                 {s.label}
@@ -206,7 +206,7 @@ export function BookingWidget() {
                                 name="branch_id"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 block">
+                                        <FormLabel className="text-xs font-bold text-brand-primary/40 uppercase tracking-widest mb-4 block">
                                             1. اختر الفرع
                                         </FormLabel>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -221,17 +221,17 @@ export function BookingWidget() {
                                                     className={cn(
                                                         'p-5 rounded-xl border-2 transition-all text-start group relative overflow-hidden',
                                                         field.value === String(branch.id)
-                                                            ? 'border-brand-secondary bg-brand-secondary-10'
-                                                            : 'border-gray-50 hover:border-brand-secondary-20 bg-gray-50/30',
+                                                            ? 'border-brand-primary bg-brand-primary/5'
+                                                            : 'border-brand-primary/[0.02] hover:border-brand-primary/20 bg-brand-primary/[0.02]',
                                                     )}
                                                 >
-                                                    <p className="font-bold text-gray-900 mb-0.5">{branch.name}</p>
-                                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                                                    <p className="font-bold text-brand-primary-dark mb-0.5">{branch.name}</p>
+                                                    <p className="text-[10px] text-brand-primary/40 font-bold uppercase tracking-wider">
                                                         {branch.city}
                                                     </p>
                                                     {field.value === String(branch.id) && (
                                                         <div className="absolute top-2 left-2">
-                                                            <CheckCircle2 className="h-4 w-4 text-brand-secondary" />
+                                                            <CheckCircle2 className="h-4 w-4 text-brand-primary" />
                                                         </div>
                                                     )}
                                                 </button>
@@ -247,7 +247,7 @@ export function BookingWidget() {
                                 name="service_id"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 block">
+                                        <FormLabel className="text-xs font-bold text-brand-primary/40 uppercase tracking-widest mb-4 block">
                                             2. نوع الخدمة
                                         </FormLabel>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -259,19 +259,19 @@ export function BookingWidget() {
                                                     className={cn(
                                                         'p-5 rounded-xl border-2 transition-all text-start group relative overflow-hidden',
                                                         field.value === String(service.id)
-                                                            ? 'border-brand-secondary bg-brand-secondary-10'
-                                                            : 'border-gray-50 hover:border-brand-secondary-20 bg-gray-50/30',
+                                                            ? 'border-brand-primary bg-brand-primary/5'
+                                                            : 'border-brand-primary/[0.02] hover:border-brand-primary/20 bg-brand-primary/[0.02]',
                                                     )}
                                                 >
-                                                    <p className="font-bold text-gray-900 mb-0.5">
+                                                    <p className="font-bold text-brand-primary-dark mb-0.5">
                                                         {service.name_ar || service.name}
                                                     </p>
-                                                    <p className="text-[10px] text-brand-secondary font-bold uppercase tracking-wider">
+                                                    <p className="text-[10px] text-brand-primary font-bold uppercase tracking-wider">
                                                         {service.base_price} ر.ع
                                                     </p>
                                                     {field.value === String(service.id) && (
                                                         <div className="absolute top-2 left-2">
-                                                            <CheckCircle2 className="h-4 w-4 text-brand-secondary" />
+                                                            <CheckCircle2 className="h-4 w-4 text-brand-primary" />
                                                         </div>
                                                     )}
                                                 </button>
@@ -287,7 +287,7 @@ export function BookingWidget() {
                                 name="vehicle_type"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 block">
+                                        <FormLabel className="text-xs font-bold text-brand-primary/40 uppercase tracking-widest mb-4 block">
                                             3. حجم المركبة
                                         </FormLabel>
                                         <div className="grid grid-cols-2 gap-4">
@@ -302,11 +302,11 @@ export function BookingWidget() {
                                                     className={cn(
                                                         'p-5 rounded-xl border-2 transition-all text-center',
                                                         field.value === type.id
-                                                            ? 'border-brand-secondary bg-brand-secondary-10'
-                                                            : 'border-gray-50 hover:border-brand-secondary-20 bg-gray-50/30',
+                                                            ? 'border-brand-primary bg-brand-primary/5'
+                                                            : 'border-brand-primary/[0.02] hover:border-brand-primary/20 bg-brand-primary/[0.02]',
                                                     )}
                                                 >
-                                                    <span className="font-bold text-gray-900">{type.label}</span>
+                                                    <span className="font-bold text-brand-primary-dark">{type.label}</span>
                                                 </button>
                                             ))}
                                         </div>
@@ -320,14 +320,19 @@ export function BookingWidget() {
                     {step === 2 && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
                             <div className="space-y-3">
-                                <FormLabel className="text-xs font-bold text-gray-400 uppercase tracking-widest block">
+                                <FormLabel className="text-xs font-bold text-brand-primary/40 uppercase tracking-widest block">
                                     متى تريد الحجز؟
                                 </FormLabel>
                                 <div className="grid grid-cols-2 gap-3">
                                     <Button
                                         type="button"
                                         variant={scheduledDate === todayIso ? 'default' : 'outline'}
-                                        className={scheduledDate === todayIso ? 'bg-brand-secondary' : ''}
+                                        className={cn(
+                                            'rounded-xl h-12 font-bold transition-all',
+                                            scheduledDate === todayIso 
+                                                ? 'bg-brand-primary text-white shadow-md shadow-brand-primary/20' 
+                                                : 'border-brand-primary/10 text-brand-primary hover:bg-brand-primary/5'
+                                        )}
                                         onClick={() => {
                                             form.setValue('scheduled_date', todayIso);
                                             form.setValue('time_slot_id', '');
@@ -338,7 +343,12 @@ export function BookingWidget() {
                                     <Button
                                         type="button"
                                         variant={scheduledDate === tomorrowIso() ? 'default' : 'outline'}
-                                        className={scheduledDate === tomorrowIso() ? 'bg-brand-secondary' : ''}
+                                        className={cn(
+                                            'rounded-xl h-12 font-bold transition-all',
+                                            scheduledDate === tomorrowIso() 
+                                                ? 'bg-brand-primary text-white shadow-md shadow-brand-primary/20' 
+                                                : 'border-brand-primary/10 text-brand-primary hover:bg-brand-primary/5'
+                                        )}
                                         onClick={() => {
                                             form.setValue('scheduled_date', tomorrowIso());
                                             form.setValue('time_slot_id', '');
@@ -354,11 +364,11 @@ export function BookingWidget() {
                                 name="time_slot_id"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-xs font-bold text-gray-400 uppercase tracking-widest block">
+                                        <FormLabel className="text-xs font-bold text-brand-primary/40 uppercase tracking-widest block">
                                             الوقت المتاح
                                         </FormLabel>
                                         {slotsLoading ? (
-                                            <p className="text-sm text-gray-400">جاري تحميل المواعيد...</p>
+                                            <p className="text-sm text-brand-primary/40">جاري تحميل المواعيد...</p>
                                         ) : timeSlots && timeSlots.length > 0 ? (
                                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                                 {timeSlots
@@ -371,8 +381,8 @@ export function BookingWidget() {
                                                             className={cn(
                                                                 'p-4 rounded-xl border-2 font-bold transition-all',
                                                                 field.value === String(slot.id)
-                                                                    ? 'border-brand-secondary bg-brand-secondary-10 text-brand-primary'
-                                                                    : 'border-gray-50 bg-gray-50/30 text-gray-700 hover:border-brand-secondary-20',
+                                                                    ? 'border-brand-primary bg-brand-primary/5 text-brand-primary'
+                                                                    : 'border-brand-primary/[0.02] bg-brand-primary/[0.02] text-brand-primary-dark hover:border-brand-primary/20',
                                                             )}
                                                         >
                                                             {slot.start_time.slice(0, 5)}
@@ -380,7 +390,7 @@ export function BookingWidget() {
                                                     ))}
                                             </div>
                                         ) : (
-                                            <p className="text-sm text-gray-400">
+                                            <p className="text-sm text-brand-primary/40">
                                                 لا توجد مواعيد متاحة في هذا اليوم. جرّب يوماً آخر.
                                             </p>
                                         )}
@@ -394,7 +404,7 @@ export function BookingWidget() {
                     {step === 3 && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
                             {selectedSlot && (
-                                <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4 text-sm text-gray-600">
+                                <div className="rounded-xl border border-brand-primary/10 bg-brand-primary/[0.02] p-4 text-sm text-brand-primary/70">
                                     الموعد: {scheduledDate} — الساعة {selectedSlot.start_time.slice(0, 5)}
                                 </div>
                             )}
@@ -404,10 +414,10 @@ export function BookingWidget() {
                                 name="customer_name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-xs font-bold text-gray-900 mb-2 block">الاسم الثلاثي</FormLabel>
+                                        <FormLabel className="text-xs font-bold text-brand-primary-dark mb-2 block">الاسم الثلاثي</FormLabel>
                                         <FormControl>
                                             <Input
-                                                className="h-14 rounded-xl bg-gray-50/50 border-gray-100 focus:bg-white focus:border-brand-secondary transition-all font-medium"
+                                                className="h-14 rounded-xl bg-brand-primary/[0.02] border-brand-primary/10 focus:bg-white focus:border-brand-primary transition-all font-medium"
                                                 placeholder="أدخل اسمك الكامل"
                                                 {...field}
                                             />
@@ -422,10 +432,10 @@ export function BookingWidget() {
                                     name="customer_phone"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel className="text-xs font-bold text-gray-900 mb-2 block">رقم الهاتف</FormLabel>
+                                            <FormLabel className="text-xs font-bold text-brand-primary-dark mb-2 block">رقم الهاتف</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    className="h-14 rounded-xl bg-gray-50/50 border-gray-100 focus:bg-white focus:border-brand-secondary transition-all font-medium"
+                                                    className="h-14 rounded-xl bg-brand-primary/[0.02] border-brand-primary/10 focus:bg-white focus:border-brand-primary transition-all font-medium"
                                                     placeholder="96891234567"
                                                     dir="ltr"
                                                     {...field}
@@ -440,10 +450,10 @@ export function BookingWidget() {
                                     name="plate_number"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel className="text-xs font-bold text-gray-900 mb-2 block">رقم اللوحة</FormLabel>
+                                            <FormLabel className="text-xs font-bold text-brand-primary-dark mb-2 block">رقم اللوحة</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    className="h-14 rounded-xl bg-gray-50/50 border-gray-100 focus:bg-white focus:border-brand-secondary transition-all font-medium text-center tracking-widest"
+                                                    className="h-14 rounded-xl bg-brand-primary/[0.02] border-brand-primary/10 focus:bg-white focus:border-brand-primary transition-all font-medium text-center tracking-widest"
                                                     placeholder="أ ب 1234"
                                                     {...field}
                                                 />
@@ -454,7 +464,7 @@ export function BookingWidget() {
                                 />
                             </div>
 
-                            {submitError && <p className="text-sm text-red-600">{submitError}</p>}
+                            {submitError && <p className="text-sm text-red-600 font-bold">{submitError}</p>}
                         </div>
                     )}
 
@@ -463,7 +473,7 @@ export function BookingWidget() {
                             <Button
                                 type="button"
                                 variant="ghost"
-                                className="flex-1 h-14 rounded-xl font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                                className="flex-1 h-14 rounded-xl font-bold text-brand-primary/50 hover:text-brand-primary-dark hover:bg-brand-primary/5"
                                 onClick={() => setStep((s) => s - 1)}
                             >
                                 <ChevronRight className="me-2 h-5 w-5" />
@@ -474,7 +484,7 @@ export function BookingWidget() {
                         {step < 3 ? (
                             <Button
                                 type="button"
-                                className="flex-[2] h-14 rounded-xl font-bold text-lg shadow-lg bg-brand-secondary text-white hover:opacity-90 transition-all"
+                                className="flex-[2] h-14 rounded-xl font-bold text-lg shadow-lg bg-brand-primary text-white hover:bg-brand-primary-dark transition-all"
                                 onClick={() => setStep((s) => s + 1)}
                                 disabled={
                                     (step === 1 && (!form.getValues('branch_id') || !form.getValues('service_id'))) ||
@@ -487,7 +497,7 @@ export function BookingWidget() {
                         ) : (
                             <Button
                                 type="submit"
-                                className="flex-[2] h-14 rounded-xl font-bold text-lg shadow-lg bg-brand-secondary text-white hover:opacity-90 transition-all"
+                                className="flex-[2] h-14 rounded-xl font-bold text-lg shadow-lg bg-brand-primary text-white hover:bg-brand-primary-dark transition-all"
                                 disabled={form.formState.isSubmitting}
                             >
                                 {form.formState.isSubmitting ? (
