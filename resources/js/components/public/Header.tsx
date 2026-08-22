@@ -41,18 +41,17 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
     return (
         <header
             className={cn(
-                'sf-header relative fixed top-0 z-50 w-full transition-[padding] duration-300',
-                isScrolled ? 'py-2.5' : 'py-3.5',
+                'fixed top-0 z-50 w-full transition-all duration-300 border-b',
+                isScrolled ? 'py-3 bg-white/90 backdrop-blur-md border-slate-200 shadow-sm' : 'py-4 bg-white border-transparent',
             )}
         >
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 lg:px-8">
                 <Link to="/" className="flex items-center gap-3 group">
                     <div
                         className={cn(
-                            'flex h-11 w-11 items-center justify-center rounded-lg shrink-0',
-                            !logoUrl && 'text-white',
+                            'flex h-10 w-10 items-center justify-center rounded-lg shrink-0',
+                            !logoUrl && 'bg-slate-900 text-white',
                         )}
-                        style={{ backgroundColor: logoUrl ? 'transparent' : 'var(--brand-primary)' }}
                     >
                         {logoUrl ? (
                             <img src={logoUrl} alt={businessName} className="h-full w-full object-contain" />
@@ -61,28 +60,26 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
                         )}
                     </div>
                     <div className="flex flex-col min-w-0">
-                        <span className="text-lg font-bold tracking-tight text-[var(--inst-text)] truncate">
+                        <span className="text-lg font-bold tracking-tight text-slate-900 truncate">
                             {businessName}
                         </span>
-                        <span className="text-[11px] font-semibold text-[var(--inst-muted)] truncate">
+                        <span className="text-[11px] font-medium text-slate-500 truncate">
                             {tagline}
                         </span>
                     </div>
                 </Link>
 
-                <nav className="hidden items-center gap-0.5 lg:flex">
+                <nav className="hidden items-center gap-1 lg:flex">
                     {navItems.map((item) => (
                         <NavLink
                             key={item.to}
                             to={item.to}
                             className={({ isActive }) =>
                                 cn(
-                                    'relative px-3.5 py-2 text-[13px] font-semibold transition-colors',
+                                    'px-4 py-2 text-[13px] font-semibold transition-colors rounded-full',
                                     isActive
-                                        ? 'text-[var(--brand-primary)]'
-                                        : 'text-[var(--inst-text)]/75 hover:text-[var(--brand-primary)]',
-                                    isActive &&
-                                        'after:absolute after:bottom-0 after:inset-x-3 after:h-0.5 after:bg-[var(--brand-secondary)] after:rounded-full',
+                                        ? 'bg-slate-100 text-slate-900'
+                                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50',
                                 )
                             }
                         >
@@ -94,23 +91,23 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
                 <div className="hidden items-center gap-4 lg:flex">
                     <a
                         href={`tel:${contactPhone}`}
-                        className="flex items-center text-[13px] font-semibold text-[var(--inst-text)]/80 hover:text-[var(--brand-primary)]"
+                        className="flex items-center text-[13px] font-semibold text-slate-600 hover:text-slate-900 transition-colors"
                     >
-                        <Phone className="me-1.5 h-4 w-4 text-[var(--brand-primary)]" />
+                        <Phone className="me-1.5 h-4 w-4" />
                         {contactPhone}
                     </a>
 
                     {isAuthenticated ? (
-                        <Button variant="ghost" size="sm" asChild className="font-semibold text-[var(--inst-text)]">
+                        <Button variant="ghost" size="sm" asChild className="font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50">
                             <Link to="/dashboard">لوحة التحكم</Link>
                         </Button>
                     ) : (
-                        <Button variant="ghost" size="sm" asChild className="font-semibold text-[var(--inst-text)]">
+                        <Button variant="ghost" size="sm" asChild className="font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50">
                             <Link to="/login">دخول</Link>
                         </Button>
                     )}
 
-                    <Button size="sm" asChild className="sf-cta-accent rounded-lg font-bold px-5 h-10 shadow-none">
+                    <Button size="sm" asChild className="bg-slate-900 text-white hover:bg-slate-800 rounded-full px-6 h-10 font-semibold shadow-sm transition-all">
                         <Link to="/book">احجز الآن</Link>
                     </Button>
                 </div>
@@ -118,7 +115,7 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="lg:hidden rounded-lg text-[var(--inst-text)]"
+                    className="lg:hidden rounded-lg text-slate-900 hover:bg-slate-100"
                     onClick={() => setMobileOpen((open) => !open)}
                     aria-label={mobileOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
                 >
@@ -128,7 +125,7 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
 
             <div
                 className={cn(
-                    'fixed inset-x-0 top-[68px] bottom-0 z-50 bg-white lg:hidden transition-all duration-300 ease-in-out border-t border-[var(--inst-border)]',
+                    'fixed inset-x-0 top-[72px] bottom-0 z-50 bg-white lg:hidden transition-all duration-300 ease-in-out border-t border-slate-100',
                     mobileOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none',
                 )}
             >
@@ -140,10 +137,10 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
                             onClick={() => setMobileOpen(false)}
                             className={({ isActive }) =>
                                 cn(
-                                    'flex items-center p-4 rounded-xl text-base font-bold',
+                                    'flex items-center p-4 rounded-xl text-base font-bold transition-colors',
                                     isActive
-                                        ? 'bg-brand-secondary-10 text-brand-primary'
-                                        : 'text-[var(--inst-text)] hover:bg-[var(--inst-silver)]',
+                                        ? 'bg-slate-50 text-slate-900'
+                                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
                                 )
                             }
                         >
@@ -153,21 +150,21 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
 
                     <div className="mt-6 grid grid-cols-2 gap-3">
                         {isAuthenticated ? (
-                            <Button variant="outline" asChild className="rounded-xl h-12 font-bold border-[var(--inst-border)]">
+                            <Button variant="outline" asChild className="rounded-xl h-12 font-bold border-slate-200 text-slate-900">
                                 <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
                                     <LayoutDashboard className="me-2 h-4 w-4" />
                                     لوحة التحكم
                                 </Link>
                             </Button>
                         ) : (
-                            <Button variant="outline" asChild className="rounded-xl h-12 font-bold border-[var(--inst-border)]">
+                            <Button variant="outline" asChild className="rounded-xl h-12 font-bold border-slate-200 text-slate-900">
                                 <Link to="/login" onClick={() => setMobileOpen(false)}>
                                     <LogIn className="me-2 h-4 w-4" />
                                     دخول
                                 </Link>
                             </Button>
                         )}
-                        <Button asChild className="sf-cta-accent rounded-xl h-12 font-bold shadow-none">
+                        <Button asChild className="bg-slate-900 text-white hover:bg-slate-800 rounded-xl h-12 font-bold shadow-sm">
                             <Link to="/book" onClick={() => setMobileOpen(false)}>
                                 <CalendarDays className="me-2 h-4 w-4" />
                                 احجز موعدك
@@ -177,9 +174,9 @@ export function PublicHeader({ profile }: PublicHeaderProps) {
 
                     <a
                         href={`tel:${contactPhone}`}
-                        className="mt-auto flex items-center justify-center gap-3 p-5 rounded-xl bg-[var(--inst-silver)] text-[var(--inst-text)] font-bold"
+                        className="mt-auto flex items-center justify-center gap-3 p-5 rounded-xl bg-slate-50 text-slate-900 font-bold hover:bg-slate-100 transition-colors"
                     >
-                        <Phone className="h-5 w-5 text-[var(--brand-primary)]" />
+                        <Phone className="h-5 w-5" />
                         {contactPhone}
                     </a>
                 </nav>

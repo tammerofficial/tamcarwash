@@ -19,7 +19,7 @@ const STEPS = [
     { step: '01', title: 'احجز موعدك', desc: 'اختر الخدمة والفرع والوقت المناسب عبر الموقع.', icon: CalendarDays },
     { step: '02', title: 'أحضر سيارتك', desc: 'توجّه إلى الفرع في الموعد المحدد وسنكون بانتظارك.', icon: Car },
     { step: '03', title: 'استرخِ قليلاً', desc: 'استرح في صالة الانتظار بينما يتولى الفريق العناية.', icon: Coffee },
-    { step: '04', title: 'استلمها لامعة', desc: 'استلم سيارتك بعد فحص جودة وتشغيل منضبط.', icon: Sparkles },
+    { step: '04', title: 'استلمها لامعة', desc: 'استلم سيارتك بعد فحص جودة دقيق.', icon: Sparkles },
 ];
 
 export function HomePage() {
@@ -28,33 +28,33 @@ export function HomePage() {
     const { data: branches } = useStorefrontBranches();
 
     return (
-        <div className="sf-shell min-h-screen" dir="rtl">
+        <div className="min-h-screen bg-slate-50 font-sans" dir="rtl">
             <PublicHeader profile={profile} />
 
             <main>
                 <PublicHero profile={profile} featuredService={services?.[0]} />
                 <TrustStrip />
 
-                <section id="services" className="py-20 bg-white">
+                <section id="services" className="py-24 bg-white">
                     <div className="mx-auto max-w-7xl px-4 lg:px-8">
-                        <div className="mb-12 max-w-2xl space-y-3">
-                            <p className="sf-kicker">خدماتنا</p>
-                            <h2 className="text-3xl md:text-4xl font-bold text-[var(--inst-text)]">
-                                خدمات تشغيلية <span className="text-[var(--brand-primary)]">واضحة الأسعار</span>
+                        <div className="mb-16 max-w-2xl space-y-4">
+                            <p className="text-sm font-bold tracking-widest uppercase text-slate-500">خدماتنا</p>
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+                                عناية فائقة <span className="text-slate-400">وأسعار واضحة</span>
                             </h2>
-                            <p className="text-[var(--inst-muted)] leading-relaxed">
-                                باقات غسيل وتلميع بمعايير ثابتة — احجز الخدمة المناسبة لسيارتك مباشرة.
+                            <p className="text-lg text-slate-600 leading-relaxed">
+                                باقات غسيل وتلميع بعناية فائقة — احجز الخدمة المناسبة لسيارتك مباشرة.
                             </p>
                         </div>
 
                         {servicesLoading ? (
-                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                                 {Array.from({ length: 3 }).map((_, i) => (
-                                    <Skeleton key={i} className="h-[420px] rounded-xl" />
+                                    <Skeleton key={i} className="h-[420px] rounded-2xl" />
                                 ))}
                             </div>
                         ) : (
-                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                                 {services?.map((service) => (
                                     <ServiceCard
                                         key={service.id}
@@ -72,26 +72,26 @@ export function HomePage() {
                 <PricingPreview />
                 <CorporateSection />
 
-                <section className="py-20 bg-white" dir="rtl">
+                <section className="py-24 bg-slate-50" dir="rtl">
                     <div className="mx-auto max-w-7xl px-4 lg:px-8">
-                        <div className="mb-12 text-center space-y-3">
-                            <p className="sf-kicker">مسار الخدمة</p>
-                            <h2 className="text-3xl md:text-4xl font-bold text-[var(--inst-text)]">
-                                أربع خطوات <span className="text-[var(--brand-primary)]">واضحة</span>
+                        <div className="mb-16 text-center space-y-4">
+                            <p className="text-sm font-bold tracking-widest uppercase text-slate-500">مسار الخدمة</p>
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+                                أربع خطوات <span className="text-slate-400">واضحة</span>
                             </h2>
                         </div>
 
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             {STEPS.map((item) => (
-                                <div key={item.step} className="sf-card sf-card-accent rounded-xl p-6">
-                                    <div className="flex items-center justify-between mb-5">
-                                        <div className="h-11 w-11 rounded-lg bg-[var(--inst-silver)] border border-[var(--inst-border)] flex items-center justify-center text-[var(--brand-primary)]">
-                                            <item.icon className="h-5 w-5" />
+                                <div key={item.step} className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-900">
+                                            <item.icon className="h-6 w-6" />
                                         </div>
-                                        <span className="text-sm font-bold text-[var(--brand-primary)]">{item.step}</span>
+                                        <span className="text-sm font-bold text-slate-400">{item.step}</span>
                                     </div>
-                                    <h3 className="text-lg font-bold text-[var(--inst-text)] mb-2">{item.title}</h3>
-                                    <p className="text-[13px] text-[var(--inst-muted)] leading-relaxed">{item.desc}</p>
+                                    <h3 className="text-xl font-bold text-slate-900 mb-3">{item.title}</h3>
+                                    <p className="text-sm text-slate-600 leading-relaxed">{item.desc}</p>
                                 </div>
                             ))}
                         </div>

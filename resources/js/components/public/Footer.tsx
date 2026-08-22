@@ -17,27 +17,27 @@ export function PublicFooter({ profile, branches }: PublicFooterProps) {
     const tagline = profile?.branding?.tagline ?? 'عناية سيارات احترافية';
 
     return (
-        <footer className="sf-footer relative pt-16 pb-8 text-white" dir="rtl">
-            <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
+        <footer className="bg-white border-t border-slate-200 pt-16 pb-8" dir="rtl">
+            <div className="mx-auto max-w-7xl px-4 lg:px-8">
                 <div className="grid gap-12 lg:grid-cols-4">
                     <div className="space-y-5">
                         <Link to="/" className="flex items-center gap-3">
-                            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--brand-secondary)]">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-900">
                                 <Droplets className="h-5 w-5 text-white" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-lg font-bold tracking-tight">{businessName}</span>
-                                <span className="text-[11px] font-semibold text-white/50">{tagline}</span>
+                                <span className="text-lg font-bold tracking-tight text-slate-900">{businessName}</span>
+                                <span className="text-[11px] font-semibold text-slate-500">{tagline}</span>
                             </div>
                         </Link>
-                        <p className="text-white/55 text-[13px] leading-relaxed max-w-xs">
-                            مؤسسة متخصصة في عناية السيارات: تشغيل منضبط، مواد معتمدة، وتجربة واضحة للعميل من الحجز حتى التسليم.
+                        <p className="text-slate-600 text-[13px] leading-relaxed max-w-xs">
+                            عناية سيارات فائقة: دقة في التفاصيل، مواد عالية الجودة، وتجربة استثنائية من الحجز حتى التسليم.
                         </p>
                     </div>
 
                     <div>
-                        <h4 className="text-[13px] font-bold text-white mb-5">روابط سريعة</h4>
-                        <ul className="space-y-2.5">
+                        <h4 className="text-[13px] font-bold text-slate-900 mb-5">روابط سريعة</h4>
+                        <ul className="space-y-3">
                             {[
                                 { to: '/', label: 'الرئيسية' },
                                 { to: '/services', label: 'الخدمات' },
@@ -51,7 +51,7 @@ export function PublicFooter({ profile, branches }: PublicFooterProps) {
                                 <li key={item.to}>
                                     <Link
                                         to={item.to}
-                                        className="text-[13px] font-medium text-white/55 hover:text-[var(--brand-secondary)]"
+                                        className="text-[13px] font-medium text-slate-500 hover:text-slate-900 transition-colors"
                                     >
                                         {item.label}
                                     </Link>
@@ -61,54 +61,54 @@ export function PublicFooter({ profile, branches }: PublicFooterProps) {
                     </div>
 
                     <div>
-                        <h4 className="text-[13px] font-bold text-white mb-5">التواصل</h4>
+                        <h4 className="text-[13px] font-bold text-slate-900 mb-5">التواصل</h4>
                         <ul className="space-y-4">
                             <li>
                                 <a href={`tel:${contactPhone}`} className="flex items-start gap-3 group">
-                                    <Phone className="h-4 w-4 mt-0.5 text-[var(--brand-secondary)]" />
+                                    <Phone className="h-4 w-4 mt-0.5 text-slate-400 group-hover:text-slate-900 transition-colors" />
                                     <div>
-                                        <p className="text-[11px] font-semibold text-white/40 mb-0.5">الهاتف</p>
-                                        <p className="font-bold text-sm">{contactPhone}</p>
+                                        <p className="text-[11px] font-semibold text-slate-500 mb-0.5">الهاتف</p>
+                                        <p className="font-bold text-sm text-slate-900">{contactPhone}</p>
                                     </div>
                                 </a>
                             </li>
                             <li>
                                 <a href={`mailto:${contactEmail}`} className="flex items-start gap-3 group">
-                                    <Mail className="h-4 w-4 mt-0.5 text-[var(--brand-secondary)]" />
+                                    <Mail className="h-4 w-4 mt-0.5 text-slate-400 group-hover:text-slate-900 transition-colors" />
                                     <div>
-                                        <p className="text-[11px] font-semibold text-white/40 mb-0.5">البريد</p>
-                                        <p className="font-bold text-sm">{contactEmail}</p>
+                                        <p className="text-[11px] font-semibold text-slate-500 mb-0.5">البريد</p>
+                                        <p className="font-bold text-sm text-slate-900">{contactEmail}</p>
                                     </div>
                                 </a>
                             </li>
                             <li className="flex items-start gap-3">
-                                <MapPin className="h-4 w-4 mt-0.5 text-[var(--brand-secondary)]" />
+                                <MapPin className="h-4 w-4 mt-0.5 text-slate-400" />
                                 <div>
-                                    <p className="text-[11px] font-semibold text-white/40 mb-0.5">العنوان</p>
-                                    <p className="font-medium text-sm text-white/80">{primaryAddress}</p>
+                                    <p className="text-[11px] font-semibold text-slate-500 mb-0.5">العنوان</p>
+                                    <p className="font-medium text-sm text-slate-900">{primaryAddress}</p>
                                 </div>
                             </li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="text-[13px] font-bold text-white mb-5">التزام التشغيل</h4>
+                        <h4 className="text-[13px] font-bold text-slate-900 mb-5">التزامنا</h4>
                         <div className="space-y-3">
-                            <div className="p-4 rounded-xl bg-white/6 border border-white/8">
+                            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
                                 <div className="flex items-center gap-2 mb-1.5">
-                                    <ShieldCheck className="h-4 w-4 text-[var(--brand-secondary)]" />
-                                    <span className="text-[13px] font-bold">ضمان الجودة</span>
+                                    <ShieldCheck className="h-4 w-4 text-slate-900" />
+                                    <span className="text-[13px] font-bold text-slate-900">ضمان الجودة</span>
                                 </div>
-                                <p className="text-[12px] text-white/45 leading-relaxed">
-                                    مواد معتمدة ومعايير ثابتة لحماية الطلاء والمقصورة.
+                                <p className="text-[12px] text-slate-500 leading-relaxed">
+                                    مواد عالية الجودة وعناية فائقة لحماية الطلاء والمقصورة.
                                 </p>
                             </div>
-                            <div className="p-4 rounded-xl bg-white/6 border border-white/8">
+                            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
                                 <div className="flex items-center gap-2 mb-1.5">
-                                    <CreditCard className="h-4 w-4 text-[var(--brand-secondary)]" />
-                                    <span className="text-[13px] font-bold">دفع آمن</span>
+                                    <CreditCard className="h-4 w-4 text-slate-900" />
+                                    <span className="text-[13px] font-bold text-slate-900">دفع آمن</span>
                                 </div>
-                                <p className="text-[12px] text-white/45 leading-relaxed">
+                                <p className="text-[12px] text-slate-500 leading-relaxed">
                                     خيارات دفع واضحة تناسب الأفراد والشركات.
                                 </p>
                             </div>
@@ -116,15 +116,15 @@ export function PublicFooter({ profile, branches }: PublicFooterProps) {
                     </div>
                 </div>
 
-                <div className="mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className="text-white/40 text-[12px] font-medium">
+                <div className="mt-12 pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p className="text-slate-500 text-[12px] font-medium">
                         © {currentYear} {businessName}. جميع الحقوق محفوظة.
                     </p>
                     <div className="flex items-center gap-6">
-                        <Link to="/track" className="text-[12px] font-semibold text-white/40 hover:text-[var(--brand-secondary)]">
+                        <Link to="/track" className="text-[12px] font-semibold text-slate-500 hover:text-slate-900 transition-colors">
                             تتبع طلبي
                         </Link>
-                        <Link to="/book" className="text-[12px] font-semibold text-white/40 hover:text-[var(--brand-secondary)]">
+                        <Link to="/book" className="text-[12px] font-semibold text-slate-500 hover:text-slate-900 transition-colors">
                             احجز الآن
                         </Link>
                     </div>
