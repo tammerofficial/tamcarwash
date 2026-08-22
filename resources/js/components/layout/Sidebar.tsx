@@ -21,6 +21,7 @@ import {
     Banknote,
     Wrench,
     Palette,
+    BarChart3,
     type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -53,28 +54,28 @@ const navSections: NavSection[] = [
         sectionLabel: t('nav.sections.main'),
         items: [
             { to: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard, end: true, roles: ['owner', 'manager', 'cashier', 'worker'], feature: 'dashboard' },
-            { to: '/cashier', label: t('nav.cashier'), icon: Banknote, roles: ['owner', 'manager', 'cashier'], feature: 'cashier' },
-            { to: '/worker', label: t('nav.worker'), icon: Wrench, roles: ['owner', 'manager', 'worker'], feature: 'worker' },
         ],
     },
     {
         sectionKey: 'operations',
         sectionLabel: t('nav.sections.operations'),
         items: [
+            { to: '/cashier', label: t('nav.cashier'), icon: Banknote, roles: ['owner', 'manager', 'cashier'], feature: 'cashier' },
             { to: '/queue', label: t('nav.queue'), icon: ListOrdered, roles: ['owner', 'manager', 'cashier', 'worker'], feature: 'queue' },
-            { to: '/queue/screen', label: t('nav.queueScreen'), icon: Monitor, roles: ['owner', 'manager', 'cashier'], feature: 'queue_screen' },
             { to: '/orders', label: t('nav.orders'), icon: ClipboardList, roles: ['owner', 'manager', 'cashier', 'worker'], feature: 'orders' },
+            { to: '/queue/screen', label: t('nav.queueScreen'), icon: Monitor, roles: ['owner', 'manager', 'cashier'], feature: 'queue_screen' },
             { to: '/booking', label: t('nav.booking'), icon: CalendarDays, roles: ['owner', 'manager'], feature: 'bookings' },
+            { to: '/worker', label: t('nav.worker'), icon: Wrench, roles: ['owner', 'manager', 'worker'], feature: 'worker' },
         ],
     },
     {
         sectionKey: 'masterData',
         sectionLabel: t('nav.sections.masterData'),
         items: [
-            { to: '/branches', label: t('nav.branches'), icon: Building2, roles: ['owner', 'manager'], feature: 'branches' },
             { to: '/customers', label: t('nav.customers'), icon: Users, roles: ['owner', 'manager', 'cashier'], feature: 'customers' },
-            { to: '/vehicles', label: t('nav.vehicles'), icon: CarFront, roles: ['owner', 'manager', 'cashier'], feature: 'vehicles' },
             { to: '/services', label: t('nav.services'), icon: Droplets, roles: ['owner', 'manager'], feature: 'services' },
+            { to: '/vehicles', label: t('nav.vehicles'), icon: CarFront, roles: ['owner', 'manager', 'cashier'], feature: 'vehicles' },
+            { to: '/branches', label: t('nav.branches'), icon: Building2, roles: ['owner', 'manager'], feature: 'branches' },
             { to: '/pricing', label: t('nav.pricing'), icon: Tags, roles: ['owner', 'manager'], feature: 'pricing' },
         ],
     },
@@ -142,16 +143,16 @@ export function Sidebar({
                         variant="ghost"
                         size="icon"
                         className={cn(
-                            'absolute end-2 top-2 z-20 shrink-0 text-white/70 hover:bg-white/10 hover:text-white',
-                            collapsed ? 'h-7 w-7' : 'h-8 w-8',
+                            'absolute end-2 top-2 z-20 shrink-0 text-white/70 hover:bg-white/10 hover:text-white min-h-11 min-w-11 sm:min-h-10 sm:min-w-10',
+                            collapsed ? 'h-9 w-9 sm:h-8 sm:w-8' : 'h-10 w-10 sm:h-9 sm:w-9',
                         )}
                         onClick={onToggleCollapse}
                         aria-label={t('admin.sidebarCollapse')}
                     >
                         {collapsed ? (
-                            <ChevronLeft className="h-4 w-4" />
+                            <ChevronLeft className="h-5 w-5 sm:h-4 sm:w-4" />
                         ) : (
-                            <ChevronRight className="h-4 w-4" />
+                            <ChevronRight className="h-5 w-5 sm:h-4 sm:w-4" />
                         )}
                     </Button>
                 )}
@@ -160,11 +161,11 @@ export function Sidebar({
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute end-2 top-2 z-20 h-8 w-8 shrink-0 text-white/70 hover:bg-white/10 hover:text-white lg:hidden"
+                        className="absolute end-2 top-2 z-20 h-10 w-10 sm:h-9 sm:w-9 shrink-0 text-white/70 hover:bg-white/10 hover:text-white lg:hidden min-h-12 min-w-12 sm:min-h-11 sm:min-w-11"
                         onClick={onMobileClose}
                         aria-label={t('public.closeMenu')}
                     >
-                        <X className="h-4 w-4" />
+                        <X className="h-5 w-5 sm:h-4 sm:w-4" />
                     </Button>
                 )}
 
