@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Analytics\Http\Controllers\AnalyticsController;
 use App\Modules\Booking\Http\Controllers\BookingController;
 use App\Modules\Booking\Http\Controllers\TimeSlotController;
 use App\Modules\Branches\Http\Controllers\BranchController;
@@ -12,6 +13,7 @@ use App\Modules\Finance\Http\Controllers\PaymentMethodController;
 use App\Modules\Finance\Http\Controllers\SettingsController;
 use App\Modules\Finance\Http\Controllers\TaxReportController;
 use App\Modules\Finance\Http\Controllers\TaxSettingsController;
+use App\Modules\Onboarding\Http\Controllers\OnboardingController;
 use App\Modules\Orders\Http\Controllers\OrderController;
 use App\Modules\Pricing\Http\Controllers\CouponController;
 use App\Modules\Pricing\Http\Controllers\DiscountController;
@@ -51,6 +53,25 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:tenant')->group(function () {
         Route::post('logout', [TenantAuthController::class, 'logout']);
         Route::get('user', [TenantAuthController::class, 'user']);
+    });
+});
+
+// Onboarding routes (public for initialization, then auth required)
+Route::prefix('onboarding')->group(function () {
+    Route::post('initialize', [OnboardingController::class, 'initialize'])->middleware('auth:tenant');
+    Route::get('progress', [OnboardingController::class, 'getProgress'])->middleware('auth:tenant');
+    
+    Route::middleware('auth:tenant')->group(function () {
+        Route::post('business-info', [OnboardingController::class, 'saveBusinessInfo']);
+        Route::post('first-branch', [OnboardingController::class, 'saveFirstBranch']);
+        Route::post('services', [OnboardingController::class, 'saveServices']);
+        Route::post('staff', [OnboardingController::class, 'saveStaff']);
+        Route::post('payment-methods', [OnboardingController::class, 'savePaymentMethods']);
+        Route::post('tax-setup', [OnboardingController::class, 'saveTaxSetup']);
+        Route::post('complete', [OnboardingController::class, 'complete']);
+        Route::get('review', [OnboardingController::class, 'getReview']);
+        Route::get('suggested-actions', [OnboardingController::class, 'suggestedActions']);
+        Route::post('skip-step', [OnboardingController::class, 'skipStep']);
     });
 });
 
@@ -214,5 +235,16 @@ Route::middleware('auth:tenant')->group(function () {
             Route::get('quarterly', [TaxReportController::class, 'quarterly']);
             Route::get('breakdown', [TaxReportController::class, 'breakdown']);
         });
+    });
+
+    Route::middleware('plan.feature:analytics,dashboard')->prefix('analytics')->group(function () {
+        Route::get('executive-summary', [AnalyticsController::class, 'executiveSummary']);
+        Route::get('revenue', [AnalyticsController::class, 'revenueAnalytics']);
+        Route::get('customers', [AnalyticsController::class, 'customerAnalytics']);
+        Route::get('operations', [AnalyticsController::class, 'operationsAnalytics']);
+        Route::get('financial', [AnalyticsController::class, 'financialReports']);
+        Route::get('staff-performance', [AnalyticsController::class, 'staffPerformance']);
+        Route::get('loyalty-retention', [AnalyticsController::class, 'loyaltyRetention']);
+        Route::get('comprehensive-dashboard', [AnalyticsController::class, 'comprehensiveDashboard']);
     });
 });

@@ -21,7 +21,6 @@ import {
     Banknote,
     Wrench,
     Palette,
-    BarChart3,
     type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';

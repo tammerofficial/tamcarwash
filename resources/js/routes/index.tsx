@@ -54,6 +54,7 @@ import { OrderDetailPage } from '@/pages/orders/OrderDetailPage';
 import { InvoicesPage } from '@/pages/invoices/InvoicesPage';
 import { InvoiceDetailPage } from '@/pages/invoices/InvoiceDetailPage';
 import { TaxReportsPage } from '@/pages/tax/TaxReportsPage';
+import { AnalyticsPage } from '@/pages/analytics/AnalyticsPage';
 import { SettingsPage } from '@/pages/settings/SettingsPage';
 import { AppearancePage } from '@/pages/settings/AppearancePage';
 import { LandlordLoginPage } from '@/pages/landlord/LandlordLoginPage';
@@ -134,6 +135,7 @@ function TenantRoutes() {
                         <Route path="invoices" element={<InvoicesPage />} />
                         <Route path="invoices/:id" element={<InvoiceDetailPage />} />
                         <Route path="tax-reports" element={<TaxReportsPage />} />
+                        <Route path="analytics" element={<AnalyticsPage />} />
                         <Route path="appearance" element={<AppearancePage />} />
                         <Route path="settings" element={<SettingsPage />} />
                     </Route>

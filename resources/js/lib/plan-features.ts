@@ -13,6 +13,7 @@ export const PLAN_FEATURE_KEYS = [
     'pricing',
     'invoices',
     'tax_reports',
+    'analytics',
     'appearance',
     'settings',
 ] as const;
@@ -42,6 +43,7 @@ export const PLAN_FEATURE_CATALOG: PlanFeatureDefinition[] = [
     { key: 'pricing', label: 'التسعير', description: 'قواعد الأسعار والكوبونات والخصومات' },
     { key: 'invoices', label: 'الفواتير', description: 'إصدار الفواتير ومتابعتها' },
     { key: 'tax_reports', label: 'تقارير الضريبة', description: 'تقارير ضريبة القيمة المضافة' },
+    { key: 'analytics', label: 'التحليلات والتقارير', description: 'لوحة معلومات الأداء والبيانات التحليلية' },
     { key: 'appearance', label: 'المظهر', description: 'تخصيص هوية المغسلة والألوان' },
     { key: 'settings', label: 'الإعدادات', description: 'إعدادات المنشأة والضريبة' },
 ];
@@ -60,6 +62,7 @@ const ROUTE_FEATURE_MAP: Array<{ prefix: string; feature: PlanFeatureKey }> = [
     { prefix: '/pricing', feature: 'pricing' },
     { prefix: '/invoices', feature: 'invoices' },
     { prefix: '/tax-reports', feature: 'tax_reports' },
+    { prefix: '/analytics', feature: 'analytics' },
     { prefix: '/appearance', feature: 'appearance' },
     { prefix: '/settings', feature: 'settings' },
     { prefix: '/dashboard', feature: 'dashboard' },
